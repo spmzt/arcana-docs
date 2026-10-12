@@ -39,6 +39,17 @@ handshake, traffic.
 - Every public key, the interface's and each peer's, is shown whole,
   with **Copy**.
 - **+ interface** opens the interface form with wg chosen.
+- **+ client** makes a client of the interface, a phone or a laptop:
+  its name, its address in the tunnel (the next after the peers' is
+  offered), the endpoint it reaches the host at (the host's address
+  and the interface's port are offered), what it sends through the
+  tunnel (`0.0.0.0/0, ::/0` for everything, the tunnel's network alone
+  for a split tunnel), DNS and a keepalive. The console makes its key
+  pair and keeps neither half: the host gets the public half as a
+  peer, and the page shows the client's configuration for `wg-quick`
+  once, with **Copy**, **Download** (`<name>.conf`) and a QR code the
+  WireGuard app scans (*Add a tunnel*, *Scan from QR code*). Closed,
+  it is gone: a lost one is a client made again, the old peer removed.
 
 Kept for a boot, an interface is written with its key, addresses and
 peers to `/usr/local/etc/wireguard/<if>.conf` for `wg-quick`, readable
