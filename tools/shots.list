@@ -37,3 +37,17 @@ m6-fleet			tour-phone-fleet
 7t-usage-sampling		sec-usage-sampling
 9a-workflow-edit		sec-workflow-edit
 0b-token			sec-settings-tokens
+
+# SD-WAN (B-4).  Not 9-sdwan-form-link: its interface list shows the
+# lab host's own address.
+9-sdwan-overview		sd-overview
+9-sdwan-form-underlay		sd-form-underlay
+9-sdwan-form-policy		sd-form-policy
+9-sdwan-service			sd-service
+9-sdwan-form-endpoint		sd-form-endpoint
+9-sdwan-edges-plan		sd-edges-plan
+9-sdwan-deploy-ask		sd-deploy-ask
+9-sdwan-edges-applied		sd-edges-applied
+9-sdwan-security		sd-security
+9-sdwan-identities		sd-identities
+9-sdwan-paths			sd-paths-error

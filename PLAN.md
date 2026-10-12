@@ -120,7 +120,7 @@ CI; nothing of it is needed on the VM or a host to build Arcana.
   a step. Done when every step shows its picture.
 - **B-3 The sections.** (Done 2026-10-12.) Part 4 from USING.md, re-cut per tab with
   pictures; USING.md in arcana made a pointer to the book.
-- **B-4 SD-WAN.** Part 5, with the lab's own screenshots and the
+- **B-4 SD-WAN.** (Done 2026-10-12.) Part 5, with the lab's own screenshots and the
   example document walked through.
 - **B-5 The generated references.** `tools/gen.sh` for the API, the
   CLI and the schema, run at every build from arcana's checkout;
