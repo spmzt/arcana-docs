@@ -64,6 +64,10 @@ host builds it from. They are kept in `settings.json` in the data
 directory and take the place of `web.conf`'s; a field put back to
 `web.conf`'s value follows it again.
 
+How long a sign-in lasts is set here too: **Signed out after, idle**
+(minutes, 30 by default) and **A sign-in lasts at most** (hours, 12 by
+default); changed, they hold for the sign-ins there are as well.
+
 Whoever can sign in can set the repository, and so decides what is
 built and sent to every host as root.
 
