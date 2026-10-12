@@ -212,6 +212,18 @@ says so as a Critical fault (`ids`) until Suricata runs again, and the
 apply starts Suricata before the divert rules come and takes them away
 before it stops it.
 
+With the URL filter or malware scanning on the same service, what
+the end points send to the web goes through Suricata first and then
+to Squid. Squid answers them from the edge itself, and traffic from
+the edge isn't diverted, so Suricata sees those flows from the end
+point's side only. For such a service Arcana tells Suricata to take a
+one-sided flow as it is (`stream.async-oneside`, `midstream`) and not
+to drop its packets for looking odd (`drop-invalid: no`). What a
+`drop` rule matches is still dropped, though with one side alone a
+packet may get through before the drop. Squid's own fetches, and what
+the edge is sent for itself, aren't diverted; what Squid fetches is
+scanned by ClamAV where malware is scanned.
+
 What it does not see:
 
 - **IPv6** is not diverted, so it passes without inspection where the
