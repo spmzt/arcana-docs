@@ -33,6 +33,11 @@ handshake, traffic.
   stays on the host: the console is told, and shows, public keys only,
   and what `wg` prints with keys in it is kept out of the trace.
 - **+ peer** adds a peer by its public key; the cross removes one.
+- **✎** on a peer opens its form with what it has (endpoint, allowed
+  addresses, keepalive), its key fixed: what the form says is what the
+  peer has after. A keepalive of 0 turns it off.
+- Every public key, the interface's and each peer's, is shown whole,
+  with **Copy**.
 - **+ interface** opens the interface form with wg chosen.
 
 Kept for a boot, an interface is written with its key, addresses and
