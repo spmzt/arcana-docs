@@ -84,7 +84,7 @@
 # Appendix
 
 - [The agent's protocol](reference/schema.md)
-- [Manual pages]()
+- [Manual pages](manpages.md)
   - [arcana-agent(8)](reference/arcana-agent.md)
   - [arcana-console(8)](reference/arcana-console.md)
   - [arcana-enrol(8)](reference/arcana-enrol.md)
