@@ -161,9 +161,11 @@ used: the edge's own address in the service is.
 
 ## Intrusion detection
 
-A security policy with **`ids`** (MEF 88) has the service's traffic
+A security policy with **`ids`** has the service's traffic
 watched by Suricata at each edge, on the service's UNIs there: what
-the end points send and what comes back to them. Its mode is one of:
+the end points send and what comes back to them. Intrusion detection
+is Arcana's own criterion: neither MEF 88 nor MEF 138, which replaces
+it, has it among its Security Functions. Its mode is one of:
 
 - **`detect`**: Suricata reads the UNIs beside the traffic; what a rule
   matches is told, and nothing is stopped.
