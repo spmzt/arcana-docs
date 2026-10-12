@@ -55,8 +55,21 @@ destroyed from here.
 
 An encrypted dataset says so, and whether its key is loaded. **Load
 key** reads the key from where the dataset's `keylocation` says (a
-file, a URL), **Unload key** forgets it; a key asked for at a prompt is
-never typed into the console, and is loaded on the host.
+file, a URL), and **Unload key** forgets it.
+
+A dataset whose key is asked for at a prompt (`keylocation=prompt`)
+has **Type the key** when the key is not loaded and **Change key** when
+it is. Change key takes the new key twice. The key goes straight to
+the host, and not as a job: jobs are kept, and the page keeps what it
+sent so it can send it again. `zfs load-key` (or `zfs change-key`)
+reads the key from a file in a directory of `/tmp` that only root can
+read. The file exists only while zfs reads it, is overwritten after,
+and is removed. After a change the dataset's `keylocation` is `prompt`
+again, as it was. The key is in no log and no trace, and the console
+zeroes its copies when the call ends. A passphrase is 8 characters at
+least; a hex key is 64 hex digits; a raw key is never typed. From the
+command line: `arcanactl zfskey [-n] dataset`, which asks for the key
+at a prompt that does not show it.
 
 **Jail** gives a dataset to a running jail to manage as its own (`zfs
 jail`); **Unjail** takes it back.
