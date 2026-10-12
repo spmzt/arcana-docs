@@ -1,0 +1,4 @@
+/* What the book adds to mdBook's own themes. */
+.built-from { margin-top: 3em; font-size: .85em; opacity: .7; }
+/* Which FreeBSD piece does the work, beside what Arcana does with it. */
+.freebsd { border-left: 3px solid #ab2b28; padding: .2em .9em; margin: 1em 0; }

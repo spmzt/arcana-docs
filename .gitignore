@@ -1,0 +1,4 @@
+/book/
+# Arcana's tree, checked out beside the book by its workflow (or linked
+# to a checkout for a local build: ln -s ../arcana arcana).
+/arcana

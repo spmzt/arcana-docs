@@ -1,0 +1,22 @@
+[book]
+title = "Arcana"
+description = "The book of Arcana, the FreeBSD fleet manager: the panel, the agent, SD-WAN, and the FreeBSD underneath each of them."
+authors = ["Pouria Mousavizadeh Tehrani"]
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[output.html]
+site-url = "/arcana-docs/"
+git-repository-url = "https://github.com/spmzt/arcana-docs"
+edit-url-template = "https://github.com/spmzt/arcana-docs/edit/main/{path}"
+default-theme = "light"
+preferred-dark-theme = "navy"
+additional-js = ["theme/footer.js"]
+additional-css = ["theme/arcana.css"]
+
+[output.html.search]
+limit-results = 30

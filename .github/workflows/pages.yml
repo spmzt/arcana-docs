@@ -1,0 +1,74 @@
+# The book, built and published to GitHub Pages.  It describes Arcana
+# as it is on main: spmzt/arcana is checked out beside it for the
+# chapters to include from, and its commit is named on every page.
+name: book
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Daily, so that the book follows Arcana's main.
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  MDBOOK_VERSION: v0.5.4
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Arcana, beside the book
+        uses: actions/checkout@v5
+        with:
+          repository: spmzt/arcana
+          path: arcana
+
+      - name: mdBook
+        run: |
+          mkdir -p "$HOME/bin"
+          curl -sSfL "https://github.com/rust-lang/mdBook/releases/download/${MDBOOK_VERSION}/mdbook-${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz" |
+              tar -xz -C "$HOME/bin"
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+
+      - name: The Arcana it describes
+        run: |
+          commit=$(git -C arcana rev-parse --short=12 HEAD)
+          sed -i "s/@ARCANA_COMMIT@/${commit}/" theme/footer.js
+          echo "Arcana at ${commit}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build
+        run: mdbook build
+
+      - name: Links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --include-fragments book
+          fail: true
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: book
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
