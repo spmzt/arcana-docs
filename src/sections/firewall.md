@@ -76,9 +76,20 @@ lines), which the host loads when it starts.
 - **Kept rules as text** shows it to be changed as a whole, checked by
   ipfw without being done; for a host that has none, **Start from the
   layout** fills it with the chain, its calls and returns.
-- When `rc.conf`'s `firewall_type` names a file of the host's own,
-  **Load the current file** puts that file in the text as kept rules,
-  nothing kept until **Keep**.
+- **Load the current file** puts what the firewall loads now in the
+  text as kept rules, nothing kept until **Keep**, read from the host's
+  `rc.conf`, or the jail's own for a jail's firewall (as `sysrc` reads
+  it):
+  - the script `firewall_script` names, when it is one of your own and
+    not `/etc/rc.firewall`: its `ipfw` commands are taken out of it,
+    whether written as `ipfw`, its path or a variable holding it
+    (`${fwcmd} add …`), their options off, a line continued with `\`
+    joined and the shell's quoting taken off; the shell's own lines
+    (variables, `if`, `fi`) are left in as comments;
+  - else the file `firewall_type` names.
+
+  What applying does itself (`flush`, `set`, `delete`) is left in as
+  a comment.
 - **What Apply would change** sets the kept rules beside the kernel's:
   the rules Apply would add, those it would remove, and those whose
   words differ.
