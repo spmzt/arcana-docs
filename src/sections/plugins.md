@@ -50,6 +50,13 @@ handshake, traffic.
   once, with **Copy**, **Download** (`<name>.conf`) and a QR code the
   WireGuard app scans (*Add a tunnel*, *Scan from QR code*). Closed,
   it is gone: a lost one is a client made again, the old peer removed.
+  **With a preshared key** (on by default) adds a second secret the
+  console makes with the key pair: in the client's configuration as
+  `PresharedKey`, and given to the host's `wg` in a file there only
+  while it is read, in no title, argument or trace.
+- **↻** on a peer gives that client a new key: the same form, its
+  addresses and keepalive kept, a new configuration and QR code; the
+  new peer is added, then the old key's taken away.
 
 Kept for a boot, an interface is written with its key, addresses and
 peers to `/usr/local/etc/wireguard/<if>.conf` for `wg-quick`, readable
