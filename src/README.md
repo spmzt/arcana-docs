@@ -14,7 +14,7 @@ changes it, by the base system's own tools, each change a job that the
 host finishes even when the console is cut off, with a trace of every
 call and program it used.
 
-![The fleet, and a task's trace in the activity bar](img/tour-fleet.png)
+![A fleet of three hosts](img/demo-fleet.png)
 
 <div class="cards">
 

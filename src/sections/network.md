@@ -18,6 +18,8 @@ what is kept for a boot is written to `rc.conf` with `sysrc(8)`.
 
 ## Routes
 
+![A host's routes](../img/demo-routes.png)
+
 Each route comes with what the kernel knows of it: its metric, its
 weight, the address it sends from, its routing table. **fib** picks the
 routing table shown and changed, when the host has more than one.

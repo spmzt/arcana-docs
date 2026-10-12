@@ -9,7 +9,7 @@ as a dashed line, the load, what the network received and sent, and
 what the disks read and wrote, each with its average or peak over what
 is shown. A gap in a line is when the host was not sampled.
 
-![Utilization of a host](../img/sec-usage.png)
+![Utilization: three hosts over one another, then each](../img/demo-usage.png)
 
 Under **Network** are the host's interfaces, without the loopback, each
 with what goes over it now: **all** draws them added up, one pressed

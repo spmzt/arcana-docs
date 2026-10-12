@@ -45,6 +45,8 @@ name=value`.
 
 ## Processes
 
+![The processes of a host](../img/demo-processes.png)
+
 What runs on the host, as `top` shows it: each process with its user,
 jail, state, nice value, threads, the memory it holds (Res) and has
 mapped (Size), CPU, WCPU, I/O, the CPU time it has used, and its

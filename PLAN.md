@@ -147,7 +147,9 @@ beside, the SD-WAN and UX tasks as you say.
 
 ## After B-7
 
-- **A demo fleet for the pictures.** The pictures are the browser
+- **A demo fleet for the pictures.** (Done 2026-10-12: tools/demo,
+  the fleet, the map, a host, its routes and processes, utilization.
+  The rest are still the browser test's.) The pictures are the browser
   test's, of a test host (`lab`, `labvm`) with `/tmp/kyua…` sockets in
   the tree, and the map and processes have none, theirs showing the lab
   VM's own addresses. A run of the test against a fleet made for the

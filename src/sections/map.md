@@ -7,6 +7,8 @@ every host's routes of several next hops with what each next hop sent
 and what its gateway received, as a host's [Nexthops](network.md#nexthops-and-their-groups)
 draws them; its third, **Traceroute**, is below.
 
+![The map: three hosts, a shared network, a private link and a tunnel](../img/demo-map.png)
+
 ## Links
 
 A link is drawn only between hosts of this console: a tunnel whose far
