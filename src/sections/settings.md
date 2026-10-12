@@ -34,6 +34,34 @@ on again for this browser. This tab lists the devices told (see
 [Notifications on other devices](panel.md#notifications-on-other-devices))
 and removes one.
 
+### By mail
+
+The console can also mail what happened on the hosts, whether or not a
+page is open. It reads each host's events, and mails:
+
+- **faults** of the chosen severity or worse (Critical, Major, Minor or
+  Warning; *none* for no fault mail), and their clearing;
+- **limits crossed**: a figure of history (CPU, memory, a disk, a
+  jail's) going over its limit, and back under;
+- **jobs**: the failed ones, all of them, or none;
+- **workflow runs**: the failed ones, all of them, or none.
+
+What happens within one read goes out as a single mail, and at most
+twenty mails go out an hour; the rest wait for the next. A host is read
+from its newest event the first time, so nothing from before is
+mailed. **Mail to** takes addresses, a comma between them; empty sends
+no mail. **Send a test mail** says at once whether mail gets through.
+
+![Mail, under Notifications](../img/set-mail.png)
+
+**FreeBSD:** the console's own host sends the mail with
+`sendmail(8) -t`. As FreeBSD comes, that is `mailwrapper(8)` handing it
+to `dma(8)`, the DragonFly Mail Agent, which delivers or relays it as
+`/etc/dma/dma.conf` says (`SMARTHOST`, `PORT`, `SECURETRANSFER`,
+`AUTHPATH`). Arcana sets up no mail server. In `web.conf`, `sendmail`
+names another program, and the `mail_*` keys set what the page starts
+from.
+
 ## API tokens
 
 Read-only tokens for a program to look at the hosts through the API
