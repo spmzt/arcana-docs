@@ -66,6 +66,32 @@ instance per service in its table; DNS filtering is the base system's
 
 </div>
 
+## Before using SD-WAN
+
+SD-WAN is FreeBSD's own, but for a few packages, which each edge needs
+installed **before** a service that uses them is deployed. The apply
+installs nothing: **Before using SD-WAN**, at the top of the Dashboard
+and above Deploy on the Edges tab, lists what the kept services need on
+each edge and whether it is there, with the `pkg install` to run (or a
+button that runs it there as a job), and Deploy waits until nothing is
+missing.
+
+| Package | Is | Needed for |
+|---|---|---|
+| `strongswan` | strongSwan's IKEv2 | a tunnel under IPsec (an underlay with `ipsec`, or a policy that says `encryption`) |
+| `bird3` | BIRD | routing at a UNI (static, BGP, OSPF), BFD, a control plane, a WAN link routed on its underlay |
+| `wireguard-tools` | `wg(8)` | a WireGuard tunnel or a remote end point; FreeBSD 15 and later have `wg` in the base system |
+| `dnsmasq` | dnsmasq | DHCP at a UNI |
+| `squid` | Squid | a security policy with `url-filter` |
+
+On an edge:
+
+```sh
+pkg install strongswan bird3 dnsmasq squid
+```
+
+or only those the services use there.
+
 ## Where it is in the panel
 
 **SD-WAN**, in the tree, has seven tabs:

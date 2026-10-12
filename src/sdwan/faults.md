@@ -73,11 +73,14 @@ URL filtering needs Squid, a plugin: `pkg install squid` on the edge
 is missing, and says so. Squid also needs a resolver: where the service
 has a DNS filter it is pointed at it, and otherwise at the host's own.
 
-### DHCP at a UNI
+### Deploy says "install what SD-WAN needs on the edges first"
 
-The base system has no DHCP server, so the apply installs `dnsmasq`
-from packages on an edge whose service gives addresses by DHCP, and
-runs an instance of it in the service's table.
+Nothing is installed by the apply. What a service needs on an edge
+that is not FreeBSD's own (strongSwan, BIRD, `wg`, dnsmasq, Squid) is
+listed under **Before using SD-WAN**, on the Dashboard and the Edges
+tab, each edge with what it has; Deploy waits until every edge has
+what it needs, and says which `pkg install` is missing where. See
+[Before using SD-WAN](index.md#before-using-sd-wan).
 
 ### An edge in a vnet jail
 

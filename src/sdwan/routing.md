@@ -66,7 +66,8 @@ entry for the interface in `rtadvd.conf` between arcana's marks, the
 interface on `rtadvd_interfaces`, rtadvd enabled and restarted (the
 `rtadvd` job; `arcanactl rtadvd` by hand). With `dhcp` the edge gives
 the addresses: the base system has no DHCP server, so dnsmasq from
-packages (installed by the apply), an instance of each service on each
+packages (installed on the edge beforehand: see [Before using
+SD-WAN](index.md#before-using-sd-wan)), an instance of each service on each
 edge, run in the service's table by setfib like the BIRD instances,
 checked by `dnsmasq --test` first, its pid and lease files beside the
 agent's kept files, started again at the agent's start (`sdwan-dhcp`;

@@ -30,4 +30,6 @@ This is the map.
 Where Arcana needs something the base system does not have, it says so
 and names the package: BIRD (`bird3`) for BGP, OSPF and BFD, strongSwan
 (`strongswan`) for IKEv2, `wireguard-tools` before FreeBSD 15 (from 15
-on, `wg(8)` is in the base system), Squid (`squid`) for URL filtering.
+on, `wg(8)` is in the base system), dnsmasq (`dnsmasq`) for DHCP at
+an SD-WAN UNI, Squid (`squid`) for URL filtering. Arcana installs none
+of them by itself.
