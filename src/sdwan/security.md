@@ -159,3 +159,44 @@ used: the edge's own address in the service is.
 
 </div>
 
+## Intrusion detection
+
+A security policy with **`ids`** (MEF 88) has the service's traffic
+watched by Suricata at each edge, on the service's UNIs there: what
+the end points send and what comes back to them. Its mode is
+`detect`: what a rule matches is told, and nothing is stopped.
+
+```json
+"ids": {
+  "mode": "detect",
+  "ruleset": true,
+  "rules": [
+    "alert http any any -> any any (msg:\"a request for /attack\"; http.uri; content:\"/attack\"; sid:1000001; rev:1;)"
+  ]
+}
+```
+
+- **`rules`**: Suricata rules of the service's own, one a line; the
+  console asks for an action, options in parentheses and a `sid`, and
+  the edge checks the whole (`suricata -T`) before it runs anything.
+- **`ruleset`**: whether the rules `suricata-update` keeps on the edge
+  (`/var/lib/suricata/rules/suricata.rules`, Emerging Threats Open by
+  default) are added. Fetching and refreshing them is the admin's,
+  like ClamAV's signatures.
+
+The service's UNI subnets are Suricata's `HOME_NET`. Each alert comes
+as an event, `sdwan-ids` (the rule, both ends, the interface, the
+severity), and the Security tab lists each edge's instances with the
+latest alerts, sorted and filtered like every table. A short
+connection is told once Suricata is done with it, seconds after.
+
+Suricata is a plugin, installed by hand on each edge that watches;
+**Before using SD-WAN** lists it.
+
+<div class="freebsd">
+
+**FreeBSD:** Suricata reads the UNIs by libpcap, through `bpf(4)`,
+the way `tcpdump(1)` does; nothing is put in the traffic's path.
+
+</div>
+

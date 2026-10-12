@@ -84,12 +84,14 @@ missing.
 | `dnsmasq` | dnsmasq | DHCP at a UNI |
 | `squid` | Squid | a security policy with `url-filter` or `malware` |
 | `c-icap`, `c-icap-modules`, `clamav` | c-icap and ClamAV, then `freshclam` for its signatures | a security policy with `malware` |
+| `suricata` | Suricata, then `suricata-update` where a policy adds the ruleset | a security policy with `ids` |
 
 On an edge:
 
 ```sh
-pkg install strongswan bird3 dnsmasq squid c-icap c-icap-modules clamav
+pkg install strongswan bird3 dnsmasq squid c-icap c-icap-modules clamav suricata
 freshclam                      # ClamAV's signatures, for malware scanning
+suricata-update                # the ruleset, where a policy's ids adds it
 ```
 
 or only those the services use there.
