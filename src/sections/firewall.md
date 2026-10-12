@@ -51,8 +51,13 @@ both, and deleted the same ways.
 ![A part's rules, one being changed](../img/sec-firewall-part.png)
 
 A rule is pressed to change it in its own row: its number, its words as
-they are kept, now and keep; saved, the old one is deleted where it was
-and the new one added where it is to be. As a rule is typed, the words
+they are kept, now and keep; saved, it is changed as one job: ipfw
+reads the new rule first without doing it (`ipfw -n`), and only then is
+the old one deleted where it was and the new one added where it is to
+be; if ipfw refuses the new one after all, the old one is put back as
+it was. A rule's words go to ipfw without a shell, so an interface's
+pattern is written bare (`via wg[0-1]`, `recv wg*`); quotes around a
+word are taken off. As a rule is typed, the words
 that may come next are offered in ipfw's order: the action, what the
 packet is, `from` and an address (the host's tables among them), `to`,
 and the options. **▲** and **▼** put a number before the rule above or
