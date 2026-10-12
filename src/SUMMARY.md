@@ -34,12 +34,19 @@
 
 # The sections
 
-- [A host's tabs]()
-- [The plugins]()
-- [The network map]()
-- [Utilization]()
-- [Workflows]()
-- [Settings]()
+- [The panel](sections/panel.md)
+- [A host: summary, jails, services](sections/host.md)
+- [Network](sections/network.md)
+- [Firewall](sections/firewall.md)
+- [Packages and jobs](sections/packages-jobs.md)
+- [Storage](sections/storage.md)
+- [Kernel, sysctl and processes](sections/kernel.md)
+- [Log and events](sections/log.md)
+- [The plugins](sections/plugins.md)
+- [The network map](sections/map.md)
+- [Utilization](sections/utilization.md)
+- [Workflows](sections/workflows.md)
+- [Settings](sections/settings.md)
 
 # SD-WAN
 

@@ -20,3 +20,20 @@ m3a-route-form			tour-route-safe
 9c-workflow-queue		tour-queue-workflow
 9b-workflow-run			tour-workflow-run
 m6-fleet			tour-phone-fleet
+
+# The sections (B-3).  The map's pictures are left out: the lab's own
+# interfaces, and their real prefixes, are drawn on it.
+7n-nhgroups			sec-nhgroups
+7p-bridge			sec-bridge
+7h-vnet-give			sec-vnet-give
+7l-snapshots-picked		sec-snapshots
+7i-kernel			sec-kernel
+7o-firewall-part		sec-firewall-part
+7o-firewall-trace		sec-firewall-trace
+7c-wireguard			sec-wireguard
+7e-ipsec			sec-ipsec
+7d-bird				sec-bird
+7t-usage			sec-usage
+7t-usage-sampling		sec-usage-sampling
+9a-workflow-edit		sec-workflow-edit
+0b-token			sec-settings-tokens

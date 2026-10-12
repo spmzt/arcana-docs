@@ -1,0 +1,49 @@
+# Packages and jobs
+
+## Packages
+
+Of the host or a running jail. **Installed**, at first, lists what is
+installed, from the host's own database without asking the repository:
+each package's version, whether it was asked for by hand or came
+automatically as what another needs, its size, its port and what it is.
+
+![Installed packages](../img/tour-packages.png)
+
+- **Upgrades** asks the repository what is newer, with **Check** (`pkg
+  update` first), a dry run, and **Upgrade** of the selected packages
+  or of all.
+- **IPv4** or **IPv6** has `pkg` reach the repository over that only
+  (`pkg -4`, `pkg -6`), kept in the browser; **either** lets it choose.
+- **Clean** deletes the downloaded packages no longer needed, or no
+  longer in the repository (`pkg clean`), **Clean all** the whole cache
+  (`pkg clean -a`). **Clean the jails**, on the host's page, does it in
+  every running jail at once, a job each, so a jail whose `pkg` refuses
+  fails alone.
+- **Install…** installs packages by name, on the host or in the jail
+  picked (`pkg install -y`).
+
+When `pkg` refuses packages built for a newer FreeBSD than the host's
+(OSVERSION), the console asks whether to go on anyway, and approved,
+does it again with `IGNORE_OSVERSION=yes`.
+
+From a shell: `arcanactl packages [-i] [-4 | -6] [jail]`, `pkg-upgrade
+[-O] …`, `pkg-clean [-a] [-j jail | -J]`, `pkg-install [-O] [-4 | -6]
+[-j jail] package …`.
+
+## Jobs
+
+The host's own record of what it was asked to change, by this console
+or with `arcanactl -q`: the last 64, forgotten when the agent restarts.
+A row opens its trace. Above the list it says what the agent is doing
+now that is not a job, a request somebody waits for such as a check of
+the packages, since when, and whether the agent was told to stop and
+waits for it.
+
+![A host's jobs](../img/tour-jobs.png)
+
+<div class="freebsd">
+
+**FreeBSD:** `pkg(8)`, for a jail with `pkg -j`; a job is the agent's
+own, run by a thread of it and kept in its memory.
+
+</div>

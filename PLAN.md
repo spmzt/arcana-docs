@@ -118,7 +118,7 @@ CI; nothing of it is needed on the VM or a host to build Arcana.
 - **B-2 The tour.** (Done 2026-10-12.) `tools/shots.sh` with the named list; part 3
   written from the browser test's path through the panel, a picture
   a step. Done when every step shows its picture.
-- **B-3 The sections.** Part 4 from USING.md, re-cut per tab with
+- **B-3 The sections.** (Done 2026-10-12.) Part 4 from USING.md, re-cut per tab with
   pictures; USING.md in arcana made a pointer to the book.
 - **B-4 SD-WAN.** Part 5, with the lab's own screenshots and the
   example document walked through.
