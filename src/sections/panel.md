@@ -137,7 +137,10 @@ itself.
 Every table sorts by the column picked (numbers as numbers, whether
 they came as numbers or as text) and is narrowed by the filter above
 it. A column is as wide as its border is dragged in the head; a double
-click on a border fits it to what is in it again. A box with a mark
+click on a border fits it to what is in it again. **⤓** at the right of
+a table's head saves its rows as CSV, as they are shown (filtered and
+in their order), without the buttons, the file named after the heading
+it is under. A box with a mark
 before its name (a bridge, how a host is reached) folds when its head
 is pressed, and stays as it was left.
 
