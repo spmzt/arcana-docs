@@ -57,7 +57,7 @@
 - [Probes, rules and steering](sdwan/steering.md)
 - [Breakout, bandwidth and egress](sdwan/traffic.md)
 - [Routing and addresses at the UNIs](sdwan/routing.md)
-- [Security: MEF 88 and access by identity](sdwan/security.md)
+- [Security: MEF 88, access by identity, zero trust](sdwan/security.md)
 - [Mplify 119](sdwan/mplify.md)
 - [Faults and troubleshooting](sdwan/faults.md)
 

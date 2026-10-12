@@ -250,3 +250,39 @@ the way `tcpdump(1)` does; nothing is put in the traffic's path.
 
 </div>
 
+## Zero trust
+
+The Security tab opens with the service in the terms of MEF 118.1, the
+Zero Trust Framework for MEF Services: Subject Actors reach Target
+Actors only as a Policy Allows, and with no Policy they are Blocked.
+
+| MEF 118.1 | In Arcana |
+|---|---|
+| Subject Actor | a zone's hosts, and the identities whose Role is the zone |
+| Target Actor | the zones a policy allows, and the Internet where it breaks out |
+| Access Control Policy, Policy Action | the policy map: a zone and an application flow to a policy (Allow), or to `Block`, or to nothing (Block) |
+| Identity Provider, Authentication | the console: an identity is known by its WireGuard key |
+| Role | an identity's zone |
+| Policy Administration, Decision and Information Points | the console: its document, its plan, its identities, sessions and lists |
+| Policy End Point, Policy Enforcement Point | each edge: ipfw, and the functions it runs |
+| Session | an identity's WireGuard session (the Identities tab) |
+| Continuous Monitoring | by time, a remote end point's re-authorisation interval; by event, the record, Suricata's alerts and the faults |
+| System Administrator | the console's users, each by a security key |
+
+### Audit Events
+
+The console keeps an Audit Event for each Policy Action it applies or
+sees applied, and for each change to the Policies: an identity issued
+(Allow) or revoked (Block), an identity's re-authorisation running out
+(Block, by time), the document kept and applied (Administer). Each
+says what MEF 118.1 asks: the Policy, how, where, who (the security
+key that did it), the event, the action, why and when.
+
+The trail is kept in the console's data directory, one event a line.
+Each line carries an HMAC-SHA256, under a key of the console's own
+that no reader is given, of the line before's and its own, so a line
+changed, taken away or put in breaks the chain from there. The tab
+says whether the chain is intact and where it broke, and offers it
+as CSV (`/api/sdwan/audit.csv`). What the edges deny is in the record
+beside it.
+
