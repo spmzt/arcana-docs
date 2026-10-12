@@ -41,6 +41,7 @@
 - [Packages and jobs](sections/packages-jobs.md)
 - [Storage](sections/storage.md)
 - [Kernel, sysctl and processes](sections/kernel.md)
+- [Certificates](sections/certificates.md)
 - [Log and events](sections/log.md)
 - [The plugins](sections/plugins.md)
 - [The network map](sections/map.md)
