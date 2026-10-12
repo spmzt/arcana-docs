@@ -163,8 +163,12 @@ used: the edge's own address in the service is.
 
 A security policy with **`ids`** (MEF 88) has the service's traffic
 watched by Suricata at each edge, on the service's UNIs there: what
-the end points send and what comes back to them. Its mode is
-`detect`: what a rule matches is told, and nothing is stopped.
+the end points send and what comes back to them. Its mode is one of:
+
+- **`detect`**: Suricata reads the UNIs beside the traffic; what a rule
+  matches is told, and nothing is stopped.
+- **`prevent`**: Suricata is in the traffic's way; what a `drop` rule
+  matches does not pass, and is told with `"action": "blocked"`.
 
 ```json
 "ids": {
@@ -192,6 +196,40 @@ connection is told once Suricata is done with it, seconds after.
 
 Suricata is a plugin, installed by hand on each edge that watches;
 **Before using SD-WAN** lists it.
+
+### Prevention
+
+Where a policy says `prevent`, ipfw hands the service's IPv4 at each
+UNI to its Suricata before anything else: what comes in at the UNI,
+and what comes in elsewhere (a tunnel) for the UNI's subnet. Suricata
+gives back what its rules let by, and the next rules put it back in
+the service's routing table. The rules are one before the service's
+own (number 9), in the same ipfw set.
+
+It **fails closed**. While a Suricata that prevents is not running,
+what is diverted to it goes nowhere: its UNIs pass nothing. The edge
+says so as a Critical fault (`ids`) until Suricata runs again, and the
+apply starts Suricata before the divert rules come and takes them away
+before it stops it.
+
+What it does not see:
+
+- **IPv6** is not diverted, so it passes without inspection where the
+  service prevents; detect still sees it.
+- What comes back from **local breakout** reaches the UNI's subnet only
+  after NAT, past the divert, so it is not inspected either.
+
+<div class="freebsd">
+
+**FreeBSD:** `divert(4)` (load `ipdivert.ko`, or `ipdivert_load="YES"`
+in `loader.conf`). A packet given back through a divert socket is
+routed in table 0, since a `PF_DIVERT` socket has no routing table of
+its own and takes no `SO_SETFIB`. A packet given back on its way out
+would be routed there before ipfw saw it again, so Arcana takes both
+directions as they come in and sets the table again with `setfib`.
+ipfw takes up again at the next rule number after a `divert`.
+
+</div>
 
 <div class="freebsd">
 
