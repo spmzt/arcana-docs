@@ -80,6 +80,42 @@ as `jail(8)` reads it; and its history.
 A jail with a network of its own (vnet) has **Open it in the Network
 tab**: see [A jail's own network](network.md#a-jails-own-network).
 
+### Jails made from here
+
+The jails list has **+ jail**, **Defaults** and **Templates**, for jails
+kept the way one keeps them by hand:
+
+- **Defaults** writes `/etc/jail.conf`, what every jail includes: its
+  path (`/usr/jails/${name}`), host name in your domain
+  (`${name}.example.org`) and domain, `exec.start`, `exec.stop`,
+  `exec.consolelog`, `exec.clean` and `mount.devfs`, and any more
+  lines. The file there before is kept beside it as `.arcana.bak`, and
+  put back if jail(8) does not take the new one.
+- **Templates** are lines a jail's block takes, kept beside the jails as
+  `/etc/jail.conf.d/<name>.inc` (outside rc.d/jail's `*.conf`), such as
+  a certbot one's `exec.created +=` and `exec.poststop +=`. Changed, every
+  jail that includes one is read back with it; one a jail includes is
+  not taken away.
+- **+ jail** makes a jail of its own file, `/etc/jail.conf.d/<name>.conf`,
+  which includes the defaults and holds the jail's block:
+  `devfs_ruleset`, `sysvsem`, `sysvshm` and `sysvmsg = new`,
+  `allow.raw_sockets`, its addresses as `ip4.addr = "bridge0|172.23.1.43"`
+  and `ip6.addr = "bridge0.20|2001:db8::443"` (an interface and an
+  address a line), the templates it includes, and more lines. Its ZFS
+  dataset is made from a base jail's snapshot, as the base's sibling
+  (`<pool>/jails/<name>`) unless named, by `zfs clone` (quick, tied to
+  the snapshot) or `zfs send | zfs recv` (a copy of its own), and
+  mounted at the jail's path. The host reads the file back with
+  `jail -e` before it keeps it: it must define that jail and no other,
+  at that path. It is started when asked. What fails undoes what was
+  done.
+- In **Templates**, × on a jail takes it away: stopped, its file kept
+  beside as `.arcana.bak` and removed; its dataset destroyed only when
+  named, and only when it is mounted at the jail's path.
+
+Each is a job, `jail-conf`, in the queue and in workflows
+(`arcanactl jailconf` too).
+
 ## Services
 
 The `rc.d` scripts, enabled or not, running or not, with **Start**,
