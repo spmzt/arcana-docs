@@ -4,3 +4,4 @@
 /arcana
 # Made from Arcana's tree by tools/gen.sh at every build, never kept.
 /src/reference/
+__pycache__/
