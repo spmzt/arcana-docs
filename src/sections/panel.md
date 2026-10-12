@@ -160,4 +160,10 @@ rules. On the network map the tools are one line along the top and the
 legend one along the foot, and **Arrange** puts the hosts on a tall
 ellipse the screen holds.
 
+<div class="phones">
+
 ![The fleet on a phone](../img/tour-phone-fleet.png)
+![The tree, a drawer from the left](../img/phone-tree.png)
+![A table on a phone: a card for each row](../img/phone-identities.png)
+
+</div>

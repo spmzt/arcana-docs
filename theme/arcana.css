@@ -1,6 +1,104 @@
-/* What the book adds to mdBook's own themes. */
+/*
+ * What the book adds to mdBook's look: the console's own colours,
+ * Graphite for the dark theme (mdBook's "navy") and Paper for the light
+ * one, and its fixed face for what is read character by character.
+ * JetBrains Mono is under the SIL Open Font License, src/fonts.
+ */
+@font-face {
+	font-family: "JetBrains Mono";
+	font-weight: 400;
+	font-display: swap;
+	src: url("../fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+	font-family: "JetBrains Mono";
+	font-weight: 700;
+	font-display: swap;
+	src: url("../fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2");
+}
+:root { --mono-font: "JetBrains Mono", ui-monospace, monospace; }
+code, pre, .hljs { font-family: var(--mono-font); }
+
+/* Graphite: surfaces of one hue, one blue for what can be acted on. */
+html.navy {
+	--bg: #0f1216;
+	--fg: #e6e9ef;
+	--sidebar-bg: #161b21;
+	--sidebar-fg: #a7afbd;
+	--sidebar-non-existant: #5b6372;
+	--sidebar-active: #4c8dff;
+	--sidebar-spacer: #232a33;
+	--scrollbar: #2c3440;
+	--icons: #747d8d;
+	--icons-hover: #e6e9ef;
+	--links: #4c8dff;
+	--inline-code-color: #e6e9ef;
+	--theme-popup-bg: #161b21;
+	--theme-popup-border: #2c3440;
+	--theme-hover: #1d232b;
+	--quote-bg: #161b21;
+	--quote-border: #2c3440;
+	--table-border-color: #232a33;
+	--table-header-bg: #1d232b;
+	--table-alternate-bg: #13171c;
+	--searchbar-border-color: #2c3440;
+	--searchbar-bg: #161b21;
+	--searchbar-fg: #e6e9ef;
+	--searchbar-shadow-color: #000;
+	--searchresults-header-fg: #a7afbd;
+	--searchresults-border-color: #2c3440;
+	--searchresults-li-bg: #161b21;
+	--search-mark-bg: #e3a33a;
+	--freebsd: #f05d5e;
+}
+html.navy code:not(pre code) { background: #1d232b; }
+html.navy pre, html.navy .hljs { background: #13171c; }
+
+/* Paper: the light one, the same drawing in its colours. */
+html.light {
+	--bg: #f3f5f7;
+	--fg: #14202b;
+	--sidebar-bg: #e9edf1;
+	--sidebar-fg: #3d4c5a;
+	--sidebar-non-existant: #9aa6b2;
+	--sidebar-active: #006e9c;
+	--sidebar-spacer: #d5dbe1;
+	--links: #006e9c;
+	--inline-code-color: #14202b;
+	--quote-bg: #e9edf1;
+	--quote-border: #d5dbe1;
+	--table-border-color: #d5dbe1;
+	--table-header-bg: #e3e8ed;
+	--table-alternate-bg: #edf0f3;
+	--freebsd: #c4183c;
+}
+html.light code:not(pre code) { background: #e3e8ed; }
+
+/* Every page names the Arcana it describes. */
 .built-from { margin-top: 3em; font-size: .85em; opacity: .7; }
+
 /* Which FreeBSD piece does the work, beside what Arcana does with it. */
-.freebsd { border-left: 3px solid #ab2b28; padding: .2em .9em; margin: 1em 0; }
-/* A phone's screenshot at about a phone's size, not the page's width. */
-img[src*="phone"], img[src*="route-safe"] { max-width: 360px; display: block; margin: 1em auto; }
+.freebsd { border-left: 3px solid var(--freebsd, #ab2b28); padding: .2em .9em;
+	margin: 1em 0; background: var(--quote-bg); border-radius: 0 6px 6px 0; }
+
+/* Pictures: a border, and a phone's at about a phone's size. */
+main img { border: 1px solid var(--table-border-color); border-radius: 8px; }
+img[src*="phone"], img[src*="route-safe"] { max-width: 360px; display: block;
+	margin: 1em auto; }
+.phones { display: flex; flex-wrap: wrap; gap: 1em; justify-content: center; }
+.phones img { max-width: 240px; margin: 0; }
+
+/* The landing page. */
+.hero { text-align: center; margin: 1em 0 2em; }
+.hero h1 { font-size: 2.6em; margin-bottom: .1em; letter-spacing: .02em; }
+.hero p.tag { font-size: 1.2em; opacity: .8; margin-top: 0; }
+.cards > p { margin: 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(14em, 1fr));
+	gap: 1em; margin: 1.5em 0; }
+.cards a { display: block; padding: 1em 1.1em; border: 1px solid
+	var(--table-border-color); border-radius: 10px; background: var(--quote-bg);
+	color: var(--fg); text-decoration: none; }
+.cards a:hover { border-color: var(--links); }
+.content .cards a, .content .cards a:hover { color: var(--fg); text-decoration: none; }
+.content .cards a strong { color: var(--links); }
+.cards a strong { display: block; color: var(--links); margin-bottom: .3em; }

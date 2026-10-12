@@ -127,7 +127,7 @@ CI; nothing of it is needed on the VM or a host to build Arcana.
   part 6.
 - **B-6 Under the hood, operations, development.** (Done 2026-10-12.) Parts 7 to 9 from
   the existing docs, re-cut.
-- **B-7 Polish.** A landing page; the book's theme matched to the
+- **B-7 Polish.** (Done 2026-10-12, but for the demo fleet: see below.) A landing page; the book's theme matched to the
   console's Graphite; the phone screenshots beside the desktop ones;
   a printable PDF of the whole (mdbook-pdf) attached to releases.
 
@@ -144,3 +144,13 @@ beside, the SD-WAN and UX tasks as you say.
 - USING.md's content moved to the book; the developer's pages stay in
   arcana and are included by the book from its checkout.
 - The Pages setting on arcana-docs, and the site public.
+
+## After B-7
+
+- **A demo fleet for the pictures.** The pictures are the browser
+  test's, of a test host (`lab`, `labvm`) with `/tmp/kyua…` sockets in
+  the tree, and the map and processes have none, theirs showing the lab
+  VM's own addresses. A run of the test against a fleet made for the
+  pictures (named hosts, documentation addresses) would make them all.
+- **The PDF** is made by headless Chrome from mdBook's print page at
+  every deploy, `arcana.pdf` beside the book; mdbook-pdf is not used.

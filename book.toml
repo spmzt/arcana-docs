@@ -13,8 +13,9 @@ create-missing = false
 site-url = "/arcana-docs/"
 git-repository-url = "https://github.com/spmzt/arcana-docs"
 edit-url-template = "https://github.com/spmzt/arcana-docs/edit/main/{path}"
-default-theme = "light"
+default-theme = "navy"
 preferred-dark-theme = "navy"
+fold = { enable = true, level = 1 }
 additional-js = ["theme/footer.js"]
 additional-css = ["theme/arcana.css"]
 

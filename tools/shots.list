@@ -51,3 +51,8 @@ m6-fleet			tour-phone-fleet
 9-sdwan-security		sd-security
 9-sdwan-identities		sd-identities
 9-sdwan-paths			sd-paths-error
+
+# On a phone (B-7), beside the desktop ones.
+m5a-tree			phone-tree
+m8-settings			phone-settings
+m12-sdwan			phone-identities

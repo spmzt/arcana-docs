@@ -57,6 +57,13 @@ jobs:
       - name: Build
         run: mdbook build
 
+      - name: The whole book as one PDF
+        run: |
+          google-chrome --headless=new --no-sandbox --disable-gpu \
+              --no-pdf-header-footer --virtual-time-budget=20000 \
+              --print-to-pdf=book/arcana.pdf "file://$PWD/book/print.html"
+          ls -l book/arcana.pdf
+
       - name: Links
         uses: lycheeverse/lychee-action@v2
         with:
