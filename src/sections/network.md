@@ -150,6 +150,14 @@ incomplete, or permanent for one set by hand) and whether it is a
 router. All three are read again every two seconds while they are shown
 and **Live** is lit.
 
+**+ neighbour** sets one by hand, with `arp -s` or `ndp -s`: its
+address, on one of the networks here, and its link address; it stays
+(permanent) unless **It ages out** (`temp`). **Keep it for a boot**
+writes it as a pair of `rc.conf`'s `static_arp_pairs` or
+`static_ndp_pairs`, which `rc.d/static_arp` and `static_ndp` set at
+boot. **×** on a row takes one away (`arp -d`, `ndp -d`), and out of
+`rc.conf` too. In a jail's own network they are the jail's.
+
 ## A jail's own network
 
 A jail with a network of its own (vnet) has that network here, and in
