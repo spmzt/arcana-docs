@@ -126,3 +126,36 @@ and the peer is removed until the identity is issued again. `GET`,
 **session** is its peer as the edge's `wg(8)` tells it, read from the
 edge with the list: the last handshake, the bytes each way and where
 it came from; none when the edge has no peer for it yet.
+
+## Malware
+
+A security policy with **`malware`** (MEF 88) has what comes back to
+the service's hosts scanned: over HTTP, and over TLS where the URL
+filter opens it (mode inspect). The service's Squid, made for it if no
+URL filter made it already, hands each response by ICAP to a c-icap of
+the service's own, which scans it with ClamAV and refuses what is
+infected: the client gets 403 Forbidden, and c-icap's log names what was
+found.
+
+c-icap listens on the edge's own address in the service, where Squid
+reaches it, at a port of the service's (1344 and ten for each routing
+table), and takes that address alone: a host of the service asking it
+directly is refused. It runs in the service's table, started before the
+service's Squid and stopped with it; the `sdwan` read says whether it
+runs (`proxy[].icap`).
+
+c-icap, its ClamAV module (`c-icap-modules`) and ClamAV with its
+signatures are plugins, installed by hand on each edge that scans,
+never by Arcana; the agent says which is missing, and **Before using
+SD-WAN** lists them. Keep the signatures fresh with `freshclam`
+(`freshclam_enable` in `rc.conf`).
+
+<div class="freebsd">
+
+**FreeBSD:** the scanner runs with `setfib(1)` in the service's table;
+with `net.inet.tcp.bind_all_fibs` at 0, a socket in that table binds
+only the table's addresses, so the loopback (the host's table) is not
+used: the edge's own address in the service is.
+
+</div>
+

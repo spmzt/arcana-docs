@@ -82,12 +82,14 @@ missing.
 | `bird3` | BIRD | routing at a UNI (static, BGP, OSPF), BFD, a control plane, a WAN link routed on its underlay |
 | `wireguard-tools` | `wg(8)` | a WireGuard tunnel or a remote end point; FreeBSD 15 and later have `wg` in the base system |
 | `dnsmasq` | dnsmasq | DHCP at a UNI |
-| `squid` | Squid | a security policy with `url-filter` |
+| `squid` | Squid | a security policy with `url-filter` or `malware` |
+| `c-icap`, `c-icap-modules`, `clamav` | c-icap and ClamAV, then `freshclam` for its signatures | a security policy with `malware` |
 
 On an edge:
 
 ```sh
-pkg install strongswan bird3 dnsmasq squid
+pkg install strongswan bird3 dnsmasq squid c-icap c-icap-modules clamav
+freshclam                      # ClamAV's signatures, for malware scanning
 ```
 
 or only those the services use there.
