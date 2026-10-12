@@ -21,6 +21,24 @@ The tree, the activity bar, the list of tasks in it and the service
 drawer are resized by dragging their edge; the browser keeps the sizes,
 and a double click on the edge goes back to the usual one.
 
+## The address
+
+The address in the browser's bar names what is shown, so a link, a
+bookmark, a reload or the browser's back and forward land there:
+
+| Address | Shows |
+|---|---|
+| `#/` | the fleet |
+| `#/hosts/<id>` | a host's summary |
+| `#/hosts/<id>/<tab>` | its tab: `jails`, `services`, `network`, `firewall`, `packages`, `storage`, `kernel`, `sysctl`, `processes`, `log`, `jobs` |
+| `#/hosts/<id>/jails/<name>` | a jail |
+| `#/network`, `#/usage`, `#/workflows`, `#/sdwan`, `#/api` | the fleet's own pages |
+| `#/settings/<tab>` | a tab of Settings |
+
+`<id>` is the host's id in `/api/servers`. Opened at one before signing
+in, the console goes there after. A host that is no longer there gives
+the fleet. Each change is a new entry in the browser's history.
+
 ## The console's own host
 
 The first host is the machine the console runs on. Arcana installs the
