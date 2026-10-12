@@ -125,7 +125,7 @@ CI; nothing of it is needed on the VM or a host to build Arcana.
 - **B-5 The generated references.** (Done 2026-10-12.) `tools/gen.sh` for the API, the
   CLI and the schema, run at every build from arcana's checkout;
   part 6.
-- **B-6 Under the hood, operations, development.** Parts 7 to 9 from
+- **B-6 Under the hood, operations, development.** (Done 2026-10-12.) Parts 7 to 9 from
   the existing docs, re-cut.
 - **B-7 Polish.** A landing page; the book's theme matched to the
   console's Graphite; the phone screenshots beside the desktop ones;

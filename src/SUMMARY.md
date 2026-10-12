@@ -70,15 +70,16 @@
 
 # Under the hood
 
-- [Architecture]()
+- [Architecture](hood/architecture.md)
+- [The seven Archives](hood/archives.md)
 
 # Operations
 
-- [Backups and moving a console]()
+- [Running a console](ops/index.md)
 
 # Development
 
-- [Building and testing]()
+- [Building and testing](dev/index.md)
 
 # Appendix
 
@@ -88,4 +89,4 @@
   - [arcana-console(8)](reference/arcana-console.md)
   - [arcana-enrol(8)](reference/arcana-enrol.md)
   - [jailconf(8)](reference/jailconf.md)
-- [Glossary]()
+- [Glossary](glossary.md)
