@@ -7,7 +7,8 @@ makes. This chapter is about what stays the same wherever you are.
 
 ## The tree
 
-The tree holds the fleet's own pages (**All hosts**, **Network**,
+The tree holds the fleet's own pages (**All hosts**, **Devices**,
+**Network**,
 **Utilization**, **Workflows**, **SD-WAN**), then every host with its
 jails, and **Settings** at its foot. **Enrol a host** and **Add a
 server** are the two icons at its top.
@@ -53,6 +54,14 @@ That host wears a **console's host** label in the tree and on its page:
 besides what every agent does, it builds `arcana-agent` from the
 repository for every host (**Build agent here**), and **Update
 console** builds and installs the console itself there.
+
+## Devices
+
+**Devices** is the hosts as a table: each its name and address, its
+state, its agent's version, the release of FreeBSD it runs, its jails
+running and known, and its CPU, memory and ZFS use now. It sorts by any
+column and is narrowed by the filter, like every table; a row opens its
+host.
 
 ## All hosts
 
