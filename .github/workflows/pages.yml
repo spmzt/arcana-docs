@@ -49,6 +49,11 @@ jobs:
           sed -i "s/@ARCANA_COMMIT@/${commit}/" theme/footer.js
           echo "Arcana at ${commit}" >> "$GITHUB_STEP_SUMMARY"
 
+      - name: The chapters made from Arcana's tree
+        run: |
+          sudo apt-get install -y -qq mandoc > /dev/null
+          tools/gen.sh
+
       - name: Build
         run: mdbook build
 

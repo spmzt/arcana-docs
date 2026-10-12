@@ -122,7 +122,7 @@ CI; nothing of it is needed on the VM or a host to build Arcana.
   pictures; USING.md in arcana made a pointer to the book.
 - **B-4 SD-WAN.** (Done 2026-10-12.) Part 5, with the lab's own screenshots and the
   example document walked through.
-- **B-5 The generated references.** `tools/gen.sh` for the API, the
+- **B-5 The generated references.** (Done 2026-10-12.) `tools/gen.sh` for the API, the
   CLI and the schema, run at every build from arcana's checkout;
   part 6.
 - **B-6 Under the hood, operations, development.** Parts 7 to 9 from

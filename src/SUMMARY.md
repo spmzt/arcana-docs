@@ -63,9 +63,10 @@
 
 # Automation
 
-- [Jobs and the queue]()
-- [The HTTP API]()
-- [arcanactl]()
+- [Jobs and the queue](automation/jobs.md)
+- [The HTTP API](reference/api.md)
+- [arcanactl](reference/arcanactl.md)
+- [cblink in a page](automation/cblink.md)
 
 # Under the hood
 
@@ -81,4 +82,10 @@
 
 # Appendix
 
+- [The agent's protocol](reference/schema.md)
+- [Manual pages]()
+  - [arcana-agent(8)](reference/arcana-agent.md)
+  - [arcana-console(8)](reference/arcana-console.md)
+  - [arcana-enrol(8)](reference/arcana-enrol.md)
+  - [jailconf(8)](reference/jailconf.md)
 - [Glossary]()
