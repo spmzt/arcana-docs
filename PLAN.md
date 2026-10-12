@@ -110,12 +110,12 @@ CI; nothing of it is needed on the VM or a host to build Arcana.
 
 ## The tasks
 
-- **B-1 The skeleton and the first deploy.** In arcana-docs:
+- **B-1 The skeleton and the first deploy.** (Done 2026-10-12.) In arcana-docs:
   book.toml, SUMMARY.md, parts 1 and 2 written, the workflow with the
   checkout of arcana, the daily build and the link check (lychee); the Pages
   setting. In arcana: README pointing to the book. Done when the URL
   serves the two parts.
-- **B-2 The tour.** `tools/shots.sh` with the named list; part 3
+- **B-2 The tour.** (Done 2026-10-12.) `tools/shots.sh` with the named list; part 3
   written from the browser test's path through the panel, a picture
   a step. Done when every step shows its picture.
 - **B-3 The sections.** Part 4 from USING.md, re-cut per tab with

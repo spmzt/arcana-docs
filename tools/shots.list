@@ -1,0 +1,22 @@
+# The screenshots the book shows, by the names Arcana's browser test
+# gives them (pwa_test.c, shot("…")), each with the name it has in
+# src/img/.  A picture showing a real host's addresses is never listed:
+# the test runs on the lab VM, whose own interfaces are real.
+#
+# test name			book name
+2-fleet				tour-fleet
+1-host-summary			tour-host
+3-jails-and-workflow		tour-jails-activity
+4-jail-page			tour-jail
+3b-step				tour-step
+6-services			tour-services
+7b-netgraph			tour-netgraph
+m3a-route-form			tour-route-safe
+7o-firewall-layout		tour-firewall
+6b-installed			tour-packages
+7j-storage-pools		tour-storage
+7s-log				tour-log
+5-jobs				tour-jobs
+9c-workflow-queue		tour-queue-workflow
+9b-workflow-run			tour-workflow-run
+m6-fleet			tour-phone-fleet

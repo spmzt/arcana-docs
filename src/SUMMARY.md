@@ -22,7 +22,15 @@
 
 # The first hour
 
-- [A tour of the panel]()
+- [A tour of the panel](tour/index.md)
+  - [The fleet and a host](tour/fleet.md)
+  - [Jails](tour/jails.md)
+  - [Services](tour/services.md)
+  - [The network, in safe mode](tour/network.md)
+  - [The firewall](tour/firewall.md)
+  - [Packages, storage and the log](tour/host-more.md)
+  - [Jobs, the queue and a workflow](tour/jobs.md)
+  - [On a phone](tour/phone.md)
 
 # The sections
 
