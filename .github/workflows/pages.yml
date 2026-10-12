@@ -55,7 +55,8 @@ jobs:
       - name: Links
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --offline --no-progress --include-fragments book
+          # The 404 page links to the site's root, which local files lack.
+          args: --offline --no-progress --include-fragments --exclude-path book/404.html book
           fail: true
 
       - uses: actions/upload-pages-artifact@v4
