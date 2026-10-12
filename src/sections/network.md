@@ -158,6 +158,37 @@ writes it as a pair of `rc.conf`'s `static_arp_pairs` or
 boot. **×** on a row takes one away (`arp -d`, `ndp -d`), and out of
 `rc.conf` too. In a jail's own network they are the jail's.
 
+## Span: traffic mirrored, and taken
+
+**Span** puts traffic where it can be seen, and takes it:
+
+- **Span ports.** A bridge's span port gets a copy of every frame the
+  bridge carries, for a sniffer or an IDS at its other end. **Mirror**
+  makes an interface one (`ifconfig bridge0 span em2`, kept in
+  `rc.conf` with **keep**), and **×** stops it.
+- **Mirror rules.** An ipfw rule with `log logdst bpf` has a `bpf(4)`
+  tap of its own, named `ipfw` and the rule's number (`ipfw150`), which
+  carries what the rule matches. **Mirror** adds `count log logdst bpf`
+  with the protocol, addresses, port and interface given: the packets
+  are counted, mirrored and passed on to the next rules. Every rule
+  with a tap is listed, those made elsewhere too (any `log` rule has
+  one while `net.inet.ip.fw.verbose` is 0).
+- **Capture.** Packets are taken with `tcpdump(1)` on the host, from
+  an interface, a span port or a tap, through a `pcap-filter(7)`
+  filter, for a number of packets (500 at most) or seconds (60 at
+  most), whichever ends first. They are shown one a line, and **Save
+  the pcap** saves them for Wireshark or `tcpdump -r`. While tcpdump
+  writes the file, it is in a directory under `/tmp` that only root
+  can read, and it is removed afterwards.
+
+![Span: ports, mirror rules, capture](../img/sec-span.png)
+
+**FreeBSD:** a tap per rule is FreeBSD 16's; `tcpdump -D` lists the
+sources there are. Capturing in a jail's own network needs `bpf(4)`
+inside the jail: its devfs ruleset has to unhide it. Since a capture
+shows what was on the wire, a read-only API token cannot make one;
+only a signed-in session can.
+
 ## A jail's own network
 
 A jail with a network of its own (vnet) has that network here, and in
