@@ -36,7 +36,7 @@ Apply is). `ipfw` must be in the kernel; Arcana does not load it.
 **FreeBSD:** `ipfw(8)` and its sets: the kept rules are loaded into set
 1 while it is disabled, and set 1 is swapped with set 0, so no packet
 meets half a ruleset. Tables, in-kernel NAT and NAT64, `dummynet(4)`
-pipes and queues are ipfw's own; a packet is followed with `dtrace(1)`
+pipes and queues are ipfw's own (dummynet's, under QoS); a packet is followed with `dtrace(1)`
 and ipfw's `rule-matched` probe.
 
 </div>
@@ -124,21 +124,44 @@ some seconds, the packets to or from the address that really cross the
 firewall, each with the rule that decided it and what it decided, its
 interface and direction. The host needs DTrace (`kldload dtraceall`).
 
-## Tables, NAT and pipes
+## Tables and NAT
 
 **Tables** lists each table with its type and what is in it: an entry
 is added and taken out, a table created and destroyed.
 
-**NAT and pipes** shows the NAT instances and `dummynet`'s pipes. A NAT
-instance is asked for by what it is: its number, the interface or
-address it hides behind, its options (same ports, private only, reset,
-deny in, log) and the ports it forwards, one a line (`tcp 10.0.0.5:80
-8080`); a pipe by its number, bandwidth, delay, loss in percent, queue
-and whether each source or destination address has a pipe of its own.
-One line more makes, changes or deletes anything else (NAT64, NPTv6, a
-queue, a scheduler) in ipfw's own words. With **keep**, what is done to
-a table or an instance is also a line at the head of the kept rules,
-and what undoes it takes its lines out again.
+**NAT** shows the NAT instances. One is asked for by what it is: its
+number, the interface or address it hides behind, its options (same
+ports, private only, reset, deny in, log) and the ports it forwards,
+one a line (`tcp 10.0.0.5:80 8080`). One line more makes, changes or
+deletes anything else (NAT64, NPTv6) in ipfw's own words. With
+**keep**, what is done to a table or an instance is also a line at the
+head of the kept rules, and what undoes it takes its lines out again.
+
+## QoS
+
+**QoS** is `dummynet(4)`, the firewall's traffic shaper, read as what
+it is and changed by forms:
+
+- a **pipe** is a link: its bandwidth, delay, loss in percent and
+  queue, and whether each source or destination address has a pipe of
+  its own;
+- a **scheduler** shares a pipe's bandwidth (it has the pipe's number)
+  among the queues that feed it: WF2Q+ by their weights, FIFO, RR,
+  PRIO, QFQ, or FQ-CoDel and FQ-PIE, which keep each flow's delay down
+  (their target, FQ-CoDel's interval, and ECN);
+- a **queue** is a share of a scheduler, by its weight, 1 to 100;
+- **+ rule** sends traffic to a pipe or a queue: its protocol,
+  addresses, port, way and interface make an ipfw rule, and **Rules
+  that send to them** lists those there are.
+
+![QoS: pipes, schedulers and queues](../img/sec-firewall-qos.png)
+
+**✎** changes one and **×** takes it away. Each is kept by default, as
+a line at the head of the kept rules; changed, its line before is
+replaced, so a boot makes it as it is now. `ipfw` takes a parameter it
+does not know by saying so and leaving it out; Arcana takes that as
+the job's failure, with ipfw's own words. With no `dummynet` in the
+kernel the section says so; it is loaded on the Kernel tab.
 
 **Logged packets** reads what the rules with `log` wrote into
 `/var/log/security`.
