@@ -45,6 +45,12 @@ nothing else: it changes nothing, and does not read the console's
 settings, sign-in, push or enrolment. Deleted, it opens nothing at
 once.
 
+Beside the value, while it is shown, a **QR code** for the Arcana app on
+Android: `arcana://token?console=<the console's address>&token=<token>`.
+Scanned on the app's first screen, it sets the console's address and
+signs in with the token. It is the same secret as the value, and goes
+with it.
+
 ## Sign-in keys
 
 The security keys and passkeys that may sign in: each can be removed,
