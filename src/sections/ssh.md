@@ -56,7 +56,8 @@ certificate shows:
 
 **Sign with a CA key…** signs every host key with your certificate
 authority's private key, `ssh-keygen -s … -h` for 52 weeks, for the
-principals you give. Each certificate is written beside its key and
+principals you give: the names clients reach the host by, one at least,
+since a host certificate for no name is good for any. Each certificate is written beside its key and
 named by `HostCertificate`. The signing is done on the host, by its
 own ssh-keygen, in a directory of `/tmp` that only root can read. The
 CA key is there only while ssh-keygen reads it, then overwritten and
