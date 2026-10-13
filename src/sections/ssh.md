@@ -1,10 +1,11 @@
 # SSH
 
 The **SSH** tab is the base system's `sshd(8)` on a host, or in one of
-its running jails, picked at its left. It shows four things:
+its running jails, picked at its left. It shows five things:
 
 - what sshd is set to, as `sshd -T` reports it;
 - its banner;
+- the CA keys whose user certificates it takes;
 - its host keys and their certificates;
 - who may sign in, and with which keys.
 
@@ -13,7 +14,8 @@ its running jails, picked at its left. It shows four things:
 **FreeBSD:** every change goes into `/etc/ssh/sshd_config` the same
 way. `sshd -t` reads the new file first; what it refuses is not put in
 place, and its message is shown. The file as it was is kept beside it
-(`sshd_config.arcana-before`), and then `service sshd reload` runs.
+(`sshd_config.arcana-before`), and then `service sshd onereload` runs
+(`reload` alone does nothing for an sshd not enabled in `rc.conf`).
 Through the API or `arcanactl -s`, a change can be made in safe mode:
 unless it is confirmed, the file before it is put back.
 
@@ -39,6 +41,19 @@ instead, and says so.
 The banner is what a client sees before it signs in. It is kept as
 `/etc/ssh/banner` and named by `Banner`. Saving it empty sets
 `Banner none`.
+
+## User certificates
+
+A user can sign in with a certificate instead of a key listed for them:
+`ssh-keygen -s ca -I id -n name user.pub` signs their public key with
+your certificate authority's key, and the certificate's principals are
+the names they may sign in as. The table lists the CA public keys sshd
+trusts for that (type, size, fingerprint and comment). The box below it
+holds them, one a line, comments with `#`. Saving it writes
+`/etc/ssh/trusted_user_ca_keys` and names it by `TrustedUserCAKeys`.
+Saving it empty takes the line away, and no certificate is taken.
+Only public keys go there: a certificate or a line with options is
+refused, and so is a private key, which never leaves the page.
 
 ## Host keys
 
@@ -85,4 +100,5 @@ link, so a `.ssh` that is a link to somewhere else is refused.
 
 From the command line: `arcanactl [-s] [-j jail] sshd [list] | banner
 file | set Setting [value ...] | authorize user keyfile | unauthorize
-user fingerprint | sign ca-key-file [principal ...]`.
+user fingerprint | sign ca-key-file [principal ...] | user-cas file`
+(`-` for none).
