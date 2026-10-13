@@ -12,7 +12,7 @@ done in safe mode, since the host cannot take it back.
 
 **FreeBSD:** `zpool(8)` and `zfs(8)` for pools, datasets and
 snapshots, `zfs send` and `zfs receive` to copy them; `gpart(8)`,
-`newfs(8)` and `growfs(8)` for disks and partitions; `camcontrol(8)`
+`newfs(8)`, `newfs_msdos(8)` and `growfs(8)` for disks and partitions; `camcontrol(8)`
 and `nvmecontrol(8)` for the devices; `mount(8)`, `fstab(5)` and
 `swapon(8)`.
 
@@ -120,11 +120,17 @@ aligned to 1 MiB, labelled, resized, or deleted once its name is
 typed; an empty table destroyed. **Rescan** has `camcontrol` look for
 disks that came or went.
 
-On a `freebsd-ufs` partition, **newfs** makes a UFS file system, with a
-label when given one, and **growfs** grows it to the partition's size.
-The host refuses newfs while the partition is mounted, swapped on or a
-pool's device, and, unless told it may, while it has a file system on
-it.
+On a partition, **newfs** makes a file system, with a label when given
+one:
+
+- **UFS**, with soft updates (`newfs -U`);
+- **FAT** (`newfs_msdos`), for what other systems read too: FAT32, or
+  FAT16 when the partition is too small for FAT32's clusters. Its label
+  is 11 characters at most and is written in capitals.
+
+**growfs** grows a UFS file system to its partition's size. The host
+refuses newfs while the partition is mounted, swapped on or a pool's
+device, and, unless told it may, while it has a file system on it.
 
 ## Mounts and swap
 
