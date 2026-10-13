@@ -58,10 +58,20 @@ A value may be:
   from when the workflow last ran by it, kept in `every.json` across
   restarts of the console.
 - **On** events: those the console sees itself (a host that stopped
-  answering, `host-down`; that answers again, `host-up`; a jail whose
-  state changed, `jail-state`) and those the host tells (`threshold`,
-  `kmsg`, `link` and the rest), each with what it must match
-  (`what=mem`). An event's run is on the host it happened on.
+  answering, `host-down`; that answers again, `host-up`) and those the
+  host tells (a jail made or removed, `jail-state`, with `jail` and
+  `state` running or stopped; `threshold`, `kmsg`, `link` and the
+  rest), each with what it must match (`what=mem`). An event's run is
+  on the host it happened on.
+
+<div class="freebsd">
+
+**FreeBSD:** a jail's coming and going is the kernel's word, kqueue(2)'s
+`EVFILT_JAIL`: the agent is told of each jail made (`NOTE_JAIL_CHILD`)
+and removed (`NOTE_JAIL_REMOVE`) as it happens, so no run waits for a
+look at the jails.
+
+</div>
 
 The console subscribes to the events of each host a workflow waits on,
 so a run begins as soon as the host tells, and a host that goes is
