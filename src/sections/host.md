@@ -71,6 +71,12 @@ use them, open ones keep theirs. A host reached by a local socket has
 no certificate. From the command line: `arcanactl tls [status] | csr |
 install certfile|- [cafile]`.
 
+A host's certificate is for a client as well as a server, so that hosts
+can reach each other, and it says it is a host's
+(`URI:urn:arcana:role:agent`); the console's says it is the console's.
+An agent refuses every request from a peer whose certificate says it is
+a host's: only the console asks.
+
 <div class="freebsd">
 
 **FreeBSD:** the key and request are made with the base system's
