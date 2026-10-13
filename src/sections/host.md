@@ -80,6 +80,11 @@ as `jail(8)` reads it; and its history.
 A jail with a network of its own (vnet) has **Open it in the Network
 tab**: see [A jail's own network](network.md#a-jails-own-network).
 
+A running jail that was given datasets (`zfs jail`) lists them under
+**Datasets**, as the jail's own `zfs list` sees them, run in it by
+`jexec`: the datasets that are its own, their parents as far as it sees
+them, their sizes and where they are mounted. **Snapshot** takes one.
+
 ### Jails made from here
 
 The jails list has **+ jail**, **Defaults** and **Templates**, for jails
