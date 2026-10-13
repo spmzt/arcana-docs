@@ -53,6 +53,32 @@ up no other.
 
 </div>
 
+### Certificate
+
+Below it, the host's own **certificate**, the one its agent answers
+the console with over mutual TLS: its subject, who signed it, the day it
+ends (marked when less than 30 days are left), the intermediate CAs
+sent after it, and the CAs the agent trusts.
+
+**Renew** gives it a new one. The agent makes a new key on the host,
+which never leaves it, and a request for it; the console signs that
+with its CA, for the name or address it reaches the host by, and sends
+the certificate back together with its own. The agent takes it only if
+it still trusts the console's certificate afterwards, so no renewal can
+lock the console out. It keeps the files before beside (`.before`) and
+reads the new ones without a restart: connections made from then on
+use them, open ones keep theirs. A host reached by a local socket has
+no certificate. From the command line: `arcanactl tls [status] | csr |
+install certfile|- [cafile]`.
+
+<div class="freebsd">
+
+**FreeBSD:** the key and request are made with the base system's
+OpenSSL; cblink builds its TLS contexts again from the files, as it
+does at the start.
+
+</div>
+
 ### Rollback timer
 
 Below it, the host's **rollback timer**: how long a change made in safe
