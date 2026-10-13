@@ -66,6 +66,7 @@ m12-sdwan			phone-identities
 7q-span			sec-span
 5a-task-sent			tasks-sent
 5b-task-waiting			tasks-waiting
+6a-services-live		tasks-live
 #
 # The Android app's pictures (src/img/app-*.png) are not from this
 # test: arcana-apk's ScreenshotsTest draws them, with

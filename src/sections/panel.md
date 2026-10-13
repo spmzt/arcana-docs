@@ -111,6 +111,17 @@ in view while the graph scrolls.
   drawn dashed, and each says how long it has waited.
 
   ![A job sent, waiting to begin on its host](../img/tasks-waiting.png)
+- A reading you ask for, the jails of a host you open or its
+  services, goes over the console's WebSocket and is **live**: its task
+  blinks in teal and says live, not running, and its graph draws each
+  step as the host takes it. A program's box, such as `service sshd
+  status`, appears the moment it runs and fills in its exit status and
+  output when it ends. The agent tells the steps on the console's own
+  connection, which subscribed to its steps group for this, and only
+  there; the whole trace comes with the answer as ever. Without the
+  socket the reading is an ordinary GET.
+
+  ![The services read live, a step of the host's under way](../img/tasks-live.png)
 - An entry still under way has a cross. For a job, it takes the job out
   of the host's queue if it has not started; one that runs is left to
   finish, since stopping a change half way is what would not be safe.
