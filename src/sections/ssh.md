@@ -57,9 +57,12 @@ certificate shows:
 **Sign with a CA key…** signs every host key with your certificate
 authority's private key, `ssh-keygen -s … -h` for 52 weeks, for the
 principals you give. Each certificate is written beside its key and
-named by `HostCertificate`. The CA key is on the host only while
-ssh-keygen reads it, in `/etc/ssh` and readable by root alone; neither
-the console nor the job keeps it. Clients then trust the host through a
+named by `HostCertificate`. The signing is done on the host, by its
+own ssh-keygen, in a directory of `/tmp` that only root can read. The
+CA key is there only while ssh-keygen reads it, then overwritten and
+removed. For a jail, only its public host keys come out and only their
+certificates go in, so the CA key is never inside the jail, whose root
+could read it. Neither the console nor the job keeps it. Clients then trust the host through a
 `@cert-authority` line in their `known_hosts`, instead of each host's
 key.
 
