@@ -114,6 +114,11 @@ kept the way one keeps them by hand:
   `jail -e` before it keeps it: it must define that jail and no other,
   at that path. It is started when asked. What fails undoes what was
   done.
+- In **Templates**, ✎ on a jail changes its file as text. The host reads
+  it back with `jail -e` first, as that one jail, and keeps the file
+  before it beside it as `.arcana.bak`. A running jail keeps its path,
+  where its root is mounted (stop it to move it), and takes the rest
+  when it is restarted.
 - In **Templates**, × on a jail takes it away: stopped, its file kept
   beside as `.arcana.bak` and removed; its dataset destroyed only when
   named, and only when it is mounted at the jail's path.
