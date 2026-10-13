@@ -99,6 +99,55 @@ default); changed, they hold for the sign-ins there are as well.
 Whoever can sign in can set the repository, and so decides what is
 built and sent to every host as root.
 
+## Certificate authority
+
+The console's own CA, the one it makes in its data directory when
+`web.conf` has no `tls` block: each host trusts the console by it, and
+it signs each host's certificate. The tab shows the certificates the
+console trusts now and its own certificate, and changes the CA for
+another without leaving a host behind.
+
+![The CA, and the next one staged](../img/set-ca.png)
+
+The next CA comes one of three ways:
+
+- **Make one**: a new CA, self-signed, under the name given.
+- **Make a request**: a key here and a request (`CA:TRUE`) for another
+  CA, yours, to sign. The key stays in the data directory.
+- **Import**: a CA's certificate with the CAs above it after it, up to
+  the root, and its key (or none, for the request made here). The
+  console is then an intermediate CA under your root: it sends the CAs
+  between its certificates and the root with them, and the hosts trust
+  the root.
+
+**Roll out** then, in this order:
+
+1. The console trusts both CAs, so it reaches hosts under either.
+2. Each host is given both roots to trust and a new certificate from
+   the next CA (its key made on the host; see the host's
+   [Certificate](host.md#certificate)). The host takes each only while
+   it still trusts the console's certificate.
+3. Once every host has the new certificate, the console takes the next
+   CA's certificate and key for its own, the files before kept beside
+   (`.before`). If a host did not answer, the console does not switch:
+   that host would not trust the console's new certificate and would
+   be lost to it. **Roll out** again when it answers; **Roll out with
+   force** switches anyway.
+
+**Finish** has each host, and then the console, trust the next CA
+alone; the one before is trusted no more. A host not renewed is left as
+it is unless **Finish with force**, which leaves it unable to reach.
+Each step's outcome for each host is listed as it runs. A CA named in
+`web.conf`'s `tls` block is shown, and changed there instead.
+
+<div class="freebsd">
+
+**FreeBSD:** the keys, certificates and requests are the base system's
+OpenSSL; each agent reads its new files again through cblink without a
+restart.
+
+</div>
+
 ## web.conf
 
 The relying party, the origin, the data directory and the certificates,
