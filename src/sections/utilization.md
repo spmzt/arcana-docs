@@ -32,6 +32,16 @@ The agent keeps what it was told in `/usr/local/etc/arcana/history.conf`,
 and the samples beside it when it stops and every five minutes, so a
 restart of the agent keeps the graphs.
 
+Once every sample is there, the older ones are thinned rather than
+dropped. In the older half, the two samples closest together (after the
+oldest) become one: the later one's time, each figure the mean of the
+two, weighed by the time each stood for. The newer half keeps every
+look, and the older samples are fewer and further apart the older they
+are, so the same memory reaches further back. Once the older half is 64
+looks apart, the oldest sample is dropped instead: at the default 5
+seconds and 720 kept, that is about a day and a half. A gap is drawn
+only where the host was away: a gap wider than the looks around it.
+
 ![Sampling and limits](../img/sec-usage-sampling.png)
 
 ## Limits

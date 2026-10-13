@@ -21,7 +21,10 @@ trouble in it (error, fail, denied, panic) is marked red, one of doubt
   packed log (`.bz2`, `.gz`, `.xz`, `.zst`) is unpacked to be read.
 - **dmesg** is the kernel's message buffer, followed as it comes: the
   agent reads it every second and numbers each new line, none shown
-  twice and none missed.
+  twice and none missed. The kernel lets only root read it. An agent
+  that runs as another user says so, and that `sysctl
+  security.bsd.unprivileged_read_msgbuf=1` (kept in
+  `/etc/sysctl.conf`) lets it.
 - **audit** is the audit trail, where the host keeps one.
 
 From a shell: `arcanactl log [-o lines] [-f position] [name [text]]`.
