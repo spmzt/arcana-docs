@@ -125,9 +125,17 @@ and timers, how many addresses it keeps and for how long, of which
 has learned, each with its VLAN, the member it is behind and when it is
 forgotten.
 
+**×** on an address forgets it (`ifconfig bridge0 deladdr`); the bridge
+learns it again when a frame comes from it. **Set it** sets an address
+by hand behind a member (`static`), where it is never learned elsewhere.
+With **keep in rc.conf** it is kept in `ifconfig_bridge0`, until it is
+set again or taken away. **Forget what it learned** (`flush`) forgets
+the learned addresses but not those set by hand.
+
 From a shell: `arcanactl net bridges`, `arcanactl [-p] bridge name
 access member vlan`, `bridge name trunk member vlans [untagged]`,
-`bridge name vlanfilter on | off`, `bridge name addm | deletem member`.
+`bridge name vlanfilter on | off`, `bridge name addm | deletem member`,
+`bridge name static member address | deladdr address | flush`.
 
 ## Geneve
 
