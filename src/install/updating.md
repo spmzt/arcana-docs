@@ -3,8 +3,10 @@
 The console asks GitHub's release feed every six hours and shows a
 banner when a newer version is out (`update_check = false` in
 `web.conf` turns that off). The box that opens from the banner, and
-from **Update agent** and **Update console**, lists what is new: the
-release notes, or the commit messages where there are none.
+from **Update** on **Devices** and **Update console** in **Settings**,
+lists what is new: the release notes, or the commit messages where
+there are none. **Settings**, **Update** gathers both: the console's
+update and the agents'.
 
 ## The console
 
@@ -13,20 +15,20 @@ The console runs unprivileged and does not replace itself:
 - **natively**, update with `pkg upgrade arcana` or `make install` from
   a newer tree, then `service arcana_console restart`;
 - **in a container**, `podman auto-update` pulls the newer image;
-- **from its repository**: with `agent_source` set in **Settings**, the
-  page of the console's own host has **Update console**. The agent
-  there builds all of Arcana as `nobody`, installs it as root, and
-  restarts the console and then itself. The page reconnects by itself,
-  still signed in.
+- **from its repository**: with `agent_source` set in **Settings**,
+  **Settings**, **Update** has **Update console**. The agent on the
+  console's own host builds all of Arcana as `nobody`, installs it as
+  root, and restarts the console and then itself. The page reconnects
+  by itself, still signed in.
 
 The page and the installed app take a newer version by themselves the
 next time they come into view.
 
 ## The agents
 
-The console marks every host whose agent is not the build it has, and
-**Update agent** (on the host's page) or **Update N agents** (on the
-fleet's) sends it. Builds are told apart by their SHA-256, so a rebuild
+The console marks every host whose agent is not the build it has, on
+**Devices**: **Update** in its row, or **Update N agents** at the top
+(also on the fleet's page and in **Settings**, **Update**), sends it. Builds are told apart by their SHA-256, so a rebuild
 of the same version counts as another. Each host
 
 1. checks the program against the SHA-256 sent with it,
@@ -35,8 +37,9 @@ of the same version counts as another. Each host
 3. puts it in place of the old one, kept as `arcana-agent.old`, and
    restarts its service.
 
-A host can also **Build agent here** from the repository named in
-**Settings**, and the console then sends that build to the others.
+A host can also **Build** (its row on **Devices**) from the repository
+named in **Settings**, and the console then sends that build to the
+others.
 Hosts that differ from the console's machine (another architecture or
 FreeBSD version) are updated with `pkg upgrade arcana` instead, which
 their Packages tab can do.

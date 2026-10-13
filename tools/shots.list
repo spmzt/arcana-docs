@@ -37,6 +37,7 @@ m6-fleet			tour-phone-fleet
 7t-usage-sampling		sec-usage-sampling
 9a-workflow-edit		sec-workflow-edit
 0b-token			sec-settings-tokens
+0b2-token-write		set-token-write
 
 # SD-WAN (B-4).  Not 9-sdwan-form-link: its interface list shows the
 # lab host's own address.
@@ -58,6 +59,8 @@ m8-settings			phone-settings
 m12-sdwan			phone-identities
 7p2-carp			sec-carp
 0c-ca			set-ca
+0e-update		set-update
+1a-devices-update		devices-update
 0b-mail			set-mail
 7p-firewall-qos			sec-firewall-qos
 7q-span			sec-span

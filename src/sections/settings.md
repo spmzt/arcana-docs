@@ -64,14 +64,31 @@ from.
 
 ## API tokens
 
-Read-only tokens for a program to look at the hosts through the API
-without a passkey, sent as `Authorization: Bearer arcr_…`. One is made
-with a name and its value is shown that once; the console keeps only
-its SHA-256, and when it was last used. It reads whatever the API
-tells (the hosts, the workflows and their runs, SD-WAN, transfers) and
-nothing else: it changes nothing, and does not read the console's
-settings, sign-in, push or enrolment. Deleted, it opens nothing at
-once.
+Bearer tokens for a program to use the console through the API
+without a passkey. One is made with a name and a kind, chosen beside
+the name, and its value is shown that once; the console keeps only its
+SHA-256 in `tokens.json`, with its kind and when it was last used. The
+list marks each **read** or **write**.
+
+- A **read** token (**Reads**, sent as `Authorization: Bearer arcr_…`)
+  reads whatever the API tells: the hosts, the workflows and their
+  runs, SD-WAN, transfers. It changes nothing.
+- A **write** token (**Reads and writes**, `Authorization: Bearer
+  arcw_…`) also changes things, as a signed-in user does: jobs on the
+  hosts, updates of the agents and of the console. It needs none of a
+  session's `X-Arcana` and `Origin` checks, since a browser never sends
+  a bearer token by itself. What it does is audited under
+  `API token <name>`.
+
+Neither kind reads or changes the console's settings, sign-in, push or
+enrolment, and a write token may not change the tokens or the CA
+(`403`, "an API token may not change this"): a token cannot make
+another, add a passkey, or change the repository that is built as
+root. `POST /api/tokens` takes `{"name", "kind": "read"|"write"}`, a
+read token unless said; `GET /api/tokens` lists each with its `kind`.
+Deleted, a token opens nothing at once.
+
+![A write token, made](../img/set-token-write.png)
 
 Beside the value, while it is shown, a **QR code** for the Arcana app on
 Android: `arcana://token?console=<the console's address>&token=<token>`.
@@ -98,6 +115,27 @@ default); changed, they hold for the sign-ins there are as well.
 
 Whoever can sign in can set the repository, and so decides what is
 built and sent to every host as root.
+
+## Update
+
+Updating Arcana in one place.
+
+**Console**: the version running and the repository it is updated
+from, with what an update brings (as **What's new** reads it). **Update
+console** has the agent on the console's own host (the one reached by
+a local socket) clone the repository, build all of Arcana as `nobody`,
+install it as root and restart the console; the page reconnects by
+itself. **Build the agent only** builds `arcana-agent` there without
+installing anything, for the console to send to the hosts. **Read the
+repository again** reads what is new afresh, not from the five
+minutes' copy.
+
+**Agents**: the `arcana-agent` the console sends, how many hosts run
+another build, and **Update N agents** to send it to all of them.
+**Devices** has each host's agent, with **Update** and **Build** in its
+row.
+
+![Settings, Update](../img/set-update.png)
 
 ## Certificate authority
 
@@ -158,7 +196,8 @@ and all are read once, at the start.
 
 What the repository the console builds from (`agent_source`) has, read
 by the host the console runs on (a bare clone without the files, kept
-in its build directory) and kept five minutes: the release notes, where
+in its build directory and fetched each time from the repository named
+now, so a repository moved to another server is read from there) and kept five minutes: the release notes, where
 the repository's tags carry messages, else the commit messages, newest
 first. Above the version running is what an update brings, the
 version's own commit marked; below it, what this console has. The

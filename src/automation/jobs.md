@@ -44,9 +44,9 @@ curl -s -b cookie -H 'Content-Type: application/json' \
 
 answers with each job's id; `GET /api/servers/<id>/jobs/<n>` is its
 state and trace, and reading it is what confirms a safe change. Changes
-need a signed-in session; a read-only **API token** (Settings → API
-tokens, sent as `Authorization: Bearer arcr_…`) reads everything the
-API tells and changes nothing. See [The HTTP API](../reference/api.md).
+need a signed-in session or a write **API token** (Settings → API
+tokens, `Authorization: Bearer arcw_…`, audited by its name); a read
+token (`arcr_…`) reads everything the API tells and changes nothing. See [The HTTP API](../reference/api.md).
 
 ## From a shell
 

@@ -194,8 +194,8 @@ boot. **×** on a row takes one away (`arp -d`, `ndp -d`), and out of
 **FreeBSD:** a tap per rule is FreeBSD 16's; `tcpdump -D` lists the
 sources there are. Capturing in a jail's own network needs `bpf(4)`
 inside the jail: its devfs ruleset has to unhide it. Since a capture
-shows what was on the wire, a read-only API token cannot make one;
-only a signed-in session can.
+shows what was on the wire, a read API token cannot make one; a
+signed-in session or a write token can.
 
 ## CARP: an address shared between hosts
 

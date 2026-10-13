@@ -12,7 +12,7 @@ user alone:
 | `credentials.json` | the security keys and passkeys that may sign in |
 | `servers.json` | the hosts, where each is reached, each host's rollback timer |
 | `settings.json` | what Settings changed over `web.conf` |
-| `tokens.json` | the read-only API tokens, as their SHA-256 |
+| `tokens.json` | the API tokens, read or write, as their SHA-256 |
 | `push.json`, `vapid.pem` | the devices told of what ends, and the key the console signs with |
 | `workflows.json`, `runs.json`, `runs/`, `every.json` | the workflows, their last runs and traces, when each last ran by its interval |
 | `sdwan.json`, `sdwan-state.json`, `sdwan-lists.json` | the SD-WAN services, what was made on the edges, the lists and feeds |

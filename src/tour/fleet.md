@@ -33,10 +33,10 @@ a row of tabs.
 The header says what the host is: its name, FreeBSD's version and
 machine, its CPUs and memory, how long it has been up, and the agent's
 version. The host the console runs on carries the **console's host**
-label: it also builds the agent for the others
-(**Build agent here**) and updates the console itself (**Update
-console**). **Update agent** appears when a host runs another build than
-the one the console has.
+label. When a host runs another build of the agent than the console
+has, its header says **Agent behind**, which leads to **Devices**, where
+the agents are updated; the console itself is updated in **Settings**,
+**Update**.
 
 **Summary** gathers the rest at a glance: CPU, memory and ZFS as they
 are now, with a short history; counts of jails, services, packages and

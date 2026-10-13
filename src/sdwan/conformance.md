@@ -103,7 +103,7 @@ is logged to the record).
 | R13–R15 Authentication requests logged | no | A WireGuard handshake is not logged as a request. |
 | R20, R38 At least one Role | yes | An identity's zone. |
 | R21, R33–R37 A unique Actor ID | partly | An identity's name, unique at its remote end point. |
-| R41–R43 System Administrator alone changes Policies | yes | The console's users; an API token reads only. |
+| R41–R43 System Administrator alone changes Policies | yes | The console's users, and the write API tokens they make, audited by name; a read token reads only. |
 | R44–R60 Device and Application Actors | no | Only User Actors (identities) and a UNI's hosts by zone. |
 | R61–R63 PIP, PDP, PEP | yes | The console (information and decision), the edges (enforcement). |
 | R64 Allow or Block | yes | The policy map, Block where no Policy is. |

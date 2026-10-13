@@ -45,10 +45,9 @@ agent answering, or one whose socket the console's user may not use.
 Taken off the list, the host is not added again; `local_agent` in
 `web.conf` names another socket, or none.
 
-That host wears a **console's host** label on its page:
-besides what every agent does, it builds `arcana-agent` from the
-repository for every host (**Build agent here**), and **Update
-console** builds and installs the console itself there.
+That host wears a **console's host** label on its page. It builds and
+installs the console when **Settings**, **Update** asks.
+
 
 ## Devices
 
@@ -57,6 +56,15 @@ state, its agent's version, the release of FreeBSD it runs, its jails
 running and known, and its CPU, memory and ZFS use now. It sorts by any
 column and is narrowed by the filter, like every table; a row opens its
 host, and **×** takes a host off the console's list.
+
+The agents are updated here. A host whose agent is not the build the
+console sends has its version marked and an **Update** beside it;
+**Update N agents**, at the top, sends it to every such host at once.
+**Build** has a host build `arcana-agent` from the repository named in
+**Settings**, without installing it; the console keeps the program and
+offers it to the others.
+
+![Devices, one agent behind](../img/devices-update.png)
 
 ## All hosts
 
