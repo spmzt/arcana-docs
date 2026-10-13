@@ -49,6 +49,7 @@
 - [Utilization](sections/utilization.md)
 - [Workflows](sections/workflows.md)
 - [Settings](sections/settings.md)
+- [The Android app](sections/android.md)
 
 # SD-WAN
 
