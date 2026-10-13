@@ -2,8 +2,8 @@
 
 **Network** shows the host's network as the kernel has it, a view at a
 time: **Routes**, **Nexthops**, **Connections**, **Sockets**,
-**Interfaces**, **Netgraph**, **Bridges**, **Geneve** and
-**Neighbours**, each for IPv4, IPv6 or both. Filter the rows, and click
+**Interfaces**, **Netgraph**, **Bridges**, **Geneve**, **Neighbours**
+and **CARP**, each for IPv4, IPv6 or both. Filter the rows, and click
 a column to sort.
 
 <div class="freebsd">
@@ -196,6 +196,48 @@ sources there are. Capturing in a jail's own network needs `bpf(4)`
 inside the jail: its devfs ruleset has to unhide it. Since a capture
 shows what was on the wire, a read-only API token cannot make one;
 only a signed-in session can.
+
+## CARP: an address shared between hosts
+
+**CARP** lists every virtual host (vhid) of `carp(4)` on the host: its
+interface, its state (MASTER, BACKUP or INIT), its protocol (CARP, or
+VRRPv3), its timing and the addresses under it. The host that is
+MASTER of a vhid answers for its addresses; the others wait as BACKUP
+and take over when its advertisements stop. With CARP the host with the
+smallest skew is MASTER, with VRRPv3 the one with the highest priority;
+with `net.inet.carp.preempt` set (**Sysctl**) a host takes it back when
+it returns.
+
+- **+ CARP address** puts an address under a vhid on an interface: the
+  vhid (1 to 255), the protocol, how often it advertises and its skew
+  (CARP), or its priority and interval (VRRPv3), and its key. Every
+  host that shares the address gets the same address, vhid and key,
+  each on its interface on that network.
+- **Backup** tells a MASTER to step back now, so that another host
+  takes over; **Master** has a BACKUP take over now. Neither is kept.
+- **✎** changes a vhid's timing or key; what is left empty stays.
+- **×** on an address takes it off; the vhid goes with its last one.
+
+**Keep it for a boot** writes the address as an
+`ifconfig_<if>_alias<n>` line with the vhid's words, for example
+`inet vhid 1 advskew 100 pass … 192.0.2.1/24`, and adds `carp` to
+`kld_list`. The key is then in `rc.conf` as well, which every user of
+the host can read, as the Handbook's own example has it.
+
+If `carp(4)` is not loaded, **Load carp** loads it (`kldload carp`) and
+adds it to `kld_list`.
+
+![CARP: an address put under a vhid](../img/sec-carp.png)
+
+<div class="freebsd">
+
+**FreeBSD:** the vhids are read, made and changed through carp's own
+`netlink(4)` family (`genetlink` "carp"), as `ifconfig(8)` does
+itself, so the key goes to the kernel and never onto a command line or
+into a trace. The address goes under the vhid with `ifconfig … vhid N
+alias`. In a jail's own network the vhids are the jail's.
+
+</div>
 
 ## A jail's own network
 
