@@ -10,10 +10,10 @@ CPU, memory and ZFS use and its FreeBSD version.
 
 The panel has three parts that stay put wherever you go:
 
-- **The tree** on the left: the fleet's pages (All hosts, Network,
-  Utilization, Workflows, SD-WAN) and, below them, every host with its
-  jails folded under it. What you pick in the tree decides the page.
-  The two icons at its top are **Enrol a host** and **Add a server**.
+- **The side bar** on the left: the fleet's pages (All hosts, Devices,
+  Network, Utilization, Workflows, SD-WAN) and Settings. What you pick
+  there decides the page. The two icons at its top are **Enrol a
+  host** and **Add a server**.
 - **The top bar**: three lights for the network, the console's API and
   the host picked; **Notify**, to have the console's notifications on
   this device; and **Log out**.
@@ -25,7 +25,8 @@ The panel has three parts that stay put wherever you go:
 
 ## A host
 
-Pick a host in the tree. Its page has a header and a row of tabs.
+Pick a host on **Devices** or **All hosts**. Its page has a header and
+a row of tabs.
 
 ![A host's summary](../img/demo-host.png)
 

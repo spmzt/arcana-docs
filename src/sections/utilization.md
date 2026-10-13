@@ -1,6 +1,6 @@
 # Utilization
 
-**Utilization**, in the tree, is how busy every host has been, as lines
+**Utilization**, in the side bar, is how busy every host has been, as lines
 over the last five minutes, quarter of an hour, hour, or all that is
 kept. With more than one host, their CPU, memory and load are first
 drawn over one another, a colour each. Then each host has a box of its

@@ -3,9 +3,10 @@
 **Firewall** is `ipfw(8)`, laid out as a ruleset is written here: a
 main chain that every packet walks in the order of the numbers, and the
 parts it calls, each ending in its return. While the tab is shown its
-parts are in the side bar, in place of the hosts: **Overview**,
+parts are in the side bar, in place of its pages: **Overview**,
 **Dynamic states**, **Kept rules as text**, then a line for each part
-with how many rules it has. **‹ Hosts** brings the tree back.
+with how many rules it has. **‹ Back** brings the side bar's pages
+back.
 
 ![The chain, part by part](../img/tour-firewall.png)
 

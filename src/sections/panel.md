@@ -1,24 +1,19 @@
 # The panel
 
-The panel is laid out as a tree and tabs: what you pick in the tree on
-the left decides the page, a host's page has a tab for each part of the
-host, and the activity bar along the foot shows every call the panel
+The panel is laid out as a side bar and tabs: what you pick in the side
+bar on the left decides the page, a host's page has a tab for each part
+of the host, and the activity bar along the foot shows every call the panel
 makes. This chapter is about what stays the same wherever you are.
 
-## The tree
+## The side bar
 
-The tree holds the fleet's own pages (**All hosts**, **Devices**,
-**Network**,
-**Utilization**, **Workflows**, **SD-WAN**), then every host with its
-jails, and **Settings** at its foot. **Enrol a host** and **Add a
-server** are the two icons at its top.
+The side bar holds the fleet's own pages (**All hosts**, **Devices**,
+**Network**, **Utilization**, **Workflows**, **SD-WAN**) and
+**Settings** at its foot. **Enrol a host** and **Add a server** are the
+two icons at its top. The hosts themselves are on **Devices** and **All
+hosts**, and a host's jails on its **Jails** tab.
 
-A host's jails are folded away until you open them with the arrow on
-the host, and the browser remembers which are open. When the jails do
-not fit in the space under the hosts, each host shows what fits and a
-**+N more…** row that shows the rest.
-
-The tree, the activity bar, the list of tasks in it and the service
+The side bar, the activity bar, the list of tasks in it and the service
 drawer are resized by dragging their edge; the browser keeps the sizes,
 and a double click on the edge goes back to the usual one.
 
@@ -50,7 +45,7 @@ agent answering, or one whose socket the console's user may not use.
 Taken off the list, the host is not added again; `local_agent` in
 `web.conf` names another socket, or none.
 
-That host wears a **console's host** label in the tree and on its page:
+That host wears a **console's host** label on its page:
 besides what every agent does, it builds `arcana-agent` from the
 repository for every host (**Build agent here**), and **Update
 console** builds and installs the console itself there.
@@ -61,7 +56,7 @@ console** builds and installs the console itself there.
 state, its agent's version, the release of FreeBSD it runs, its jails
 running and known, and its CPU, memory and ZFS use now. It sorts by any
 column and is narrowed by the filter, like every table; a row opens its
-host.
+host, and **×** takes a host off the console's list.
 
 ## All hosts
 

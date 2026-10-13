@@ -14,7 +14,7 @@ the activity bar shows the call as it went, down to the agent.
 
 ## A jail's page
 
-Pick a jail in the tree, under its host, for its own page.
+Pick a jail on its host's **Jails** tab for its own page.
 
 ![A jail's page](../img/tour-jail.png)
 

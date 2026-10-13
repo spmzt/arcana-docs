@@ -1,6 +1,6 @@
 # On a phone
 
-The panel is one page for every screen. On a phone the tree folds into
+The panel is one page for every screen. On a phone the side bar folds into
 the menu at the top left, the tabs scroll, and forms fill the screen.
 
 <div class="phones">

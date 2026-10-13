@@ -1,6 +1,6 @@
 # The network map
 
-**Network**, in the tree, shows the fleet as a map. Nothing is
+**Network**, in the side bar, shows the fleet as a map. Nothing is
 configured for it: the console reads each host's interfaces every few
 seconds and works the links out. Its second tab, **Nexthop groups**, has
 every host's routes of several next hops with what each next hop sent

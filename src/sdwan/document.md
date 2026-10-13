@@ -5,7 +5,7 @@ The console keeps every SD-WAN service in one JSON document, which the
 Its names are MEF 70.2's; this chapter is its reference. For a document
 to read beside it, see [A service with two edges](example.md).
 
-**SD-WAN** in the tree holds the SD-WAN services the console keeps,
+**SD-WAN** in the side bar holds the SD-WAN services the console keeps,
 named as MEF 70.2 (SD-WAN Service Attributes and Service Framework)
 names them. It is one document with three parts:
 

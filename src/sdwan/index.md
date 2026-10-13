@@ -98,7 +98,7 @@ or only those the services use there.
 
 ## Where it is in the panel
 
-**SD-WAN**, in the tree, has seven tabs:
+**SD-WAN**, in the side bar, has seven tabs:
 
 | Tab | Has |
 |---|---|

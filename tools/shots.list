@@ -56,3 +56,8 @@ m6-fleet			tour-phone-fleet
 m5a-tree			phone-tree
 m8-settings			phone-settings
 m12-sdwan			phone-identities
+7p2-carp			sec-carp
+0c-ca			set-ca
+0b-mail			set-mail
+7p-firewall-qos			sec-firewall-qos
+7q-span			sec-span
