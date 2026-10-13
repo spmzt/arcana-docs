@@ -64,3 +64,5 @@ m12-sdwan			phone-identities
 0b-mail			set-mail
 7p-firewall-qos			sec-firewall-qos
 7q-span			sec-span
+5a-task-sent			tasks-sent
+5b-task-waiting			tasks-waiting

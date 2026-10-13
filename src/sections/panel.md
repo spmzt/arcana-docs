@@ -101,6 +101,16 @@ in view while the graph scrolls.
   output verbatim.
 - Changes are jobs the host runs on its own: the graph fills in stage
   by stage, and a change that cuts the console off still completes.
+- A task still waiting says what it asked and where it is. The graph
+  starts with the request (its method and address, such as `POST
+  /api/servers/<id>/jobs`, and what the job asks: its kind, and the
+  jail or name), then **the console asks** the host (waiting for the
+  answer, or the job's number once the host accepted it), then, for a
+  job, the host's stage: waiting to begin, the state the host last
+  reported, or that the host does not answer. The stage it waits at is
+  drawn dashed, and each says how long it has waited.
+
+  ![A job sent, waiting to begin on its host](../img/tasks-waiting.png)
 - An entry still under way has a cross. For a job, it takes the job out
   of the host's queue if it has not started; one that runs is left to
   finish, since stopping a change half way is what would not be safe.
@@ -111,6 +121,9 @@ in view while the graph scrolls.
   same host.
 - A workflow's run is a task too, begun by hand, by the clock or by an
   event, and ended as the run ends, with why when it failed.
+
+Only what was asked becomes a task: opening or reloading the page reads
+the hosts in the background, and adds none.
 
 **Recent tasks**, along the bottom while the bar is closed, are the
 last few, each with its host, how it ended and how long it took; one
