@@ -60,16 +60,23 @@ A value may be:
 - **On** events: those the console sees itself (a host that stopped
   answering, `host-down`; that answers again, `host-up`) and those the
   host tells (a jail made or removed, `jail-state`, with `jail` and
-  `state` running or stopped; `threshold`, `kmsg`, `link` and the
-  rest), each with what it must match (`what=mem`). An event's run is
-  on the host it happened on.
+  `state` running or stopped; a program that crashed, `crash`, with
+  `process`, `jid` and `signal`; `threshold`, `kmsg`, `link` and the
+  rest), each with what it must match (`what=mem`). A value to match
+  may be a parameter, `${param.process}`: its default is what is
+  matched, an empty one matching any. An event's run is on the host it
+  happened on.
 
 <div class="freebsd">
 
 **FreeBSD:** a jail's coming and going is the kernel's word, kqueue(2)'s
 `EVFILT_JAIL`: the agent is told of each jail made (`NOTE_JAIL_CHILD`)
 and removed (`NOTE_JAIL_REMOVE`) as it happens, so no run waits for a
-look at the jails.
+look at the jails. A crash is the kernel's too: a process that dies
+of a signal that dumps core (SIGSEGV, SIGABRT, SIGBUS…) is written to
+the message buffer, `pid 812 (nginx), jid 0, uid 80: exited on signal
+11`, while `kern.logsigexit` is 1, as it is unless set off; the agent
+reads the buffer each second and tells each such line as `crash`.
 
 </div>
 
@@ -101,6 +108,10 @@ saved:
   each only when the head is newer;
 - **a jail started again** when it stops;
 - **packages upgraded** every week;
+- **a service restarted when it crashes**: the service, and the name
+  its process goes by (the same, mostly; `postgres` for postgresql),
+  are parameters; a crash of that program on the host itself, not in a
+  jail (`jid` 0), restarts the service;
 - **a service restarted** when its host answers again;
 - **a plugin's package installed**, the package a parameter.
 
