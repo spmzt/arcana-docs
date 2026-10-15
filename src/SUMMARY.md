@@ -48,6 +48,7 @@
 - [The network map](sections/map.md)
 - [Utilization](sections/utilization.md)
 - [Workflows](sections/workflows.md)
+- [Troubleshoot](sections/troubleshoot.md)
 - [Settings](sections/settings.md)
 - [The Android app](sections/android.md)
 

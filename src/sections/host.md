@@ -93,6 +93,39 @@ agent undoes it, 10 to 3600 seconds, or empty for the agent's own
 (`arcana-agent -w`, a minute unless set). See [Safe
 mode](network.md#safe-mode).
 
+### Configuration, as a whole
+
+The host's configuration as one bundle: the files Arcana manages
+(`rc.conf` and `rc.conf.d`, `loader.conf`, `sysctl.conf`, `jail.conf`
+and `jail.conf.d`, `fstab`, `hosts`, `resolv.conf`, `ntp.conf`,
+`rtadvd.conf`, `sshd_config`, `devfs.rules`, syslog's, BIRD's,
+strongSwan's, WireGuard's, `dnsmasq.conf`, and what the agent writes in
+its own directory: its ipfw rules, its sampling, the SD-WAN's files),
+each with its mode, owner and group; the packages put there by hand;
+and what the hardware is. **Save it** as JSON or YAML, with its secrets
+(WireGuard's and strongSwan's keys) or without. The agent's own keys and
+certificates are never in it: a host made the same is still another
+host, enrolled as itself. Jails' and datasets' data are not
+configuration; a ZFS send carries them.
+
+**Make another host the same as this one**, or this one as a bundle
+file says. **Check** first: the host that is to change compares its
+hardware with the bundle's (each physical interface and disk the bundle
+names has to be there, the architecture the same), and says what it
+would do with each file (the same, changed with its diff, new, or a
+secret the bundle does not carry, which it keeps), and which packages
+it lacks. **Apply** then writes them, each beside itself and renamed
+into place, the files before kept under
+`/var/backups/arcana/config-<time>`; a host name of its own can be put
+in `rc.conf` instead of the bundle's. From another host, the console
+reads that host's bundle with its secrets itself: they do not pass
+through the page. Nothing is restarted: the files take hold at the next
+boot. The packages it lacks are installed only when **Install** is
+pressed.
+
+Each tab of a host has **Export** at the end of its bar too: what the
+tab shows, as it was last read, saved as JSON or YAML.
+
 ## Jails
 
 Each jail with its state (running, stopped, dying; starting, stopping,
