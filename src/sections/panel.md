@@ -104,11 +104,16 @@ in view while the graph scrolls.
   start, stop, restart and kill its actions), the services, the
   packages, the jobs, the storage, sysctl and the kernel, the
   processes, the logs (`arcana-log`, with syslog.conf as RFC 9742's
-  `ietf-syslog`) and the firewall (`arcana-firewall`: the kept rules
+  `ietf-syslog`), the firewall (`arcana-firewall`: the kept rules
   and aliases as configuration, ipfw's rules with counters, dynamic
   rules, tables, NAT and dummynet as state, the kernel's trace as an
-  action). The modules are in `share/yang` of the source, each leaf
-  naming the FreeBSD facility it is read from.
+  action), the troubleshooting actions (`arcana-troubleshoot`:
+  path-check with the firewall's walks typed, traceroute, capture),
+  the history (`arcana-history`: how the agent samples and its limits
+  as configuration, the samples as state) and the events
+  (`arcana-events`: each kind an identity, its data typed, and the
+  notification). The modules are in `share/yang` of the source, each
+  leaf naming the FreeBSD facility it is read from.
 
   ![A task's YANG tab: the jails as arcana-jails](../img/tour-jails-yang.png)
 - **Raw output**, when a program ran, shows its argv, exit status and
