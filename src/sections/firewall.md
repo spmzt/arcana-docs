@@ -125,6 +125,36 @@ some seconds, the packets to or from the address that really cross the
 firewall, each with the rule that decided it and what it decided, its
 interface and direction. The host needs DTrace (`kldload dtraceall`).
 
+## Aliases
+
+**Aliases** names what rules say again and again, written `$name` in a
+rule:
+
+- **addresses**, a list of addresses and networks, is an ipfw table of
+  its name: the rule says `table(name)`, so changing the list changes
+  the table now and no rule;
+- **ports** (`80,443,8000-8080`) and a **value** (an interface, an
+  address, a number) are written into each rule that names them; when
+  one changes, those rules are written again, in the kept rules and in
+  the kernel.
+
+`allow tcp from $lan to me $web in via $wan` is loaded as `allow tcp
+from table(lan) to me 80,443 in via vtnet0`. A rule is shown by its own
+words, ipfw's when hovered, and changed by them. An alias a rule names
+is not deleted while one does.
+
+<div class="freebsd">
+
+**FreeBSD:** the kept rules stay ipfw's own commands, which
+`rc.firewall` loads at boot as they are (`firewall_type`): an alias is a
+comment line, `#arcana alias lan addr` (an address list's entries its
+table's own lines, `table lan add 10.0.0.0/8`), and a rule written with
+aliases is its own comment line, `#arcana add 01000 allow tcp from $lan
+…`, before the rule as ipfw reads it. A rule written with `$name` in
+**Kept rules as text** is given both lines when it is kept.
+
+</div>
+
 ## Tables and NAT
 
 **Tables** lists each table with its type and what is in it: an entry
