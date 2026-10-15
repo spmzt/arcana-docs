@@ -113,9 +113,13 @@ in view while the graph scrolls.
   as configuration, the samples as state) and the events
   (`arcana-events`: each kind an identity, its data typed, and the
   notification), BIRD (`arcana-bird`: bird.conf as configuration, what
-  birdc tells as state), WireGuard (`arcana-wireguard`) and netgraph
-  (`arcana-netgraph`). The modules are in `share/yang` of the source,
-  each leaf naming the FreeBSD facility it is read from.
+  birdc tells as state), WireGuard (`arcana-wireguard`), netgraph
+  (`arcana-netgraph`), the host itself (`arcana-host`: its facts,
+  plugins, stats and trust store), the agent (`arcana-agent`: its
+  listeners, TLS files, update, build, the sources and the
+  configuration bundle as actions) and the jails' files
+  (`arcana-jail-files`). The modules are in `share/yang` of the
+  source, each leaf naming the FreeBSD facility it is read from.
 
   ![A task's YANG tab: the jails as arcana-jails](../img/tour-jails-yang.png)
 - **Raw output**, when a program ran, shows its argv, exit status and
