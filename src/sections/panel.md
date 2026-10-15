@@ -97,12 +97,18 @@ in view while the graph scrolls.
   reply as maps keyed by attribute number, in CDDL, with the attribute
   sets they nest, taken from the family's own description
   (`share/arcana/arcana.yaml`).
-  An operation already converted to YANG (the jails' `list` and
-  `action`, so far) has a second tab, **YANG**: the module it is now,
-  drawn as an RFC 8340 tree: `rw` configuration, `ro` state, `x` an
-  action, `*` a list. The jails are `arcana-jails`, FreeBSD's jails as
-  jail(8) and jail_get(2) see them, start, stop, restart and kill its
-  actions.
+  An operation already converted to YANG has a second tab, **YANG**:
+  the module it is now, drawn as an RFC 8340 tree: `rw` configuration,
+  `ro` state, `x` an action, `*` a list. So far the jails
+  (`arcana-jails`, FreeBSD's jails as jail(8) and jail_get(2) see them,
+  start, stop, restart and kill its actions), the services, the
+  packages, the jobs, the storage, sysctl and the kernel, the
+  processes, the logs (`arcana-log`, with syslog.conf as RFC 9742's
+  `ietf-syslog`) and the firewall (`arcana-firewall`: the kept rules
+  and aliases as configuration, ipfw's rules with counters, dynamic
+  rules, tables, NAT and dummynet as state, the kernel's trace as an
+  action). The modules are in `share/yang` of the source, each leaf
+  naming the FreeBSD facility it is read from.
 
   ![A task's YANG tab: the jails as arcana-jails](../img/tour-jails-yang.png)
 - **Raw output**, when a program ran, shows its argv, exit status and

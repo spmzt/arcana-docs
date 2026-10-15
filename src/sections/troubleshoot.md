@@ -11,9 +11,13 @@ now.
 
 ## Packet path
 
-Give the source and the destination, the protocol (TCP, UDP, ICMP, or
-any IP) and the port, and where to look: the hosts, and their running
-vnet jails that route as routers do. None ticked, every host is asked.
+Give the source and the destination (every address the hosts have is
+offered as you type, with its host and interface; **swap** turns the
+packet round), the protocol (TCP, UDP, ICMP, or any IP) and the port,
+and where to look: the hosts, and their running vnet jails that route
+as routers do. None ticked, every host is asked. The page's address
+names the packet (`#/troubleshoot?src=…&dst=…&proto=tcp&port=22`), to
+share or to open from the firewall tab's **Across the hosts ›**.
 
 Where the packet comes in is the place whose address the source is, or
 the one on the source's network, coming in on that interface. There it
@@ -48,19 +52,34 @@ request and the reply go by different places, that is said as the
 asymmetry it is.
 
 What is wrong is said first, worst first, each with its place: the
-firewall dropping it (and by which rule), no send route, no receive
-route, forwarding off, a next hop that does not answer, an asymmetric
-way back. Below, the way there and the way back, place by place: where
-it comes in, each firewall's verdict with its rule (the rule's text when
-hovered), the route, the next hop, and each place's own check. The
-whole can be exported as JSON or YAML.
+firewall dropping it (and by which rule; **Its firewall ›** opens that
+rule on the host's Firewall tab), no send route, no receive route,
+forwarding off, a next hop that does not answer, an asymmetric way
+back. A firewall that is off is walked all the same, for what it would
+do turned on, and said to be off; nothing of it stops the packet.
+
+Then the way is drawn: the source at the left, the destination at the
+right, each place passed as a box between (its name, the interface it
+comes in on and goes out by, its FIB, two dots for what its firewall
+does coming in and going out, "asymmetric" when the reply would go
+back another way), the request's way above the boxes left to right and
+the reply's below, right to left, dashed. Where either is stopped the
+arrow ends in a bar and the box is red; where it leaves the hosts asked
+the arrow goes on, dotted, to the next hop. A place the reply passes
+that the request did not gets a box of its own. A box pressed opens the
+host's page, its jail's. Below the drawing, the way there and the way
+back, place by place: where it comes in, each firewall's verdict with
+its rule (the rule's text when hovered), the route, the next hop, and
+each place's own check. The whole can be exported as JSON or YAML.
 
 <div class="freebsd">
 
 **FreeBSD:** the ruleset is the kernel's, as `ipfw list` and `ipfw table
-all list` print it, and the walk follows `ip_fw2.c`: `count` and
-`setfib` go on, `skipto` jumps forward, `check-state` and the first
-`keep-state` look the flow up, `verrevpath`, `versrcreach` and
+all list` print it, and the walk follows `ip_fw2.c`: `count`, `reass`
+and `setfib` go on, `skipto` jumps forward, `call` pushes the rule and
+jumps and `return` comes back to the rule numbered after it (or the
+next rule, `next-rule`), as `O_CALLRETURN` does, `check-state` and the
+first `keep-state` look the flow up, `verrevpath`, `versrcreach` and
 `antispoof` by the routes, `me` by the place's addresses, a table by its
 longest entry, `tablearg` by the entry's value. A rule the walk cannot
 judge for a packet that was never sent (a socket's `uid`, a `tag`, a MAC

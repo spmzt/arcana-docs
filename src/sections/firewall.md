@@ -8,6 +8,13 @@ parts are in the side bar, in place of its pages: **Overview**,
 with how many rules it has. **‹ Back** brings the side bar's pages
 back.
 
+**Overview** draws the chain first: the parts every packet walks down
+the left, the parts they call on the right, an arrow for each `call`
+(and a dashed one for each `skipto`) the rules make between them, and
+on each part how many rules it has, how many are kept, and what they
+take a second while **Live** reads the counters. A part pressed opens.
+Below it, the same as a table.
+
 ![The chain, part by part](../img/tour-firewall.png)
 
 | Numbers | Part |
@@ -112,11 +119,20 @@ lives, read again every two seconds; one pressed leads to its rule.
 ## Following a packet
 
 **Follow a packet** asks for a protocol, where from, where to, a port,
-a direction and an interface, and walks the first packet of such a
-connection through the kernel's rules: each rule it meets, each jump,
-call and return, and what becomes of it. A rule the page cannot judge
-(`me`, a state, an option it does not know) is taken as met and
-marked: it is a reading of the rules, not the kernel's answer.
+which walk to see (the packet coming in, going out, or its reply either
+way) and the interface it comes in on, and has the agent walk the first
+packet of such a connection through the kernel's rules (its
+`path-check`, the same the Troubleshoot page asks every host): each
+rule it meets in the kernel's own order, `skipto`, `call` and `return`,
+`check-state` and the first `keep-state` looking the connection up,
+`me` and the tables by what the host has, and what becomes of it. Above
+the walk, where the packet is at this host: in on which interface, out
+by which route and FIB, or that it is the host's own. A rule the agent
+cannot judge without sending the packet (a socket's `uid`, a `tag`) is
+marked "may be met" and listed under what it could not judge. With the
+firewall off, the walk shows what the rules would do turned on, and
+says so. **Across the hosts ›** opens the same packet on the
+Troubleshoot page, followed from host to host and back.
 
 ![A packet followed through the rules](../img/sec-firewall-trace.png)
 
