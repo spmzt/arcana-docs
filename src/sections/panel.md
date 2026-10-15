@@ -112,8 +112,10 @@ in view while the graph scrolls.
   the history (`arcana-history`: how the agent samples and its limits
   as configuration, the samples as state) and the events
   (`arcana-events`: each kind an identity, its data typed, and the
-  notification). The modules are in `share/yang` of the source, each
-  leaf naming the FreeBSD facility it is read from.
+  notification), BIRD (`arcana-bird`: bird.conf as configuration, what
+  birdc tells as state), WireGuard (`arcana-wireguard`) and netgraph
+  (`arcana-netgraph`). The modules are in `share/yang` of the source,
+  each leaf naming the FreeBSD facility it is read from.
 
   ![A task's YANG tab: the jails as arcana-jails](../img/tour-jails-yang.png)
 - **Raw output**, when a program ran, shows its argv, exit status and
