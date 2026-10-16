@@ -7,7 +7,7 @@ hosts at once, by hand, at an interval, or on an event.
 
 ## Steps
 
-A step is one of three things:
+A step is one of four things:
 
 - **A job** of any kind, its fields those `share/arcana/jobs.yaml` says
   the kind needs (first, marked) and uses (under **More options**). Each
@@ -31,6 +31,11 @@ A step is one of three things:
   - **update the console** builds and installs all of Arcana on the
     console's own host, the console restarting once the step has
     ended.
+- **A message** (in the palette under **Tell**): sent by mail, by
+  Telegram, or by both, as [Settings, Notifications](settings.md#by-telegram)
+  have them set up, once for each host the workflow runs on. Its text
+  takes values like a job's fields: `${host.name}`, `${param.x}`,
+  `${step.id.path}`. A way not set up fails the step, and says so.
 
 Steps are put in another order by dragging them by their number, or one
 earlier with ↑.

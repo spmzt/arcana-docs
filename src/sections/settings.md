@@ -81,6 +81,35 @@ from.
 Each step waits fifteen seconds at most, so a relay that does not answer
 delays the mail no longer.
 
+### By Telegram
+
+The same, as messages a bot of yours writes to your chats, each way with
+its own choice of what it tells (**Faults to Telegram** and the rest,
+as for mail): mail may take everything and Telegram the Critical alone.
+
+1. Make a bot: talk to **@BotFather** in Telegram, `/newbot`; it gives
+   the bot's **token**, which goes in **Telegram bot token**.
+2. Write to the bot once (or add it to the group), so that it may write
+   back: a bot cannot start a chat.
+3. **Telegram chats**: the chats' ids, a space between them; yours is
+   what **@userinfobot** says, a group's is negative, a channel may be
+   named `@itsname`.
+4. **Telegram sent from**: the host whose agent sends the messages, one
+   that reaches `api.telegram.org`; or the agent beside the console.
+5. **Send a test message**.
+
+The console does not talk to Telegram itself: it reaches the world
+outside through an agent (its luxuria part), which posts each message
+to the Bot API's `sendMessage` over HTTPS with the base system's
+`fetch(3)`, checking the server's certificate against the host's CAs
+(`certctl(8)`'s). The token is kept in the console's `settings.json`
+(0600) like the SMTP password, is never sent back to the page, and is
+sent to the agent for each message only: the agent neither keeps nor
+logs it, and its trace names the chat, not the token. At most twenty
+messages go out an hour; what does not fit one message (4096
+characters) is cut. From a shell: `ARCANA_TELEGRAM_TOKEN=... arcanactl
+notify <chat> <text>`.
+
 ## API tokens
 
 Bearer tokens for a program to use the console through the API
