@@ -26,6 +26,13 @@ memory shows.
 From a shell: `arcanactl kmod`, `arcanactl [-p] kmod load | unload
 module`.
 
+Each module's row says whether it is loaded **at boot**: in
+`rc.conf`'s `kld_list`, which `rc(8)` loads when the host starts. The
+button changes that alone, the kernel as it is (`arcanactl kmod keep`
+or `forget`): a module loaded by hand is kept over a reboot, or one is
+left to go with the next. A module `kld_list` names and the kernel does
+not have is said above the table, with its × to take it out of the list.
+
 ## Sysctl
 
 The kernel's state, a part of the tree at a time (**kern**, **vm**,
