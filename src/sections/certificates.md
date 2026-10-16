@@ -28,6 +28,19 @@ it lasts.
 - **Trust again**, under **Not trusted**, takes that copy away. A
   certificate FreeBSD itself does not trust is marked *FreeBSD's* and
   is not trusted again here.
+
+### Why there are untrusted ones you never added
+
+Most of **Not trusted** comes with FreeBSD itself: the base system's
+`caroot` package installs, besides Mozilla's trusted roots, the roots
+Mozilla stopped trusting, in `/usr/share/certs/untrusted` (some 45 of
+them on FreeBSD 16: Certigna, Certum Root CA, Comodo AAA Services and
+others whose keys were misused or whose owners no longer kept to the
+rules). FreeBSD's security officer moves a root there when Mozilla
+drops it (`secure/caroot/README` in the source). `certctl rehash`
+copies them into `/etc/ssl/untrusted`, so they stay distrusted even
+where a program brings its own copy along. The tab counts them apart
+from those distrusted on the host, and marks each *FreeBSD's*.
 - **Rehash** runs `certctl rehash` alone.
 
 In a jail, the jail's own `certctl` does the work, by `jexec`. Its

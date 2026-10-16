@@ -72,15 +72,48 @@ certificate shows:
 **Sign with a CA key…** signs every host key with your certificate
 authority's private key, `ssh-keygen -s … -h` for 52 weeks, for the
 principals you give: the names clients reach the host by, one at least,
-since a host certificate for no name is good for any. Each certificate is written beside its key and
-named by `HostCertificate`. The signing is done on the host, by its
-own ssh-keygen, in a directory of `/tmp` that only root can read. The
-CA key is there only while ssh-keygen reads it, then overwritten and
-removed. For a jail, only its public host keys come out and only their
-certificates go in, so the CA key is never inside the jail, whose root
-could read it. Neither the console nor the job keeps it. Clients then trust the host through a
-`@cert-authority` line in their `known_hosts`, instead of each host's
-key.
+since a host certificate for no name is good for any. Each
+certificate is written beside its key and named by `HostCertificate`.
+Clients then trust the host through a `@cert-authority` line in their
+`known_hosts`, instead of each host's key.
+
+### Where the CA's private key is, and is not
+
+**Arcana keeps the CA's private key nowhere.** It is given each time
+you sign, and its way is this:
+
+1. **The page.** You paste it into the box; it is sent once, in the
+   body of one HTTPS request, and the box is closed. A browser cannot
+   be made to forget a string at once: close the tab when you are done
+   on a machine you share.
+2. **The console.** The request is read into memory (Kore keeps bodies
+   in memory, `http_body_disk_offload` off), parsed, and put into a
+   job for the host. The raw body, Kore's copy of it, the parsed JSON's
+   copy and the job's are each overwritten with zeros
+   (`explicit_bzero(3)`) as soon as they are no longer needed. It is
+   not in the console's log, its audit trail (which records *ssh sign*
+   and who did it) or its store.
+3. **To the host.** Over the console's mutual-TLS connection to the
+   agent, as every job.
+4. **The agent.** The job runs on the host itself, never in a jail,
+   whose root could read it there. The key is never written to a file:
+   on ZFS a block written over is a new block, and the old one stays
+   until it is freed, or for good in a snapshot. Instead the agent
+   starts an `ssh-agent(1)` of its own, its socket in a directory of
+   `/tmp` that only root can enter, gives it the key through
+   `ssh-add -`'s standard input (a pipe), and signs with
+   `ssh-keygen -s ca.pub -U`, which asks that agent to sign: only the
+   CA's public key is in the directory. The agent holds the key for two
+   minutes at most (`ssh-agent -t 120`) and is ended as soon as the
+   keys are signed; the job's copy of the key is overwritten when the
+   job ends, and the job's trace never had it. For a jail, only its
+   public host keys come out and only their certificates go in.
+
+What is left to trust: root on the host while it signs (it could read
+any process's memory), and the console's host while the request passes.
+A CA key you care for is best kept offline or in a hardware token; sign
+with it from a host you trust, or sign the host keys yourself with
+`ssh-keygen -s` and give the console only the certificates.
 
 ## Who signs in
 

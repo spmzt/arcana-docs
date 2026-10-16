@@ -82,6 +82,8 @@ answer. The console's light opens the console's own **API**, as
 it takes and what it answers, by group and searched, and the document
 itself one press away for a client generator. **Notify** has this
 device told of what ends (below), and **Log out** ends the session.
+**?** opens the page shown in this book, at its part: the tab of a
+host, the kind of its network, a section of the side bar.
 
 ## The activity bar
 
