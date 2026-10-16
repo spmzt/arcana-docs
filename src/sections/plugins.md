@@ -177,15 +177,19 @@ Each kind is made and changed with a form instead of text:
   session carries it, the import and export (`all`, `none` or a filter
   of the file) and next hop self;
 - **OSPF**: OSPFv2 or v3, IPv4 or IPv6, import and export, ECMP, the area and
-  up to six interfaces (a name or a pattern), each with its cost, type
+  up to sixteen interfaces (a name or a pattern), each with its cost, type
   (broadcast or point-to-point), hello and dead times, BFD and stub;
 - **BFD**: what sessions it accepts (IPv4 or IPv6, direct or multihop),
-  up to six interfaces with their least receive and send
+  up to sixteen interfaces with their least receive and send
   intervals and the multiplier, and neighbours of its own, each with an
   interface, a local address and multihop (which needs the local
   address).
 
-A protocol the form cannot show whole (a comment in it, a filter
+An interface is a name or a pattern, or several with commas, `-`
+before one leaving it out (`-bge1, *`). A `#` comment in a protocol is
+kept in the form's **Comments** and written back under its first line.
+
+A protocol the form cannot show whole (a `/* */` comment in it, a filter
 written in it, an option the form has no field for, a BGP channel that
 leaves its import or export to BIRD's default) is not read into it: it
 is changed as text, so that nothing of it is lost. What the form writes
