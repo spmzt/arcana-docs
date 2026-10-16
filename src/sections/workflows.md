@@ -10,9 +10,12 @@ hosts at once, by hand, at an interval, or on an event.
 A step is one of three things:
 
 - **A job** of any kind, its fields those `share/arcana/jobs.yaml` says
-  the kind needs (marked) and uses, with a choice where a field is one
-  of a few. The build checks that file against `arcana.yaml`'s kinds of
-  job and their attributes, and stops where they differ.
+  the kind needs (first, marked) and uses (under **More options**). Each
+  field is the control its kind calls for: a choice in words where it is
+  one of a few (pkg's network: *IPv4 only*, *IPv6 only*), a box for yes
+  or no, a number, a jail of the fleet's hosts; its help is under it.
+  The build checks that file against `arcana.yaml`'s kinds of job and
+  their attributes, and stops where they differ.
 - **A read** of the host (hello, jails, services, stats, events,
   history, packages) whose answer a later step looks at.
 - **One of Arcana's own**, from the repository the console builds from
@@ -42,7 +45,12 @@ missing). A step whose condition fails is skipped.
 **When it fails**, the host's run stops, goes on, or goes on at a later
 step, those between not run.
 
-A value may be:
+A field holds a value of its own. **{x}** beside it makes it an
+expression instead, with what can be put in it to pick from: the
+workflow's parameters, the host's name and id, what an earlier step
+answered. **{x}** again makes it a value of its own, the expression
+gone. An expression that comes out a number is one, for a field that
+takes a number. A value may be:
 
 | Value | Is |
 |---|---|
@@ -108,6 +116,10 @@ saved:
   each only when the head is newer;
 - **a jail started again** when it stops;
 - **packages upgraded** every week;
+- **every jail's packages upgraded** every week: the host's, then every
+  running jail's, one after the other (the job's jail *every running
+  jail*, `*`): a jail without `pkg(8)` is left out, and one that fails
+  does not stop the rest, the job's error naming each that failed;
 - **a service restarted when it crashes**: the service, and the name
   its process goes by (the same, mostly; `postgres` for postgresql),
   are parameters; a crash of that program on the host itself, not in a
