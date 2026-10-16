@@ -69,8 +69,13 @@ first what it will make):
   Only a link you set to **DHCP** gets `dhclient(8)`, to **SLAAC**
   `rtsol(8)` (`ifconfig_<if>="DHCP"` or `inet6 accept_rtadv`, kept in
   rc.conf), and only a link given a **routing table (VRF)** is put in
-  it (`ifconfig <if> fib N`). Undone, each goes back to static and
-  table 0.
+  it (`ifconfig <if> fib N`). Undone, each goes back to table 0 and to
+  the addressing it had before Arcana first set DHCP or SLAAC on it:
+  the agent keeps the interface's two rc.conf lines then
+  (`addressing-was.json`), so a host on SLAAC or DHCP by its own
+  rc.conf stays on it, and a static address is given back. A change
+  made in safe mode and not confirmed is undone the same way, to what
+  the interface had just before it.
 - **The link the console reaches the host through** is said in its
   form: DHCP or SLAAC may give it another address, and a table of its
   own sends its replies by that table, so either can lose the host to
