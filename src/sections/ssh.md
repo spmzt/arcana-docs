@@ -135,3 +135,13 @@ From the command line: `arcanactl [-s] [-j jail] sshd [list] | banner
 file | set Setting [value ...] | authorize user keyfile | unauthorize
 user fingerprint | sign ca-key-file [principal ...] | user-cas file`
 (`-` for none).
+
+A key's **Options** opens what its line of `authorized_keys` says before
+the key: **principals** (the names it may sign in as, with a
+certificate), **from** (where it may sign in from), **command** (what
+runs whatever is asked), **good until** (`expiry-time`), and boxes for
+`cert-authority`, `restrict` and the `no-` words; any other option
+(`environment=`, `permitopen=`) is kept as written. Saving rewrites that
+line alone, the key and its comment as they are (`arcanactl sshd options
+user fingerprint [options]`), and options with which the line would be
+no key OpenSSH reads are refused.
