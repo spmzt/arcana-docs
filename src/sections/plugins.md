@@ -166,18 +166,21 @@ neighbours BIRD has, BFD's the sessions.
 
 Each kind is made and changed with a form instead of text:
 
-- **BGP**: the neighbour's address (a link-local one with its
+- **BGP**: the template it is made from (what the form leaves empty,
+  the template says), the neighbour's address (a link-local one with its
   interface, `fe80::1%em0`) and AS, the local AS (a number, or a name
   the file defines), the source address, multihop, the TCP-MD5
   password (written with `authentication md5`; on FreeBSD the kernel
   signs the segments, `tcp(4)`'s `TCP_MD5SIG`, so the key goes into an
-  SA of `setkey(8)` too), BFD and passive; for IPv4 and IPv6 each, whether the
+  SA of `setkey(8)` too); BFD, passive and enforce first AS, each on,
+  off or left to the template or BIRD; for IPv4 and IPv6 each, whether the
   session carries it, the import and export (`all`, `none` or a filter
   of the file) and next hop self;
-- **OSPF**: OSPFv2 or v3, IPv4 or IPv6, import and export, the area and
+- **OSPF**: OSPFv2 or v3, IPv4 or IPv6, import and export, ECMP, the area and
   up to six interfaces (a name or a pattern), each with its cost, type
   (broadcast or point-to-point), hello and dead times, BFD and stub;
-- **BFD**: up to six interfaces with their least receive and send
+- **BFD**: what sessions it accepts (IPv4 or IPv6, direct or multihop),
+  up to six interfaces with their least receive and send
   intervals and the multiplier, and neighbours of its own, each with an
   interface, a local address and multihop (which needs the local
   address).
