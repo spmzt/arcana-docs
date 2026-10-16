@@ -51,6 +51,21 @@ port, without losing it on the way:
    change, the agent stops listening on the new address and the host is
    reached as before.
 
+**SCTP over several paths**: an SCTP association has a path from each
+of the console's addresses to each of the agent's, and carries on over
+another when one fails, with nothing for the console or the agent to
+do. The console's end, not bound to an address, offers every address
+of its host; the agent's offers those its listener is bound to: the
+listener's own address, and the other addresses given here (bound with
+`sctp_bindx(3)` while it runs, kept in `rc.conf` as
+`arcana_agent_sctp_also`, the agent's `--sctp-also`). A listener on
+`0.0.0.0` or `[::]` is bound to every address of its family already.
+Each SCTP listener lists the addresses it is bound to, and says which
+of those given could not be; under **Connected now**, an association
+shows its paths: each address of the console's, active, inactive or
+not yet confirmed, its smoothed round trip, and which one is the
+primary path, with the agent's own addresses beside them.
+
 The agent's certificate must name the new address, or the name the
 console checks for the host. The local socket is never closed, nor the
 last address the agent is reached by. From a shell: `arcanactl
