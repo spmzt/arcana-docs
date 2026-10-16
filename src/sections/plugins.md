@@ -198,6 +198,25 @@ change.
 
 ![A BGP neighbour's form](../img/sec-bird-bgp-form.png)
 
+### Faults of the sessions
+
+The agent reads its host's BIRD, and each vnet jail's, every 15 seconds
+(`arcana-agent --bird-watch`), and raises a fault when a session goes
+wrong:
+
+- **bgp-neighbor**, a BGP session turned on but not established:
+  Major once it was established, Minor while it never was; a session
+  turned off by hand is none;
+- **ospf-neighbor**, an OSPF neighbour that was Full (or 2-Way) and is
+  no more, or is gone from BIRD's list;
+- **bfd**, a BFD session that was up and is down;
+- **bird-instance**, a BIRD that answered and does not.
+
+Each is cleared when it is well again. A fault is an event of the host,
+so it is mailed (Settings, Notifications, By mail, from the severity
+chosen there), can start a workflow (the trigger *a fault is raised or
+cleared*), and is listed with the others.
+
 ### BIRD's own safe mode
 
 A change is made in safe mode unless that is turned off beside
