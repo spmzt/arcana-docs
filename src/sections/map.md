@@ -5,7 +5,8 @@ configured for it: the console reads each host's interfaces every few
 seconds and works the links out. Its second tab, **Nexthop groups**, has
 every host's routes of several next hops with what each next hop sent
 and what its gateway received, as a host's [Nexthops](network.md#nexthops-and-their-groups)
-draws them; its third, **Traceroute**, is below.
+draws them; its third, **Traceroute**, and the last three, **BGP**,
+**OSPF** and **BFD**, are below.
 
 ![The map: three hosts, a shared network, a private link and a tunnel](../img/demo-map.png)
 
@@ -87,10 +88,35 @@ large as the path's MTU can be.
 
 From a shell: `arcanactl traceroute address`.
 
+## BGP, OSPF and BFD
+
+Every session of every BIRD in the fleet, hosts and vnet jails alike, on
+one page a protocol: what each BIRD says, read again every few seconds
+while the tab is open. Above, the figures for all three: how many BGP
+sessions are established, OSPF neighbours full (or 2-Way, as two
+routers neither of which is the designated one stay) and BFD sessions
+up, of all, and the routes in their tables.
+
+The graph has the fleet's routers on the left and what they speak to
+on the right, a line a session in the colour of its state: green as it
+should be, amber on its way, red down. A neighbour that is a host of
+this console is named and framed as one; one outside is shown by its AS
+(BGP) or its router ID (OSPF). The table under it sorts by any column
+and is filtered by what is typed above it, the graph with it. BGP has
+each neighbour's AS and the local one, the routes imported and exported
+over its channels and the last error; OSPF the neighbour's priority,
+dead time, interface and address; BFD the interval and the timeout.
+A row opens the protocol in its host's BIRD tab, its box open.
+
+![BGP across the fleet: two routers, a session established and one connecting](../img/sec-routing-bgp.png)
+
 <div class="freebsd">
 
 **FreeBSD:** the links are worked out from each host's `getifaddrs(3)`;
 a route is looked up among the routes the kernel gives through
-`netlink(4)`, the most specific first; traceroute is `traceroute(8)` and `traceroute6(8)`.
+`netlink(4)`, the most specific first; traceroute is `traceroute(8)` and `traceroute6(8)`. BGP, OSPF and BFD
+are BIRD's (`net/bird2` or `net/bird3` from the ports), read with
+`birdc(8)` over its control socket; the routes they learn reach the
+kernel's FIB through BIRD's kernel protocol, a `route(4)` socket.
 
 </div>
