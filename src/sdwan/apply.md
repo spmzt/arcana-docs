@@ -52,6 +52,36 @@ older version is refused, so two pages do not undo each other. **Start
 from an example** writes one with two of the console's hosts as its
 edges.
 
+## What an edge changes on its host
+
+Making a host an edge, and giving it its WAN links, changes the host
+only as follows, and only once a plan is applied (**Deploy**, which says
+first what it will make):
+
+- **IP forwarding** turned on for IPv4 and IPv6
+  (`net.inet.ip.forwarding`, `net.inet6.ip6.forwarding`), kept in
+  `/etc/sysctl.conf`.
+- **NTP**, when the edge names servers: `ntpd(8)` set to them.
+- **A WAN link's interface is not touched** while it is left
+  **Static** with no routing table of its own, which is how a link is
+  made: its addresses and routes stay as the host has them, and the
+  link only says which interface and address the tunnels start from.
+  Only a link you set to **DHCP** gets `dhclient(8)`, to **SLAAC**
+  `rtsol(8)` (`ifconfig_<if>="DHCP"` or `inet6 accept_rtadv`, kept in
+  rc.conf), and only a link given a **routing table (VRF)** is put in
+  it (`ifconfig <if> fib N`). Undone, each goes back to static and
+  table 0.
+- **The link the console reaches the host through** is said in its
+  form: DHCP or SLAAC may give it another address, and a table of its
+  own sends its replies by that table, so either can lose the host to
+  the console. The form refuses to give that link either unless you
+  tick that you reach the host another way too, or that its address
+  and routes stay.
+- Once a service uses the edge: more routing tables (`net.fibs`), the
+  service's tunnels in its table, its routes, ipfw rules in set 30, and
+  BIRD, strongSwan, local-unbound, Squid or Suricata as it asks, each
+  listed below.
+
 ## Edges
 
 ![The Edges tab, before an apply](../img/sd-edges-plan.png)
