@@ -146,8 +146,8 @@ Under it, what the configuration is made of, read from the host:
 - **RPKI**, the caches with their state and the ROA tables, and **+
   cache**, which adds the tables, the protocol and a function
   `rpki_invalid()` for filters to ask;
-- the protocols and the rest, with **+ BGP neighbour** and **+ OSPF**
-  to start one from an outline.
+- the protocols and the rest, with **+ BGP neighbour**, **+ OSPF** and
+  **+ BFD**, each a form (below).
 
 **Configuration** edits the whole file; a configuration in several
 files has a list to pick from. A change is put back as the whole file
@@ -155,6 +155,41 @@ with that part changed. The host has `bird -p` parse the whole
 configuration first: what it refuses does not stay, the box says what
 bird said, and what was typed is kept. Then BIRD is told to read it. The
 file as it was is kept beside it as `<file>.arcana-old`.
+
+### BGP, OSPF and BFD, each a tab
+
+Beside **All**, a tab a protocol. Each lists the protocols of its kind
+in the file, with what they say in short (the neighbour and both ASes,
+the OSPF area and its interfaces, BFD's interfaces), BIRD's state for
+each, the routes in and out and the last error. OSPF's tab also has the
+neighbours BIRD has, BFD's the sessions.
+
+Each kind is made and changed with a form instead of text:
+
+- **BGP**: the neighbour's address (a link-local one with its
+  interface, `fe80::1%em0`) and AS, the local AS (a number, or a name
+  the file defines), the source address, multihop, the TCP-MD5
+  password (written with `authentication md5`; on FreeBSD the kernel
+  signs the segments, `tcp(4)`'s `TCP_MD5SIG`, so the key goes into an
+  SA of `setkey(8)` too), BFD and passive; for IPv4 and IPv6 each, whether the
+  session carries it, the import and export (`all`, `none` or a filter
+  of the file) and next hop self;
+- **OSPF**: OSPFv2 or v3, IPv4 or IPv6, import and export, the area and
+  up to six interfaces (a name or a pattern), each with its cost, type
+  (broadcast or point-to-point), hello and dead times, BFD and stub;
+- **BFD**: up to six interfaces with their least receive and send
+  intervals and the multiplier, and neighbours of its own, each with an
+  interface, a local address and multihop (which needs the local
+  address).
+
+A protocol the form cannot show whole (a comment in it, a filter
+written in it, an option the form has no field for, a BGP channel that
+leaves its import or export to BIRD's default) is not read into it: it
+is changed as text, so that nothing of it is lost. What the form writes
+goes through the same check, `bird -p`, and the same safe mode as any
+change.
+
+![A BGP neighbour's form](../img/sec-bird-bgp-form.png)
 
 ### BIRD's own safe mode
 
