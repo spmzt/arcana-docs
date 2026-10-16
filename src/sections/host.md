@@ -36,6 +36,26 @@ does not, nothing is changed. **Go back to TCP** does the same the
 other way, and is also offered when a host reached over SCTP stops
 answering. From a shell: `arcanactl transport [retry]`.
 
+**Move to another address** reaches the host at another address or
+port, without losing it on the way:
+
+1. the agent, asked where it is reached now, listens on the new address
+   too (and over SCTP there as well, beside TCP);
+2. the console tries the new address on a connection of its own;
+3. only when the agent answers there is the server moved, and then, by
+   the new way, the old listener closed and the new address kept for
+   the agent's next start, in place of the old one in `rc.conf`
+   (`arcana_agent_listen`, or `-l` in `arcana_agent_flags`; added to
+   `arcana_agent_listen` when neither had it);
+4. when the agent does not answer there, or the console cannot keep the
+   change, the agent stops listening on the new address and the host is
+   reached as before.
+
+The agent's certificate must name the new address, or the name the
+console checks for the host. The local socket is never closed, nor the
+last address the agent is reached by. From a shell: `arcanactl
+transport listen <uri>`, and `transport unlisten <old> for <new> keep`.
+
 Over SCTP, the requests the console makes of a host at once all go over
 one association, each waiting for its own answer: the agent sees one
 session where over TCP it would see one for each. What comes in parts
