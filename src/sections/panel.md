@@ -171,8 +171,13 @@ the hosts in the background, and adds none.
 
 **Recent tasks**, along the bottom while the bar is closed, are the
 last few, each with its host, how it ended and how long it took; one
-picked opens the list at it. Ended tasks are kept in the browser, and
-are still there, without their traces, when the page is opened again.
+picked opens the list at it. Ended tasks are kept in the browser (its
+local storage; no database is needed), the last 24, and are still
+there when the page is opened again, with their errors. A job's trace
+is read again from its host as the task is opened: the host keeps its
+jobs (until the agent restarts, or the job is old enough to be let go),
+and says when it no longer has it. Another task's trace is kept with
+it when it is small (under 16 KB).
 
 ### The queue
 

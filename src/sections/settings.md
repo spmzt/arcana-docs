@@ -135,6 +135,16 @@ default); changed, they hold for the sign-ins there are as well.
 Whoever can sign in can set the repository, and so decides what is
 built and sent to every host as root.
 
+**Rollback timer, every host**: how long a change made in safe mode
+waits for the console before the host undoes it, for every host that
+has no timer of its own (10 to 3600 seconds; empty, each agent's own
+`-w`). The console sends the timer with each safe change, so there is
+nothing to push to the hosts and nothing to restart: it holds from the
+next change on, on every host the console reaches. Below the form,
+**Rollback timer, host by host** says for each host its own timer, its
+agent's own (an agent from 0.131 says it), what its next change will
+wait and why; **Use every host's** lets a host's own timer go.
+
 ## Update
 
 Updating Arcana in one place.

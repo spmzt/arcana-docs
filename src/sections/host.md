@@ -89,9 +89,10 @@ does at the start.
 
 Below it, the host's **rollback timer**: how long a change made in safe
 mode waits there for the console to be heard from again before the
-agent undoes it, 10 to 3600 seconds, or empty for the agent's own
-(`arcana-agent -w`, a minute unless set). See [Safe
-mode](network.md#safe-mode).
+agent undoes it, 10 to 3600 seconds. Empty, the host follows Settings'
+timer for every host ([Settings › Console](settings.md#console)), and
+without one, its agent's own (`arcana-agent -w`, a minute unless set),
+which the agent says. See [Safe mode](network.md#safe-mode).
 
 ### Configuration, as a whole
 
