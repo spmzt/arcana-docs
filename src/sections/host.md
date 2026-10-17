@@ -66,6 +66,16 @@ shows its paths: each address of the console's, active, inactive or
 not yet confirmed, its smoothed round trip, and which one is the
 primary path, with the agent's own addresses beside them.
 
+An address on a loopback interface (a router's own address on `lo0`,
+say) answers TCP but not SCTP: FreeBSD's SCTP counts an address of a
+loopback interface out of scope for a peer elsewhere
+(`sctp_is_address_in_scope()` in
+[sctp(4)](https://man.freebsd.org/sctp/4)), so the INIT-ACK never
+leaves and the console's attempt times out. A listener bound to such
+addresses alone says so here; listen on an address of a real interface
+too (`--sctp-also`, above) and have the console reach the agent by
+that one, or keep that host on TCP.
+
 The agent's certificate must name the new address, or the name the
 console checks for the host. The local socket is never closed, nor the
 last address the agent is reached by. From a shell: `arcanactl
