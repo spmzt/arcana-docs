@@ -25,6 +25,22 @@ names them. It is one document with three parts:
   address is the host's own, learned when a plan is made), a `vrf`
   (a routing table of the underlay's own) and its `routing` (`bgp`,
   `ospf`, shaped as a UNI's).
+  An edge may be a vnet jail on a server instead of the server itself:
+  its `server` is then `server/jail` (in the form, **Jail**), and the
+  jail's own network stack ([vnet(9)](https://man.freebsd.org/vnet/9))
+  is the edge's. Its interfaces are made there (`ifconfig -j`), its
+  routes, FIBs (`net.fibs` is per vnet) and sysctls set there (the
+  jail's own `sysctl`, kept in its own `/etc/sysctl.conf`), its tunnels,
+  [ipfw(8)](https://man.freebsd.org/ipfw/8) rules and steering are its
+  ipfw's (by [jexec(8)](https://man.freebsd.org/jexec/8)), and its
+  probes run from its network, on an ICMP socket the agent's helper
+  makes in the jail. What it needs installed (strongSwan, BIRD,
+  wg(8)) is looked for in the jail, as the jail sees its files. One
+  server can so carry several edges, itself and its jails, as a lab on
+  one host does. Not yet at a jail's edge: the services the host runs
+  for a service (dnsmasq, unbound, Squid, Suricata, its BIRD), NTP,
+  rtadvd, a `uswe` tunnel's manual SAs and the security record; an
+  apply that needs one there stops and says so.
 - `swvcs`: the services (SD-WAN Virtual Connections, §9). Each has
   an `id`, the `fib` it has on its edges (1 or more; FIB 0 is the
   underlay's), its `ucs`, `reserved_prefixes` (the provider's own

@@ -13,7 +13,14 @@ lost (tunnel), a BFD session down (bfd), a BGP neighbour down after
 it was up (bgp-neighbor), a BIRD instance that stopped answering, which
 the agent starts again at once (bird-instance), a metric
 over a threshold (tca), CPU or memory over the sampler's limit (cpu,
-memory), a program the kernel saw die of a signal (crash, Major, of
+memory), a ZFS pool or another local file system fuller than the
+sampler's storage limit, looked at each minute (storage, of the pool's
+name or the mount point), a UCS end point's or a UNI's interface
+without its link, down or its carrier gone, as the kernel tells the
+agent over [netlink(4)](https://man.freebsd.org/netlink/4) (interface,
+Major, of the end point's or UNI's id; each edge's links ride with its
+probes, `{"targets": [...], "links": [{"interface", "id", "role"}]}`),
+a program the kernel saw die of a signal (crash, Major, of
 `host:bird` or `jail:web/nginx`: the signal by name, how many times in
 24 hours, and why there is no core when there is none, said anew at
 each crash and cleared after an hour without one; a daemon that set
