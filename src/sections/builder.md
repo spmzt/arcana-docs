@@ -89,8 +89,7 @@ lines. The page writes the set's `make.conf` first, adding the ports to
 `WITH_DEBUG_PORTS` (bsd.port.mk's list of the origins built
 `WITH_DEBUG`), then starts the build: two jobs, one batch. With no set
 named, the set is `debug`, so these packages go into a repository of
-their own and the others stay stripped. For a BIRD that crashes, as
-edge-b's did:
+their own and the others stay stripped. For a BIRD that crashes:
 
 1. Bulk: the jail, the tree, `net/bird3`, Debug symbols ticked, Build.
 2. The run ends done; the repository `…-debug` has the package.
@@ -106,10 +105,37 @@ joined by `-` (`make.conf` itself for every build). poudriere reads
 `make.conf`, then the jail's, the tree's, the set's and their pairs'.
 An empty text takes the file away.
 
+**Port options**: a port's OPTIONS, as `make config` sets them, for a
+jail, a tree and a set: **Show its options** runs `make showconfig` in
+the port's directory and lists each option, the port's own first, then
+each group as the port names it (a *single* or *radio* group's title
+says how many may be on). **Save** writes the port's options file as
+`make config` writes it (`OPTIONS_FILE_SET+=`, `OPTIONS_FILE_UNSET+=`),
+each option checked against the port's list; **The port's defaults**
+takes it away. Beneath, each options directory of `poudriere.d` with
+the ports it sets, `+` on and `−` off.
+
+<div class="freebsd">
+
+**FreeBSD:** a build copies one options directory whole, as its
+`/var/db/ports`: the first there is of `<jail>-<tree>-<set>-options`,
+`<jail>-<set>-options`, `<jail>-<tree>-options`, `<tree>-<set>-options`,
+`<set>-options`, `<tree>-options`, `<jail>-options` and `options`. The
+options are written into that one; when there is none, the build's own
+is made, as `poudriere options -j -p -z` would, and from then it is the
+one those builds copy, the wider ones no longer. The form says which,
+before you save.
+
+</div>
+
 **Builds**: the latest build of each jail, tree and set, as `poudriere
 status -f -H -l` tells it: its status and how many ports were built,
 failed, skipped and are left, and where its logs are (the build's
-name, hovered).
+name, hovered). A build with ports that failed has a row beneath it:
+each failed port with the phase it failed in, the reason poudriere
+found (when it was told to look, `DETERMINE_BUILD_FAILURE_REASON`), how
+long it took and the end of its build log; and the ports skipped
+because they need one that failed.
 
 **Repositories**: each under the data directory's `packages`, with how
 many packages it has. A host's pkg(8) takes one as a repository whose
@@ -126,6 +152,8 @@ arcanactl poudriere jail-create name=150amd64 version=15.0-RELEASE
 arcanactl poudriere ports-create name=default branch=main
 arcanactl poudriere bulk jail=150amd64 ports=default set=debug origin=net/bird3
 arcanactl poudriere stop run=3
+arcanactl poudriere show-options jail=150amd64 set=debug origin=net/bird3
+arcanactl poudriere options jail=150amd64 set=debug origin=net/bird3 on=BMP off=RIP
 ```
 
 The API is `GET /api/servers/<id>/builder` and jobs of kind
