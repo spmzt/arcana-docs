@@ -14,6 +14,13 @@ automatically as what another needs, its size, its port and what it is.
   or of all.
 - **IPv4** or **IPv6** has `pkg` reach the repository over that only
   (`pkg -4`, `pkg -6`), kept in the browser; **either** lets it choose.
+- **From**, beside Upgrade and in Install…, takes the packages from one
+  of the repositories `pkg` is configured with there alone (`pkg
+  upgrade -r`, `pkg install -r`), enabled or not, such as a Builder's
+  poudriere repository with a debug build of BIRD; **any repository**
+  leaves it to `pkg`'s own configuration
+  ([pkg.conf(5)](https://man.freebsd.org/pkg.conf/5)). The agent
+  refuses a name that is not one of them.
 - **Clean** deletes the downloaded packages no longer needed, or no
   longer in the repository (`pkg clean`), **Clean all** the whole cache
   (`pkg clean -a`). **Clean the jails**, on the host's page, does it in
@@ -26,8 +33,8 @@ When `pkg` refuses packages built for a newer FreeBSD than the host's
 (OSVERSION), the console asks whether to go on anyway, and approved,
 does it again with `IGNORE_OSVERSION=yes`.
 
-From a shell: `arcanactl packages [-i] [-4 | -6] [jail]`, `pkg-upgrade
-[-O] …`, `pkg-clean [-a] [-j jail | -J]`, `pkg-install [-O] [-4 | -6]
+From a shell: `arcanactl packages [-i] [-4 | -6] [jail]` (with the
+repositories), `pkg-upgrade [-O] [-r repo] …`, `pkg-clean [-a] [-j jail | -J]`, `pkg-install [-O] [-4 | -6] [-r repo]
 [-j jail] package …`.
 
 ## Jobs
