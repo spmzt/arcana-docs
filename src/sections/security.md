@@ -3,10 +3,10 @@
 **Security**, in the side bar: the plugins that guard a host by
 themselves, apart from SD-WAN, a tab each. Choose the host at the top;
 each tab says what runs there and what it was given. The plugins are
-the host's own: Arcana installs none of them by itself (`pkg install
-squid`, `c-icap c-icap-modules clamav`, `suricata`, `snort3`), and
-says which is missing when a save needs it; the Snort tab has an
-**Install snort3** button, for you to press.
+the host's own: Arcana installs none of them by itself. A tab whose
+plugin the host lacks says so, with a button that installs it when you
+press it (`pkg install squid`; `c-icap c-icap-modules clamav`;
+`clamav`; `suricata`; `snort3`).
 
 SD-WAN's security policies use the same plugins at its edges
 ([Security policies](../sdwan/security.md)); what this page makes is
