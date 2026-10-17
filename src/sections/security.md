@@ -3,9 +3,10 @@
 **Security**, in the side bar: the plugins that guard a host by
 themselves, apart from SD-WAN, a tab each. Choose the host at the top;
 each tab says what runs there and what it was given. The plugins are
-the host's own: Arcana installs none of them (`pkg install squid`,
-`c-icap c-icap-modules clamav`, `suricata`), and says which is missing
-when a save needs it.
+the host's own: Arcana installs none of them by itself (`pkg install
+squid`, `c-icap c-icap-modules clamav`, `suricata`, `snort3`), and
+says which is missing when a save needs it; the Snort tab has an
+**Install snort3** button, for you to press.
 
 SD-WAN's security policies use the same plugins at its edges
 ([Security policies](../sdwan/security.md)); what this page makes is
@@ -76,6 +77,49 @@ instance `divert 8600 ip from any to any via em0`. While it is stopped,
 what is diverted goes nowhere, so the host raises a Critical fault: a
 filter that prevents is only as available as Suricata.
 
+## Snort
+
+Snort 3, a host's own IDS/IPS. The snort3 package has no rc.d script,
+so Arcana's package brings one, `arcana_snort`: **Start**, **Stop**
+and **Restart** at the top are `service arcana_snort`, and the warnings
+under them say what keeps Snort from doing what it was told (enabled
+but stopped, an interface the host has not, no rules yet, inline with
+no ipfw rule diverting to its port).
+
+- **Alerts**: the newest of `alert_json.txt` first, sorted and
+  filtered: the rule (gid:sid), its message and class, the addresses
+  and ports. **Turn off** turns that rule off.
+- **Rules**: **Update** fetches an archive of rules files (or a
+  `.rules` file) and takes in every `*.rules` in it: Snort's community
+  rules unless another address is given (http, https or `file:///`),
+  then the last one. Each rule's chip turns it on or off; that is kept
+  by gid:sid and holds across updates, and **As shipped** gives it back
+  to the file's own choice. `local.rules`' rules are listed too, as
+  that file has them.
+- **Settings**: started at boot; **Detects** (watching the interfaces,
+  a packet thread each) or **Prevents** (inline: what an ipfw rule
+  diverts to its port, for instance `divert 8000 ip from any to any via
+  em0` on the Firewall tab, passed back unless a rule drops it); and
+  `HOME_NET`, the networks the rules call home. Snort takes rc.conf's
+  settings when it starts: restart it after a change.
+- **local.rules** and **snort.lua**: your own rules, and Snort's
+  configuration, written as typed.
+
+Every change is checked by `snort -T` first: what Snort refuses is not
+written, and its own words say why. A running Snort is then told to
+read its rules and configuration again (SIGHUP).
+
+<div class="freebsd">
+
+**FreeBSD:** Snort runs by `rc(8)`, its settings `rc.conf`'s
+(`arcana_snort_enable`, `_mode`, `_interfaces`, `_divert_port`), set
+with `sysrc(8)`; watching is by `bpf(4)` through libpcap, preventing by
+`divert(4)`, which `ipfw(8)`'s `divert` rule feeds and the rc.d script
+loads (`ipdivert.ko`). The rules are fetched by `libfetch(3)`, the
+library `fetch(1)` is made of.
+
+</div>
+
 ## By the API
 
 `POST /api/servers/<id>/security` with `{"what": "proxy" or "ids",
@@ -83,3 +127,7 @@ filter that prevents is only as available as Suricata.
 form has it; `[]` stops them all. What runs, and the forms as saved,
 are in `GET /api/servers/<id>/sdwan` (`proxy`, `ids`, `security_proxy`,
 `security_ids`, `clamav`).
+
+Snort is read by `GET /api/servers/<id>/snort` (`?rules=1` for every
+rule), and changed by jobs of kind `snort`: `set`, `conf`, `update` and
+`rule`, as in `arcanactl snort`.
