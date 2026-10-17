@@ -89,7 +89,11 @@ look at the jails. A crash is the kernel's too: a process that dies
 of a signal that dumps core (SIGSEGV, SIGABRT, SIGBUS…) is written to
 the message buffer, `pid 812 (nginx), jid 0, uid 80: exited on signal
 11`, while `kern.logsigexit` is 1, as it is unless set off; the agent
-reads the buffer each second and tells each such line as `crash`.
+reads the buffer each second and tells each such line as `crash`, with
+the kernel's reason when there is no core (`reason`: "sugid process
+denied by kern.sugid_coredump" for a daemon that set its group, as
+`bird -g` does). Each such death is a fault too, `crash`, so that it
+reaches the faults page and the mail: see [Faults](../sdwan/faults.md).
 
 </div>
 

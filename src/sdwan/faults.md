@@ -13,7 +13,12 @@ lost (tunnel), a BFD session down (bfd), a BGP neighbour down after
 it was up (bgp-neighbor), a BIRD instance that stopped answering, which
 the agent starts again at once (bird-instance), a metric
 over a threshold (tca), CPU or memory over the sampler's limit (cpu,
-memory). One of a type and object is open at a time; set and cleared
+memory), a program the kernel saw die of a signal (crash, Major, of
+`host:bird` or `jail:web/nginx`: the signal by name, how many times in
+24 hours, and why there is no core when there is none, said anew at
+each crash and cleared after an hour without one; a daemon that set
+its group, as `bird -g` does, dumps no core while
+`kern.sugid_coredump` is 0). One of a type and object is open at a time; set and cleared
 are events (`sdwan-fault`) within the second (R71), and `GET
 /api/servers/<id>/sdwan` lists the day's; Paths lists them, open
 first, and the dashboard counts the open ones. A service's `tca`

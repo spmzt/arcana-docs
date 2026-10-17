@@ -210,7 +210,11 @@ wrong:
 - **ospf-neighbor**, an OSPF neighbour that was Full (or 2-Way) and is
   no more, or is gone from BIRD's list;
 - **bfd**, a BFD session that was up and is down;
-- **bird-instance**, a BIRD that answered and does not.
+- **bird-instance**, a BIRD that answered and does not;
+- **crash**, from the kernel rather than BIRD: a program that died of
+  a signal (`nginx died of SIGSEGV (pid 812), 2 times in 24 h; a
+  core was dumped`), of any program,
+  said anew at each crash and cleared after an hour without one.
 
 Each is cleared when it is well again. A fault is an event of the host,
 so it is mailed (Settings, Notifications, By mail, from the severity
