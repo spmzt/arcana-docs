@@ -2,8 +2,8 @@
 
 **Network** shows the host's network as the kernel has it, a view at a
 time: **Routes**, **Nexthops**, **Connections**, **Sockets**,
-**Interfaces**, **Netgraph**, **Bridges**, **Geneve**, **Neighbours**
-and **CARP**, each for IPv4, IPv6 or both. Filter the rows, and click
+**Interfaces**, **Netgraph**, **Bridges**, **Geneve**, **Neighbours**,
+**CARP** and **Multicast**, each for IPv4, IPv6 or both. Filter the rows, and click
 a column to sort.
 
 <div class="freebsd">
@@ -165,6 +165,32 @@ writes it as a pair of `rc.conf`'s `static_arp_pairs` or
 `static_ndp_pairs`, which `rc.d/static_arp` and `static_ndp` set at
 boot. **×** on a row takes one away (`arp -d`, `ndp -d`), and out of
 `rc.conf` too. In a jail's own network they are the jail's.
+
+**Multicast** is IGMP's and MLD's state: for each interface, the
+version it speaks (IGMPv1, v2 or v3; MLDv1 or v2) with its robustness
+variable (rv), query interval (qi), query response interval (qri) and
+unsolicited report interval (uri), shown as the kernel keeps them; and
+under it the groups joined there, each with its family, filter mode
+(include or exclude), sources and link-level address. IPv4 or IPv6
+narrows the groups to one family.
+
+Above them, the kernel's settings: the IGMP version an interface
+starts with, whether IGMPv1 and v2 and MLDv1 and v2 are heard at all,
+whether an interface falls back to an older router's version, whether
+groups of 224.0.0.0/24 are reported, whether reports carry Router
+Alert, and whether MLDv2 reports joins as ALLOW records. **Set** sends
+one sysctl job for each setting changed; **Kept at boot** writes each
+to `sysctl.conf` too. In a vnet jail they are the jail's own.
+
+<div class="freebsd">
+
+**FreeBSD:** the state is `ifmcstat(8)`'s, which reads it from the
+kernel's `igmp(4)` and `mld(4)`; the settings are the
+`net.inet.igmp.*` and `net.inet6.mld.*` sysctls, per vnet, set with
+`sysctl(8)`. The host joins and leaves groups for its own sockets; a
+querier or multicast routing (`pimd`, `mrouted`) is not Arcana's.
+
+</div>
 
 ## Span: traffic mirrored, and taken
 
