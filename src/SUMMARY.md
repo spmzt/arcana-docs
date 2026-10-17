@@ -49,6 +49,7 @@
 - [Utilization](sections/utilization.md)
 - [Workflows](sections/workflows.md)
 - [Security](sections/security.md)
+- [Builder](sections/builder.md)
 - [Troubleshoot](sections/troubleshoot.md)
 - [Settings](sections/settings.md)
 - [The Android app](sections/android.md)
