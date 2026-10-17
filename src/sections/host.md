@@ -169,6 +169,12 @@ through the page. Nothing is restarted: the files take hold at the next
 boot. The packages it lacks are installed only when **Install** is
 pressed.
 
+**Save as a template** keeps the host's configuration in the console
+under a name, for other hosts to be made the same: its files without
+their secrets (a host's keys are its own), with the host's name written
+`{{hostname}}` wherever it stands as a name of its own. It opens on the
+**Devices** page's **Templates**.
+
 Each tab of a host has **Export** at the end of its bar too: what the
 tab shows, as it was last read, saved as JSON or YAML.
 

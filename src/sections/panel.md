@@ -57,6 +57,19 @@ running and known, and its CPU, memory and ZFS use now. It sorts by any
 column and is narrowed by the filter, like every table; a row opens its
 host, and **×** takes a host off the console's list.
 
+**Templates**, its second tab, are hosts' setups kept by the console
+under a name (a host's Summary saves one, or a YAML or JSON file is
+taken in). Each is the files of a bundle with `{{name}}` where every
+host has a value of its own, `{{hostname}}` above all; `{{ }}` and not
+`${ }`, which `rc.conf`, `jail.conf` and the shell use themselves. A
+template opened shows each value it asks for, with what it is and a
+default, and every file's text, all of them to change; **Save** keeps
+it, **YAML** and **JSON** save it as a file. **Apply to a host** gives
+the host picked its values, and **Check** shows what the host would
+do, as a bundle is checked (the hardware the template needs, each
+file's diff, the packages it lacks), before **Apply** writes anything.
+A value without one given or a default refuses the whole.
+
 The agents are updated here. A host whose agent is not the build the
 console sends has its version marked and an **Update** beside it;
 **Update N agents**, at the top, sends it to every such host at once.
