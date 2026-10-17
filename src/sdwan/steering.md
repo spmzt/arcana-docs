@@ -29,6 +29,14 @@ and 3), `timeout` (ms, 1000), `history` (samples kept, 3600) and
 `report`; `intervals.eval` is the sample's length. The targets are
 kept beside `history.conf` for the agent's next start; `arcanactl
 sdwan` reads what they saw, `arcanactl sdwan probes json` sets them.
+An edge that is a vnet jail has a list of its own
+(`{"jail": "gw", "targets": [...]}`, kept in `sdwan-probes@gw.json`),
+set apart from the host's and probed from the jail's network; its
+targets say their `jail`, and its faults name their tunnel `id@jail`,
+as both ends of a tunnel between a host and its jail are on one agent.
+Its rules and steering are likewise its own (the payloads' `jail`),
+loaded by the jail's ipfw and shown under `edges` in `arcanactl
+sdwan`.
 Under each tunnel's table, its **monitor**: three charts over the last
 5, 15 or 60 minutes (the buttons at the top), the delay (each end's
 mean a line, its least to most a band), the variation and the loss,

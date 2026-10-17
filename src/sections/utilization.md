@@ -49,7 +49,12 @@ only where the host was away: a gap wider than the looks around it.
 The same form sets the limits: a CPU, memory or swap figure over its
 limit makes an event, and another when it is back under (five points
 lower), listed under events in the Log tab; the defaults are 90, 90 and
-50 percent, and 0 is no limit. **Limits of an interface, a disk or a
+50 percent, and 0 is no limit. **A file system over** (90 percent by
+default) is looked at each minute: each ZFS pool, its allocated share
+of its size as `zpool list` has it, and each other local file system
+that holds data, as [df(1)](https://man.freebsd.org/df/1) has it ([statfs(2)](https://man.freebsd.org/statfs/2)); one over it is
+an event and a storage fault (Mplify 119's resource faults, listed
+with SD-WAN's faults). **Limits of an interface, a disk or a
 jail**, a line each, do the same for one of them:
 
 ```text
