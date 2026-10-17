@@ -8,6 +8,7 @@ the base system's:
 | **WireGuard** | `wg(8)` (the interface itself, `if_wg(4)`, is the base system's, among the interfaces) | `wireguard-tools`; from FreeBSD 15 `wg` is in the base system |
 | **BIRD** | `birdc(8)` | `bird3` |
 | **IPsec** | strongSwan's `swanctl(8)` (an `ipsec(4)` interface is the base system's) | `strongswan` |
+| **Builder** (a page of its own) | `poudriere(8)` | `poudriere` or `poudriere-devel` |
 
 Each has a tab of its own, after the others and marked ◆, on every
 host. Where the plugin is not installed (on the host, or in the jail
