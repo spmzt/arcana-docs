@@ -120,3 +120,25 @@ are BIRD's (`net/bird2` or `net/bird3` from the ports), read with
 kernel's FIB through BIRD's kernel protocol, a `route(4)` socket.
 
 </div>
+
+
+## Prefix lists
+
+**Prefix lists**, the last tab: named lists of IPv4 and IPv6 prefixes
+kept by the console, for the whole fleet. Make one here (a name, a
+description, the prefixes one a line), and the forms that take
+prefixes offer it by name: an ipfw table's entry form adds every
+prefix of the list as an entry (one job each); a BIRD set's form adds
+them to its entries; an SD-WAN zone's and an SD-WAN list's forms add
+them to theirs. The list is taken in when the form is kept: changing
+the list later changes nothing on a host by itself, so what a host
+runs stays what you saw it get.
+
+<div class="freebsd">
+
+**FreeBSD:** a list becomes what each place has: entries of an
+`ipfw(8)` table (`table name add prefix`), a `define` set in BIRD's
+configuration, or prefixes in the SD-WAN document's zones and lists,
+which the edges get as ipfw tables of their own.
+
+</div>

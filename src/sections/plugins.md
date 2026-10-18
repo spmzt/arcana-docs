@@ -203,7 +203,11 @@ change.
 
 The agent reads its host's BIRD, and each vnet jail's, every 15 seconds
 (`arcana-agent --bird-watch`), and raises a fault when a session goes
-wrong:
+wrong. It reads one thing at a time, and counts the tables' routes
+(`show route … count`, a walk of the whole table) every five minutes
+at most: on a router with millions of routes, several such reads at
+once cost BIRD 3 memory it keeps, and that was the end of one. The
+faults:
 
 - **bgp-neighbor**, a BGP session turned on but not established:
   Major once it was established, Minor while it never was; a session
