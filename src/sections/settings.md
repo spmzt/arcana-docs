@@ -110,7 +110,49 @@ messages go out an hour; what does not fit one message (4096
 characters) is cut. From a shell: `ARCANA_TELEGRAM_TOKEN=... arcanactl
 notify <chat> <text>`.
 
-## API tokens
+## AAA
+
+Who and what may use the console, in sub-tabs: **Users**, **Roles**,
+**Sign-in keys**, **Directory (LDAP)** and **API tokens**.
+
+### Users
+
+Who signs in. A user has **roles**, one or more, and what they allow
+together; and may belong to a **tenant**, a fleet of its own: it then
+sees the hosts of that tenant alone, the tenant being a name on each
+host (`POST /api/servers/<id> {"tenant"}`), so several customers'
+fleets are kept apart under one console, each with its own people.
+The keys from before there were users belong to the built-in `admin`,
+with the owner role. **Add a user** names one with its roles and
+tenant; **Invite** makes a one-time link, good for a day, with which
+the person registers their first security key or passkey and is signed
+in; the owner may also register a key for a user from Sign-in keys.
+Taking a user away takes their keys, invitations and sessions too. The
+last owner stays one. A directory's user (below) with a user of the
+same name here has that user's roles; one without is limited as an API
+token's session is, on every host. `GET`, `POST /api/users`, `PUT` and
+`DELETE /api/users/<name>` and `POST /api/users/<name>/invite` do the
+same; the status reply says who is signed in and their console role,
+and the host list each host's role.
+
+### Roles
+
+What may be done, named once and given to users, so that no user is
+set up host by host. A role has a say on the console: an **owner**
+does everything, these settings, the keys, tokens, CA, users and roles
+among it; an **operator** also uses the fleet's tools, SD-WAN,
+workflows, templates, transfers and the path finder, and adds hosts;
+a **member** has the hosts alone. And on each host, or on all of them
+with `*`: a **viewer** reads, an **operator** changes (jobs, services,
+network, storage, the firewall), an **admin** also updates the agent
+and the console from it, builds, moves and removes it. A host no role
+of the user's names is not shown and not reached, by the page, the API
+or the live stream. Three roles come built in, `owner`, `operator` and
+`viewer`, and may be changed like any; a role no user has may be taken
+away. `POST /api/roles`, `PUT` and `DELETE /api/roles/<name>`; the
+roles come with `GET /api/users`.
+
+### API tokens
 
 Bearer tokens for a program to use the console through the API
 without a passkey. One is made with a name and a kind, chosen beside
@@ -144,15 +186,15 @@ Scanned on the app's first screen, it sets the console's address and
 signs in with the token. It is the same secret as the value, and goes
 with it.
 
-## Sign-in keys
+### Sign-in keys
 
 The security keys and passkeys that may sign in: each can be removed,
-and another registered. Each key belongs to a user (below); the owner
-sees them all, with whose each is, everyone else their own.
+and another registered. Each key belongs to a user; the owner sees
+them all, with whose each is, everyone else their own.
 
-### By LDAP
+### Directory (LDAP)
 
-Under the keys, the directory the console may also sign people in by:
+The directory the console may also sign people in by:
 its address (`ldaps://ldap.example.org`, or `ldap://…`, on which
 StartTLS is required; the server's certificate is checked against the
 system's CAs, or the CA file named), the base the users are looked up
@@ -178,37 +220,6 @@ library is installed for it. The directory may be any: OpenLDAP
 (`net/openldap26-server`), Active Directory, FreeIPA.
 
 </div>
-
-## Users
-
-Who signs in, and what each may (RBAC). A user has a role on the
-console: an **owner** does everything, these settings, the sign-in
-keys, tokens, CA and users among it; an **operator** also uses the
-fleet's tools, SD-WAN, workflows, templates, transfers and the path
-finder, and adds hosts; a **member** has the hosts alone. On each
-host, or on all of them with `*`, a user is a **viewer** (reads), an
-**operator** (changes: jobs, services, network, storage, the
-firewall) or an **admin** (also updates the agent and the console
-from it, builds, moves and removes it). A host the user has no role
-on is not shown and not reached, by the page, the API or the live
-stream. A user may belong to a **tenant**, a fleet of its own: it
-then sees the hosts of that tenant alone, the tenant being a name on
-each host (Devices, or `POST /api/servers/<id> {"tenant"}`), so
-several customers' fleets are kept apart under one console, each with
-its own people. The keys from before there were users belong to the
-built-in `admin`, the owner.
-
-**Add a user** names one with its roles; **Invite** makes a one-time
-link, good for a day, with which the person registers their first
-security key or passkey and is signed in; the owner may also register
-a key for a user from Sign-in keys. Taking a user away takes their
-keys, invitations and sessions too. The last owner stays one. A
-directory's user (By LDAP) with a user of the same name here has that
-user's roles; one without is limited as an API token's session is, on
-every host. `GET`, `POST /api/users`, `PUT` and `DELETE
-/api/users/<name>` and `POST /api/users/<name>/invite` do the same;
-the status reply says who is signed in and their console role, and
-the host list each host's role.
 
 ## Console
 

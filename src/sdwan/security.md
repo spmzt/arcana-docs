@@ -88,7 +88,8 @@ anew), each changed table is filled beside itself and swapped in with
 
 **URL filters** (SASE-4, MEF 88's `url-filter`): a security policy
 with `url-filter` (`mode` sni or inspect, `deny` domains, `lists` by
-name) has HTTP and TLS from the service's end points forwarded by
+name, and `allow`, domains let through whatever the two say: a site
+under a denied one, a list's mistake) has HTTP and TLS from the service's end points forwarded by
 ipfw (ports 80 and 443, to 3128 and 3129 on the edge's own address at
 each end point) to Squid on the edge, an instance per service in its
 table (`sdwan-proxy`, `arcanactl sdwan proxy`). Squid is a plugin:
