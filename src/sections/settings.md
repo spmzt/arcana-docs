@@ -152,6 +152,16 @@ or the live stream. Three roles come built in, `owner`, `operator` and
 away. `POST /api/roles`, `PUT` and `DELETE /api/roles/<name>`; the
 roles come with `GET /api/users`.
 
+A role may name a **directory group**, an LDAP group's DN: its members
+get the role as they sign in by the directory. The console then keeps a
+user of their name, marked *directory*, with the roles of every group
+of theirs that a role names, brought up to date at each sign-in: one
+who left a group loses its role at their next sign-in, and one in no
+such group has no user and is limited as before. A user the owner made
+or changed here is the owner's: its roles stay as given. Membership is
+read as for the admitting group, by `member`, `uniqueMember` or
+`memberUid`.
+
 ### API tokens
 
 Bearer tokens for a program to use the console through the API

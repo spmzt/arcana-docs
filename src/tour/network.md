@@ -24,8 +24,10 @@ The agent makes the change and then waits to hear from the console
 again. The console, still connected, confirms, and the change stays. If
 the change did cut it off, nothing arrives, and when the host's
 **rollback timer** runs out (a minute unless set on its Summary) the
-agent undoes the change by itself, and only what it changed. **Keep it
-in rc.conf** makes the change last across a boot as well.
+agent undoes the change by itself, and only what it changed. The ×
+on its entry in the task list undoes it at once instead of waiting
+for the timer. **Keep it in rc.conf** makes the change last across a
+boot as well.
 
 <div class="freebsd">
 
