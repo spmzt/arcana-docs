@@ -53,8 +53,19 @@ ClamAV's mirrors into `/var/db/clamav`. The tab lists each database
 (main, daily, bytecode) with its version, how many signatures, and when
 it was built, as the head of its file says; and whether freshclam runs.
 **Start freshclam**, or **Look now** while it runs, is the service
-`clamav_freshclam` started or restarted: it looks for new signatures as
-it starts. Enable it on the Services tab to have it at boot.
+`clamav_freshclam` enabled and started or restarted: it looks for new
+signatures as it starts.
+
+**Mirrors** are freshclam.conf's `DatabaseMirror` lines, a line each in
+the order freshclam tries them: a host name, or an http or https URL.
+Saving them writes those lines in place of the ones there were, and
+restarts a running freshclam so that it reads them. Where freshclam.conf
+is missing, or is still the port's sample with the `Example` line that
+keeps freshclam from running, saving the mirrors, or starting freshclam,
+makes it from the sample without that line. The mirrors offered by
+default are ClamAV's own, `database.clamav.net`, and Microsoft's,
+`https://packages.microsoft.com/clam`, which carries the same
+databases. `arcanactl clamav mirrors` does the same.
 
 ## IDS/IPS
 
@@ -63,7 +74,8 @@ the latest shown under it, and each is an event in the host's log.
 
 - **Interfaces**: what it watches, by pcap(3).
 - **The networks it guards**: the rules' `HOME_NET`; empty, the private
-  ranges (RFC 1918).
+  ranges (RFC 1918); `any`, alone, every address, and `EXTERNAL_NET`
+  then `any` too.
 - **The ruleset suricata-update keeps**: run `suricata-update` on the
   host to fetch it (`/var/lib/suricata/rules/suricata.rules`).
 - **Rules of its own**: a rule a line, as Suricata writes them.
@@ -102,7 +114,9 @@ no ipfw rule diverting to its port).
   to the file's own choice. `local.rules`' rules are listed too, as
   that file has them.
 - **Settings**: started at boot; **Detects** (watching the interfaces,
-  a packet thread each) or **Prevents** (inline: what an ipfw rule
+  a packet thread each; `any`, alone, every interface up when Snort
+  starts but the loopback and the pflog, pfsync and enc pseudo-devices,
+  as libpcap on FreeBSD has no `any` device) or **Prevents** (inline: what an ipfw rule
   diverts to its port, for instance `divert 8000 ip from any to any via
   em0` on the Firewall tab, passed back unless a rule drops it); and
   `HOME_NET`, the networks the rules call home. Snort takes rc.conf's
