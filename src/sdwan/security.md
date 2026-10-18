@@ -127,6 +127,20 @@ and the peer is removed until the identity is issued again. `GET`,
 edge with the list: the last handshake, the bytes each way and where
 it came from; none when the edge has no peer for it yet.
 
+**Groups**, above the identities, are a remote end point's groups of
+them: **+ group** names one at an end point with the zone whose
+policies its members get, a pool inside the remote's prefix their
+addresses come from (empty: anywhere outside the pools) and the groups
+its members reach, besides each other. **+ identity** then takes a
+group in place of a zone. On the edge, each group is an ipfw table of
+its live members' addresses, and the members of two groups neither of
+which names the other are denied each other's traffic on the wg
+interface, both ways, before the zone table sends anyone to their
+zone's rules. So the policies are both: what a group's members get,
+by its zone, and which group reaches which. The FreeBSD facility is
+ipfw(8) tables and WireGuard's allowed-ips; the groups are the
+console's own, beside MEF 70.2.
+
 ## Malware
 
 A security policy with **`malware`** (MEF 88) has what comes back to

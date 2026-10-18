@@ -108,7 +108,17 @@ below them:
     their tunnels to this one. The far ends tell the prefix's zone by
     the zones' own prefixes, as they do a UNI's, so a zone the
     identities are in is best the Default one, or one whose prefixes
-    hold the remote's.
+    hold the remote's. A remote may have `groups` of its identities,
+    each a `name`, the `zone` whose policies its members get, a `pool`
+    (a prefix inside the remote's, not holding the edge's own address)
+    their addresses come from, and `reach`, the groups whose members
+    they may reach; an identity in a `group` has the group's zone and
+    needs none of its own. Members of one group reach each other;
+    those of two groups neither of which names the other are kept
+    apart on the edge (a table of each group's addresses, a deny rule
+    each way on the wg interface before the zone table), traffic going
+    both ways. An identity in no group keeps a zone of its own, takes
+    an address outside every pool and reaches every other.
 
 ## Named lists
 
