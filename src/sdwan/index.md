@@ -91,7 +91,8 @@ On an edge:
 ```sh
 pkg install strongswan bird3 dnsmasq squid c-icap c-icap-modules clamav suricata
 freshclam                      # ClamAV's signatures, for malware scanning
-suricata-update                # the ruleset, where a policy's ids adds it
+# the ruleset, where a policy's ids adds it: Security › IDS/IPS ›
+# Fetch the ruleset, which runs suricata-update
 ```
 
 or only those the services use there.

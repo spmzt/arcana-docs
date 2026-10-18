@@ -76,11 +76,21 @@ the latest shown under it, and each is an event in the host's log.
 - **The networks it guards**: the rules' `HOME_NET`; empty, the private
   ranges (RFC 1918); `any`, alone, every address, and `EXTERNAL_NET`
   then `any` too.
-- **The ruleset suricata-update keeps**: run `suricata-update` on the
-  host to fetch it (`/var/lib/suricata/rules/suricata.rules`).
+- **The ruleset suricata-update keeps**: Emerging Threats Open, fetched
+  by **Fetch the ruleset** above the table, which runs
+  `suricata-update` on the host (to `/var/lib/suricata/rules`) and then
+  applies the instances again, so that one started without it takes
+  it and those reading it read their rules again (`SIGUSR2`). The line
+  under the buttons says when it was fetched. Until it is, an instance
+  that adds it runs on its own rules, and its job says so.
+  `arcanactl suricata update` does the same.
 
 Each configuration is checked by `suricata -T` before it is run, and
-what Suricata refuses is said with its own reason. Its
+what Suricata refuses is said with its own reason. One exception: the
+rules of the ruleset that do not parse with these networks (with
+`HOME_NET` `any`, the few that negate it, since `!any` is nothing) are
+left out, as Suricata itself does when it runs, and the job counts
+them; a rule of the instance's own that does not parse is refused. Its
 `classification.config` and `reference.config` are the ones in
 `/usr/local/etc/suricata`, or the package's `.sample` of each where a
 fresh install has nothing else.

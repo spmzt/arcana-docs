@@ -202,8 +202,9 @@ it, has it among its Security Functions. Its mode is one of:
   the edge checks the whole (`suricata -T`) before it runs anything.
 - **`ruleset`**: whether the rules `suricata-update` keeps on the edge
   (`/var/lib/suricata/rules/suricata.rules`, Emerging Threats Open by
-  default) are added. Fetching and refreshing them is the admin's,
-  like ClamAV's signatures.
+  default) are added. They are fetched and refreshed by **Fetch the
+  ruleset** on the edge's Security page (`arcanactl suricata update`);
+  until then the service's Suricata runs on its own rules alone.
 
 The service's UNI subnets are Suricata's `HOME_NET`. Each alert comes
 as an event, `sdwan-ids` (the rule, both ends, the interface, the
