@@ -17,6 +17,7 @@
 - [The first sign-in](install/first-sign-in.md)
 - [Adding hosts](install/hosts.md)
 - [Certificates of your own](install/certificates.md)
+- [A cluster of consoles](install/cluster.md)
 - [What runs as root](install/privileges.md)
 - [Updating](install/updating.md)
 

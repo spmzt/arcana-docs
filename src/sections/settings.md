@@ -326,6 +326,14 @@ restart.
 
 </div>
 
+## Cluster
+
+The consoles that are one, when web.conf has a `cluster` block: this
+node, its role and term, who leads, how many changes are committed and
+written here, and each node with its origin and how far the leader
+knows it holds the changes. Without the block it says the console is
+not one of a cluster. See [A cluster of consoles](../install/cluster.md).
+
 ## web.conf
 
 The relying party, the origin, the data directory and the certificates,
