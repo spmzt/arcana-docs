@@ -50,9 +50,17 @@ for: packages built on 15.0-RELEASE run on any 15.x.
 - **New jail**: its name (letters, digits and `_ : + -`, no dot; an
   ABI's name, `FreeBSD:16:amd64`, is taken), the version as the method
   names them (`15.0-RELEASE`; `16.0-CURRENT` with `pkgbase`), the arch
-  (the host's when empty), and how poudriere gets the base system (the
-  release's sets over http by default, `pkgbase`, `git+https` to build
-  it from source…). It is `poudriere jail -c`, a run.
+  (the host's when empty), and how poudriere gets the base system,
+  `-m` (the release's sets over http by default; `ftp`, `ftp-archive`,
+  `freebsdci`; `pkgbase` or `pkgbase=/path` of a repository;
+  `src=/path` of a source tree, `tar=/path` of a tarball; `git+https`
+  to build it from source). **Kernel** (`-K`) installs a kernel in the
+  jail by its configuration's name (GENERIC). **Build the source**
+  (`-b`) builds a `src=` tree first instead of installing it as it was
+  built (git always builds), and **Build the pkgbase set** (`-B`) makes
+  the pkgbase packages of what is built here: with `src=` and Build the
+  source, or with git. The agent refuses either where poudriere would
+  not use it. It is `poudriere jail -c`, a run.
 - **Update**: `poudriere jail -u`, a run.
 - **Delete**: `poudriere jail -d -y` once its name is typed; its
   packages stay.
@@ -149,6 +157,8 @@ is a job:
 
 ```sh
 arcanactl poudriere jail-create name=150amd64 version=15.0-RELEASE
+arcanactl poudriere jail-create name=15src version=15.0-STABLE \
+    method=src=/usr/src build=yes pkgbase-set=yes kernel=GENERIC
 arcanactl poudriere ports-create name=default branch=main
 arcanactl poudriere bulk jail=150amd64 ports=default set=debug origin=net/bird3
 arcanactl poudriere stop run=3
