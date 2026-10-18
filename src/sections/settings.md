@@ -113,12 +113,12 @@ notify <chat> <text>`.
 ## AAA
 
 Who and what may use the console, in sub-tabs: **Users**, **Roles**,
-**Sign-in keys**, **Directory (LDAP)** and **API tokens**.
+**Groups**, **Sign-in keys**, **Directory (LDAP)** and **API tokens**.
 
 ### Users
 
-Who signs in. A user has **roles**, one or more, and what they allow
-together; and may belong to a **tenant**, a fleet of its own: it then
+Who signs in. A user has **roles**, and is in **groups** (below), one
+of either at least, and may what any of them allows; and may belong to a **tenant**, a fleet of its own: it then
 sees the hosts of that tenant alone, the tenant being a name on each
 host (`POST /api/servers/<id> {"tenant"}`), so several customers'
 fleets are kept apart under one console, each with its own people.
@@ -149,8 +149,9 @@ and the console from it, builds, moves and removes it. A host no role
 of the user's names is not shown and not reached, by the page, the API
 or the live stream. Three roles come built in, `owner`, `operator` and
 `viewer`, and may be changed like any; a role no user has may be taken
-away. `POST /api/roles`, `PUT` and `DELETE /api/roles/<name>`; the
-roles come with `GET /api/users`.
+away, and one a group gives stays while the group gives it. `POST
+/api/roles`, `PUT` and `DELETE /api/roles/<name>`; the roles come with
+`GET /api/users`.
 
 A role may name a **directory group**, an LDAP group's DN: its members
 get the role as they sign in by the directory. The console then keeps a
@@ -161,6 +162,20 @@ such group has no user and is limited as before. A user the owner made
 or changed here is the owner's: its roles stay as given. Membership is
 read as for the admitting group, by `member`, `uniqueMember` or
 `memberUid`.
+
+### Groups
+
+Users given roles together: a group has roles and members, and a user
+may do what their own roles allow and what their groups' do. The NOC's
+operators, say, share a group: the roles given once, the people in it
+ticked. A group's roles changed are its members' at once; a user taken
+out of it, or the group taken away, has their own roles and their other
+groups' again. A change that would leave the console without an owner
+is refused. The user form ticks a user's groups, the group form its
+members; the users' list shows each user's groups beside their roles.
+`POST /api/groups` (`{"name", "roles", "members", "description"}`),
+`PUT` and `DELETE /api/groups/<name>`; the groups, with their members,
+come with `GET /api/users`.
 
 ### API tokens
 
