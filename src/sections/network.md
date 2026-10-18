@@ -166,6 +166,13 @@ writes it as a pair of `rc.conf`'s `static_arp_pairs` or
 boot. **×** on a row takes one away (`arp -d`, `ndp -d`), and out of
 `rc.conf` too. In a jail's own network they are the jail's.
 
+**Labels.** Under an interface's name, beside the description the host
+itself keeps for it, a label of the console's own: *uplink A*, *the
+UCS to the IXP*. The pencil opens a field in place; the label is kept
+by the console, by host and interface, so it stays through the host's
+reinstall and whatever the interface's description says, and the
+table's filter finds it.
+
 **Multicast** is IGMP's and MLD's state: for each interface, the
 version it speaks (IGMPv1, v2 or v3; MLDv1 or v2) with its robustness
 variable (rv), query interval (qi), query response interval (qri) and

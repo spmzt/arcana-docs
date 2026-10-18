@@ -92,7 +92,12 @@ no ipfw rule diverting to its port).
 - **Rules**: **Update** fetches an archive of rules files (or a
   `.rules` file) and takes in every `*.rules` in it: Snort's community
   rules unless another address is given (http, https or `file:///`),
-  then the last one. Each rule's chip turns it on or off; that is kept
+  then the last one. **Registered rules** fetches snort.org's
+  registered set instead: give the archive's address for your Snort
+  and your oinkcode under Settings › Console; the console puts the
+  code into the address when it sends the job, and the host scrubs it
+  from the job's title, trace and records, so it is kept by the console
+  alone. Each rule's chip turns it on or off; that is kept
   by gid:sid and holds across updates, and **As shipped** gives it back
   to the file's own choice. `local.rules`' rules are listed too, as
   that file has them.

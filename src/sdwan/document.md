@@ -7,14 +7,20 @@ to read beside it, see [A service with two edges](example.md).
 
 **SD-WAN** in the side bar holds the SD-WAN services the console keeps,
 named as MEF 70.2 (SD-WAN Service Attributes and Service Framework)
-names them. It is one document with three parts:
+names them. It is one document with three parts, and the named lists
+below them:
 
 - `ucs`: the underlays (Underlay Connectivity Services, §12). Each has
   an `id`, a `type` (`public`, an Internet Access, or `private`), a
   `billing` (`flat-rate`, `usage-based` or `other`), and the
   `tunnel` the edges make over it: `kind` `gre`, `gif`, `geneve`, `uswe` or
   `wg`, and for the first three `ipsec`, true for IPsec IKEv2 under
-  it.
+  it; and `mss`, `auto` or a number of bytes, to clamp TCP's maximum
+  segment size on the tunnels over it (by `ipfw tcp-setmss`, on each
+  edge, IPv4 and IPv6 each; `auto` takes 1500 less the tunnel's
+  overhead, IPsec's and an IPv6 underlay's). Without it, a path whose
+  MTU is lower than the hosts think stalls large TCP transfers when
+  ICMP is filtered somewhere.
 - `edges`: the hosts that are SD-WAN Edges (§7.8). Each names its
   `server` and lists its `ucs_end_points` (§12.3): an `id`, its
   `ucs`, the `interface` it is on, and maybe an `address`, a
@@ -103,3 +109,26 @@ names them. It is one document with three parts:
     the zones' own prefixes, as they do a UNI's, so a zone the
     identities are in is best the Default one, or one whose prefixes
     hold the remote's.
+
+## Named lists
+
+Arcana's own, beside MEF 70.2's attributes: `lists`, each a `name`
+(letters, digits, `_` and `-`), a `kind` and what it holds, kept once
+and named where a value would be. One list a criterion; a union is a
+list of its own.
+
+| kind | holds | named by |
+|---|---|---|
+| `prefixes` | `items`, IPv4 and IPv6 prefixes | a flow's `src-list`, `dst-list` and `sdst-list` (instead of `sav4`/`sav6`, `dav4`/`dav6`, `sdav4`/`sdav6`); a zone's `prefix-list` (beside its `prefixes`) |
+| `services` | `protocols` and `ports` | a flow's `service-list`, instead of `protv4`, `nextheadv6`, `dport` and `appid`: they combine as PROTV4 and DPORT do in one flow |
+| `ucs` | `items`, UCS ids | an ingress policy's `ucs-list`: only tunnels over these |
+| `edges` | `items`, edges (their `server`) | an ingress policy's `edge-list`: only to these edges |
+| `ucs-end-points` | `items`, an id or `{id, preference}` | an ingress policy's `ucs-end-point-list`: only tunnels from these, the higher `preference` first while it meets the performance |
+
+The **Services** tab's **Lists** block makes and changes them, and the
+flow, zone and policy forms pick one by name. The document keeps the
+names; what a list stands for is written in where it is checked and
+planned. A prefix list becomes an [ipfw(8)](https://man.freebsd.org/ipfw/8)
+table of its own on each edge (`arcl_<name>`, both families), so a
+long list is one table lookup, not words in each rule.
+

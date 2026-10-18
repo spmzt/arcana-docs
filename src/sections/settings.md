@@ -149,6 +149,35 @@ with it.
 The security keys and passkeys that may sign in: each can be removed,
 and another registered.
 
+### By LDAP
+
+Under the keys, the directory the console may also sign people in by:
+its address (`ldaps://ldap.example.org`, or `ldap://…`, on which
+StartTLS is required; the server's certificate is checked against the
+system's CAs, or the CA file named), the base the users are looked up
+under, the attribute that is the user name (`uid`, `sAMAccountName`,
+`mail`), a group whose members alone are let in (`member`,
+`uniqueMember` or `memberUid`), and the reader the console looks users
+up as, or none for an anonymous lookup. The user's own bind, with the
+password typed, is what checks it; an empty password is refused before
+it is sent, since a directory takes one as an anonymous bind.
+
+With a directory set, the sign-in page offers **Sign in with the
+directory**. A session opened so is limited as a token's: it does
+everything on the hosts, but the console's own settings, sign-in keys,
+API tokens and CA stay with a security key. Five failed sign-ins in a
+minute put every sign-in on hold for the rest of it, and each attempt
+is in the console's log.
+
+<div class="freebsd">
+
+**FreeBSD:** the console speaks LDAPv3 (RFC 4511) itself, BER written
+by hand over the base system's OpenSSL, as it speaks SMTP: no LDAP
+library is installed for it. The directory may be any: OpenLDAP
+(`net/openldap26-server`), Active Directory, FreeIPA.
+
+</div>
+
 ## Console
 
 The console's own settings: the name keys show, the release check and
