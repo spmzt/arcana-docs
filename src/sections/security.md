@@ -78,6 +78,12 @@ the latest shown under it, and each is an event in the host's log.
   then `any` too.
 - **The ruleset suricata-update keeps**: run `suricata-update` on the
   host to fetch it (`/var/lib/suricata/rules/suricata.rules`).
+
+Each configuration is checked by `suricata -T` before it is run, and
+what Suricata refuses is said with its own reason. Its
+`classification.config` and `reference.config` are the ones in
+`/usr/local/etc/suricata`, or the package's `.sample` of each where a
+fresh install has nothing else.
 - **Rules of its own**: a rule a line, as Suricata writes them.
 
 Its configuration is checked with `suricata -T` first.
