@@ -147,7 +147,8 @@ with it.
 ## Sign-in keys
 
 The security keys and passkeys that may sign in: each can be removed,
-and another registered.
+and another registered. Each key belongs to a user (below); the owner
+sees them all, with whose each is, everyone else their own.
 
 ### By LDAP
 
@@ -177,6 +178,37 @@ library is installed for it. The directory may be any: OpenLDAP
 (`net/openldap26-server`), Active Directory, FreeIPA.
 
 </div>
+
+## Users
+
+Who signs in, and what each may (RBAC). A user has a role on the
+console: an **owner** does everything, these settings, the sign-in
+keys, tokens, CA and users among it; an **operator** also uses the
+fleet's tools, SD-WAN, workflows, templates, transfers and the path
+finder, and adds hosts; a **member** has the hosts alone. On each
+host, or on all of them with `*`, a user is a **viewer** (reads), an
+**operator** (changes: jobs, services, network, storage, the
+firewall) or an **admin** (also updates the agent and the console
+from it, builds, moves and removes it). A host the user has no role
+on is not shown and not reached, by the page, the API or the live
+stream. A user may belong to a **tenant**, a fleet of its own: it
+then sees the hosts of that tenant alone, the tenant being a name on
+each host (Devices, or `POST /api/servers/<id> {"tenant"}`), so
+several customers' fleets are kept apart under one console, each with
+its own people. The keys from before there were users belong to the
+built-in `admin`, the owner.
+
+**Add a user** names one with its roles; **Invite** makes a one-time
+link, good for a day, with which the person registers their first
+security key or passkey and is signed in; the owner may also register
+a key for a user from Sign-in keys. Taking a user away takes their
+keys, invitations and sessions too. The last owner stays one. A
+directory's user (By LDAP) with a user of the same name here has that
+user's roles; one without is limited as an API token's session is, on
+every host. `GET`, `POST /api/users`, `PUT` and `DELETE
+/api/users/<name>` and `POST /api/users/<name>/invite` do the same;
+the status reply says who is signed in and their console role, and
+the host list each host's role.
 
 ## Console
 
