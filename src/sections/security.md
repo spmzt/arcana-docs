@@ -94,6 +94,26 @@ shown *stopped*, and **Start** runs it again as it was; **Remove**
 stops it and takes its files away. One that prevents passes nothing
 while it is stopped, and the host says so, a Critical fault.
 
+### Rules
+
+**Rules**, beside **Instances**, is the ruleset `suricata-update`
+fetched, rule by rule: some 70000 for Emerging Threats Open, so the
+host searches them and sends a page at a time. A search is any text of
+the rule (a message, `ET SCAN`, a CVE), a class (`trojan-activity`),
+and which rules: every one, those enabled, those disabled, or those set
+here. A rule's sid shows its text.
+
+Each rule can be enabled, disabled, made a **Drop** (on, and where an
+instance prevents, what it matches does not pass), or put back **as it
+ships**. The agent keeps what is set by sid and gives it to
+`suricata-update` every time it runs, as its own `enable.conf`,
+`disable.conf` and `drop.conf` (`--enable-conf`, `--disable-conf`,
+`--drop-conf`), so a choice holds when the ruleset is fetched again; a
+change makes the ruleset again from what was fetched (`--offline`) and
+the instances read it. Files of those names in `/usr/local/etc/suricata`
+are not read. `arcanactl suricata rules q=... only=...` and
+`arcanactl suricata rule on=sid,...` do the same.
+
 Each configuration is checked by `suricata -T` before it is run, and
 what Suricata refuses is said with its own reason. One exception: the
 rules of the ruleset that do not parse with these networks (with
