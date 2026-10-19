@@ -38,7 +38,11 @@ used; a running filter is told to reconfigure, one not running yet is
 started. Its logs are `/var/log/squid/<name>-access.log` and
 `-cache.log`.
 
-## Malware
+## Antivirus
+
+ClamAV, in one tab: what it scans, and below it the signatures it knows.
+
+### Scanning
 
 c-icap with ClamAV's module scans what a URL filter fetches before the
 client has it, and an object that holds malware is refused. Each filter
@@ -46,7 +50,7 @@ that scans has a c-icap of its own on the loopback, started before its
 Squid; tick **Scan what it fetches for malware** in the filter's form,
 or **Stop scanning** here.
 
-## Signatures
+### Signatures
 
 ClamAV knows what its signatures know: freshclam fetches them from
 ClamAV's mirrors into `/var/db/clamav`. The tab lists each database

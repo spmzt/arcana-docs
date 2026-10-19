@@ -61,7 +61,12 @@ for: packages built on 15.0-RELEASE run on any 15.x.
   the pkgbase packages of what is built here: with `src=` and Build the
   source, or with git. The agent refuses either where poudriere would
   not use it. It is `poudriere jail -c`, a run.
-- **Update**: `poudriere jail -u`, a run.
+- **Update**: `poudriere jail -u`, a run, from a form: **To version**
+  (`-t`, another release or branch; empty, the one it has brought up to
+  date), **Kernel** (`-K`) and, for a jail made from `src=`, **Build
+  the source** (`-b`; git and svn always build). poudriere updates a
+  jail by the method it was made with, which `-m` does not change: to
+  change the method, make the jail again.
 - **Delete**: `poudriere jail -d -y` once its name is typed; its
   packages stay.
 
