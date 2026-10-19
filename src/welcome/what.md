@@ -30,8 +30,10 @@ mutually authenticated connection.
 - **Firewall**: the `ipfw` ruleset kept by Arcana, its tables, pipes
   and queues, and a trace of the packets it sees.
 - **Storage**: disks, ZFS pools, datasets and snapshots, mounts.
-- **Plugins**: WireGuard, strongSwan's IPsec and BIRD, each a tab of
-  its own when its package is installed.
+- **WireGuard**: the base system's `wg(8)`, its interfaces, peers and
+  clients, a view of the Network tab.
+- **Plugins**: strongSwan's IPsec and BIRD, each a tab of its own when
+  its package is installed.
 - **Fleet-wide**: a network map of the whole fleet, utilization over
   time, workflows that run chains of jobs by hand, on a timer or on an
   event, and SD-WAN services across the hosts.

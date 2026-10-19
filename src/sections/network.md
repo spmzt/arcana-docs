@@ -2,8 +2,8 @@
 
 **Network** shows the host's network as the kernel has it, a view at a
 time: **Routes**, **Nexthops**, **Connections**, **Sockets**,
-**Interfaces**, **Netgraph**, **Bridges**, **Geneve**, **Neighbours**,
-**CARP** and **Multicast**, each for IPv4, IPv6 or both. Filter the rows, and click
+**Interfaces**, **Netgraph**, **WireGuard**, **Bridges**, **Geneve**,
+**Neighbours**, **CARP** and **Multicast**, each for IPv4, IPv6 or both. Filter the rows, and click
 a column to sort.
 
 <div class="freebsd">
@@ -12,6 +12,7 @@ a column to sort.
 through `netlink(4)`; connections and sockets come from the kernel's
 own lists, as `netstat(1)` and `sockstat(1)` read them; interfaces from
 `getifaddrs(3)`, changed with `ifconfig(8)`; netgraph with `ngctl(8)`;
+WireGuard with `wg(8)`;
 what is kept for a boot is written to `rc.conf` with `sysrc(8)`.
 
 </div>
@@ -101,6 +102,48 @@ down, or given a new peer; dragging the dot on a node onto another
 connects a hook of each.
 
 ![Netgraph, a node picked](../img/tour-netgraph.png)
+
+## WireGuard
+
+The `wg` interfaces with their peers: endpoint, allowed addresses, last
+handshake, traffic. A view of the Network tab, beside Netgraph: `wg(8)`
+is the base system's, and so is the interface, `if_wg(4)`.
+
+![WireGuard: an interface and its peers](../img/sec-wireguard.png)
+
+- **Make its key** has the host make the interface's private key, which
+  stays on the host: the console is told, and shows, public keys only,
+  and what `wg` prints with keys in it is kept out of the trace.
+- **+ peer** adds a peer by its public key; the cross removes one.
+- **✎** on a peer opens its form with what it has (endpoint, allowed
+  addresses, keepalive), its key fixed: what the form says is what the
+  peer has after. A keepalive of 0 turns it off.
+- Every public key, the interface's and each peer's, is shown whole,
+  with **Copy**.
+- **+ interface** opens the interface form with wg chosen.
+- **+ client** makes a client of the interface, a phone or a laptop:
+  its name, its address in the tunnel (the next after the peers' is
+  offered), the endpoint it reaches the host at (the host's address
+  and the interface's port are offered), what it sends through the
+  tunnel (`0.0.0.0/0, ::/0` for everything, the tunnel's network alone
+  for a split tunnel), DNS and a keepalive. The console makes its key
+  pair and keeps neither half: the host gets the public half as a
+  peer, and the page shows the client's configuration for `wg-quick`
+  once, with **Copy**, **Download** (`<name>.conf`) and a QR code the
+  WireGuard app scans (*Add a tunnel*, *Scan from QR code*). Closed,
+  it is gone: a lost one is a client made again, the old peer removed.
+  **With a preshared key** (on by default) adds a second secret the
+  console makes with the key pair: in the client's configuration as
+  `PresharedKey`, and given to the host's `wg` in a file there only
+  while it is read, in no title, argument or trace.
+- **↻** on a peer gives that client a new key: the same form, its
+  addresses and keepalive kept, a new configuration and QR code; the
+  new peer is added, then the old key's taken away.
+
+Kept for a boot, an interface is written with its key, addresses and
+peers to `/usr/local/etc/wireguard/<if>.conf` for `wg-quick`, readable
+by root alone, and named in `wireguard_interfaces`: that needs the
+`wireguard-tools` package.
 
 ## Bridges
 

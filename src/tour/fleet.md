@@ -45,7 +45,8 @@ jobs; the ZFS pools; and the jails as a graph.
 The tabs, left to right, are this part's chapters: **Jails**,
 **Services**, **Network**, **Firewall**, **Packages**, **Storage**,
 **Kernel**, **Sysctl**, **Processes**, **Log** and **Jobs**, then the
-plugins, marked with a diamond: **WireGuard**, **BIRD** and **IPsec**.
+plugins, marked with a diamond: **BIRD** and **IPsec**. WireGuard,
+the base system's, is a view of **Network**.
 
 <div class="freebsd">
 

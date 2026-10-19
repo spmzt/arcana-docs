@@ -5,7 +5,6 @@ the base system's:
 
 | Tab | Program | Package |
 |---|---|---|
-| **WireGuard** | `wg(8)`, the base system's (the interface itself, `if_wg(4)`, among the interfaces) | none; `wireguard-tools` to keep an interface for a boot (below) |
 | **BIRD** | `birdc(8)` | `bird3` |
 | **IPsec** | strongSwan's `swanctl(8)` (an `ipsec(4)` interface is the base system's) | `strongswan` |
 | **Builder** (a page of its own) | `poudriere(8)` | `poudriere` or `poudriere-devel` |
@@ -22,47 +21,6 @@ A jail's programs are looked for as the jail sees them: the agent
 attaches to the jail to look, so a link inside the jail leads where it
 does there. The picker at the left of the toolbar names the host and
 each running vnet jail, and the tab is then of that jail.
-
-## WireGuard
-
-The `wg` interfaces with their peers: endpoint, allowed addresses, last
-handshake, traffic.
-
-![WireGuard: an interface and its peers](../img/sec-wireguard.png)
-
-- **Make its key** has the host make the interface's private key, which
-  stays on the host: the console is told, and shows, public keys only,
-  and what `wg` prints with keys in it is kept out of the trace.
-- **+ peer** adds a peer by its public key; the cross removes one.
-- **✎** on a peer opens its form with what it has (endpoint, allowed
-  addresses, keepalive), its key fixed: what the form says is what the
-  peer has after. A keepalive of 0 turns it off.
-- Every public key, the interface's and each peer's, is shown whole,
-  with **Copy**.
-- **+ interface** opens the interface form with wg chosen.
-- **+ client** makes a client of the interface, a phone or a laptop:
-  its name, its address in the tunnel (the next after the peers' is
-  offered), the endpoint it reaches the host at (the host's address
-  and the interface's port are offered), what it sends through the
-  tunnel (`0.0.0.0/0, ::/0` for everything, the tunnel's network alone
-  for a split tunnel), DNS and a keepalive. The console makes its key
-  pair and keeps neither half: the host gets the public half as a
-  peer, and the page shows the client's configuration for `wg-quick`
-  once, with **Copy**, **Download** (`<name>.conf`) and a QR code the
-  WireGuard app scans (*Add a tunnel*, *Scan from QR code*). Closed,
-  it is gone: a lost one is a client made again, the old peer removed.
-  **With a preshared key** (on by default) adds a second secret the
-  console makes with the key pair: in the client's configuration as
-  `PresharedKey`, and given to the host's `wg` in a file there only
-  while it is read, in no title, argument or trace.
-- **↻** on a peer gives that client a new key: the same form, its
-  addresses and keepalive kept, a new configuration and QR code; the
-  new peer is added, then the old key's taken away.
-
-Kept for a boot, an interface is written with its key, addresses and
-peers to `/usr/local/etc/wireguard/<if>.conf` for `wg-quick`, readable
-by root alone, and named in `wireguard_interfaces`: that needs the
-`wireguard-tools` package.
 
 ## IPsec
 

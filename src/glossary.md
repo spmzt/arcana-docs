@@ -9,7 +9,7 @@
 | **Console** | the web server module and the panel it serves; the fleet's manager |
 | **Job** | a change asked of a host, run and kept by its agent, with its trace |
 | **Kept rules** | the ipfw ruleset Arcana writes down, loaded at boot and by Apply |
-| **Plugin** | what works through a program that is not FreeBSD's own: BIRD, strongSwan, WireGuard's tools, Squid, dnsmasq |
+| **Plugin** | what works through a program that is not FreeBSD's own: BIRD, strongSwan, Squid, dnsmasq |
 | **Queue** | changes waiting in the activity bar to be sent together |
 | **Rollback timer** | how long a change in safe mode waits to be confirmed before the host undoes it |
 | **Safe mode** | a change the host takes back by itself unless the console is heard from again |
