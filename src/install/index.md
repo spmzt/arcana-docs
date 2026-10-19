@@ -12,10 +12,8 @@ Setting Arcana up takes four steps, each a chapter of this part:
 
 ## What you need
 
-- **FreeBSD 14 or later** on every host. Some features need newer
-  releases, and say so where they appear: the firewall's security
-  record needs FreeBSD 15's `ipfw` logging to the routing socket, and
-  from FreeBSD 15 `wg(8)` is in the base system.
+- **FreeBSD 15.1 or later** on every host: 15.1-RELEASE, 15-STABLE or
+  16-CURRENT. Older releases are not supported.
 - **A name for the console** that your browser reaches over HTTPS with
   a certificate it trusts, such as one from Let's Encrypt. Security
   keys and passkeys (WebAuthn) work only on such a page, or on
