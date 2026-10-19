@@ -89,6 +89,11 @@ the latest shown under it, and each is an event in the host's log.
   that adds it runs on its own rules, and its job says so.
   `arcanactl suricata update` does the same.
 
+**Stop** stops an instance on the host and keeps its configuration,
+shown *stopped*, and **Start** runs it again as it was; **Remove**
+stops it and takes its files away. One that prevents passes nothing
+while it is stopped, and the host says so, a Critical fault.
+
 Each configuration is checked by `suricata -T` before it is run, and
 what Suricata refuses is said with its own reason. One exception: the
 rules of the ruleset that do not parse with these networks (with
