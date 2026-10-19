@@ -50,6 +50,7 @@
 - [Utilization](sections/utilization.md)
 - [Workflows](sections/workflows.md)
 - [Security](sections/security.md)
+- [Storage: NFS, iSCSI, HAST](sections/storage-services.md)
 - [Builder](sections/builder.md)
 - [Troubleshoot](sections/troubleshoot.md)
 - [Settings](sections/settings.md)
