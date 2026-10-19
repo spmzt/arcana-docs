@@ -96,7 +96,21 @@ default unless given:
   SSH, flows and the other event types), an alert's packet and payload,
   and the statistics every so many seconds (10 unless told; 0 none),
   which the graphs read.
-- **Performance**: the runmode (`workers`: one thread does all of a
+- **Capture**: by `pcap(3)`, watching (the default), or by
+  `netmap(4)`, taking the NIC's rings, a thread a ring as the NIC's RSS
+  fills them. With netmap it also prevents at L2: each pair of
+  interfaces (`em0:em1`) is a bump in the wire, what one receives
+  passed to the other by Suricata, dropping what its rules say
+  (`copy-mode: ips`, the `workers` runmode); `em0:em0^` puts it between
+  em0 and its host stack. Divert, below, is the L3 way, behind `ipfw(8)`.
+  **Its interfaces' offloading off** turns checksum, TSO and LRO
+  offloading off by `ifconfig(8)` as it starts, so Suricata sees
+  packets as they are on the wire; while it is on, the instance's row
+  says so (`SIOCGIFCAP`).
+- **Performance**: a preset for a host of its size (small, medium,
+  large: the runmode, detect profile, memcaps and packets pending the
+  fields below do not say), the host's CPUs and memory domains
+  (`hw.ncpu`, `vm.ndomains`), the runmode (`workers`: one thread does all of a
   packet), the pattern matcher (Hyperscan where it is built in), the
   detect profile, the CPUs of its management and worker threads
   (`cpu-affinity`, as `cpuset(1)` numbers them) and the packets pending.
@@ -131,6 +145,18 @@ change takes effect when the ruleset is fetched again. `arcanactl
 suricata sources`, `source-enable name=et/pro secret-code=...`,
 `source-disable`, `source-remove` and `source-add name=... url=...` do
 the same.
+
+### Statistics
+
+**Statistics** on an instance's row is what Suricata's stats records in
+`eve.json` say (every 10 s unless its form says otherwise), the agent
+keeping the last hour of them: packets a second and those the kernel
+dropped before Suricata saw them, throughput, alerts a second, memory in
+use (flows, TCP, reassembly, HTTP) and TCP sessions and flows a second,
+as graphs; its flows by protocol; and of its latest alerts the
+signatures, sources and destinations seen most. Drops above a percent
+or so are Suricata falling behind: see its settings (the `workers`
+runmode, its threads' CPUs, larger memcaps).
 
 ### Rules of its own, thresholds and suppression
 
