@@ -41,6 +41,7 @@
 - [Firewall](sections/firewall.md)
 - [Packages and jobs](sections/packages-jobs.md)
 - [Storage](sections/storage.md)
+- [System and host security](sections/system.md)
 - [Kernel, sysctl and processes](sections/kernel.md)
 - [Certificates](sections/certificates.md)
 - [SSH](sections/ssh.md)

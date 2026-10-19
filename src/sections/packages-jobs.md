@@ -26,6 +26,10 @@ automatically as what another needs, its size, its port and what it is.
   (`pkg clean -a`). **Clean the jails**, on the host's page, does it in
   every running jail at once, a job each, so a jail whose `pkg` refuses
   fails alone.
+- **Upgrade the jails**, on the host's page, upgrades every running
+  jail's packages at once (`pkg upgrade -y` in each), a job each in one
+  batch, after asking: a jail without `pkg`, or whose repositories
+  cannot be read, fails alone. The host's own packages are not touched.
 - **Install…** installs packages by name, on the host or in the jail
   picked (`pkg install -y`).
 

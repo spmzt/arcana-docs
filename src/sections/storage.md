@@ -53,6 +53,23 @@ to what it inherits; a dataset is mounted, unmounted, snapshotted, and
 destroyed once its name is typed. A pool's own dataset is not
 destroyed from here.
 
+Both forms have ZFS's own properties as choices, each inherited (or as
+it is) unless picked: **Compression** (lz4, cheap; zstd and its levels,
+smaller; gzip, zle, off), **Deduplication** (on, verify, or by sha256,
+sha512, skein, blake3: its table lives in memory, a few gigabytes a
+terabyte of unique blocks, so it is for data that repeats),
+**Record size** (16K for databases, 1M for media), **Access times**,
+**Sync writes**, **Copies**, **Checksum**, **Quota** and
+**Reservation**; any other property beside them as `name=value`.
+
+**Encryption**, as a dataset is made: aes-256-gcm (or aes-128-gcm,
+aes-256-ccm), with a passphrase typed twice that is asked for whenever
+it is mounted (`keyformat=passphrase`, `keylocation=prompt`). The
+dataset is made by the passphrase straight to the host, as **Type the
+key** below sends a key: `zfs create` reads it on its standard input,
+and it is in no job; the other properties chosen are then set by a job.
+An encrypted volume is made on the host itself.
+
 An encrypted dataset says so, and whether its key is loaded. **Load
 key** reads the key from where the dataset's `keylocation` says (a
 file, a URL), and **Unload key** forgets it.
