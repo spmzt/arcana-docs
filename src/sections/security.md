@@ -95,7 +95,10 @@ default unless given:
 - **Logging**: what `eve.json` has besides alerts (HTTP, DNS, TLS,
   SSH, flows and the other event types), an alert's packet and payload,
   and the statistics every so many seconds (10 unless told; 0 none),
-  which the graphs read.
+  which the graphs read; and the packets of its alerts kept
+  (`pcap-log`, conditional on alerts), a ring of files of so many
+  megabytes in its log directory, listed under its statistics, for
+  Wireshark or a replay.
 - **Capture**: by `pcap(3)`, watching (the default), or by
   `netmap(4)`, taking the NIC's rings, a thread a ring as the NIC's RSS
   fills them. With netmap it also prevents at L2: each pair of
@@ -120,6 +123,9 @@ default unless given:
   prevents (`stream.inline`), how deep each is reassembled, streams
   picked up midway, how much of an HTTP request's and response's body is
   inspected, and what is done past a limit (`exception-policy`).
+- **Plugins**: Suricata's plugins (a capture or an eve output), shared
+  objects under `/usr/local/lib` the admin installed; the host loads
+  none that is not root's and written by root alone.
 - **Its own YAML**: keys the form does not set, checked by
   `suricata -T` with the rest.
 
@@ -158,6 +164,27 @@ signatures, sources and destinations seen most. Drops above a percent
 or so are Suricata falling behind: see its settings (the `workers`
 runmode, its threads' CPUs, larger memcaps).
 
+Below them, **Ask Suricata** asks the instance's Suricata itself, by
+its unix command socket (`unix-command`, a socket of each instance's
+own): its memcaps, its rules loaded, skipped and failed (and which
+failed), and each interface's packets, drops and invalid checksums.
+**What to look at** is worked out of all that: drops above a percent,
+invalid packets of offloading still on, memory near its memcaps, rules
+that failed to load, alerts so many a second that their signatures want
+a threshold. The line above them says what its Suricata is built with
+(`suricata --build-info`): netmap, ipfw, Hyperscan, Lua, plugins and
+rule profiling. **Rule profiling** (`ruleset-profile`, which rules
+take the time) needs Suricata built with `--enable-profiling-rules`; the
+port does not, and the page says how poudriere builds it so. `arcanactl
+suricata rules instance=NAME command=memcap-list` asks the same.
+
+**Replay a capture**, under its statistics, runs a capture the host has
+(a `.pcap`, `.pcapng` or `.cap` by its whole path, a link not followed)
+through the instance's configuration and rules, offline (`suricata
+-r`, in a directory of its own, its running self untouched): a task,
+whose alerts the page then shows. `arcanactl suricata pcap
+instance=NAME file=PATH` does the same.
+
 ### Rules of its own, thresholds and suppression
 
 **Own rules** on an instance's row shows its rules besides the
@@ -167,6 +194,13 @@ the rev and its other options) or the whole as text, disabled (kept in
 its rules file, commented out) or deleted. A new rule takes the next
 local sid (1000000 and above). Every change applies the instance
 again, so `suricata -T` checks it before it replaces what runs.
+
+Below them, **Lua scripts** are the instance's own (Suricata 8 has Lua
+built in): a rule runs one by its `lua:NAME.lua;` keyword, and one
+marked an output is run on what it asks for (Suricata's Lua output).
+The agent writes them to a directory of the instance's, which its
+configuration names (`default-rule-path`), and Lua rules are allowed
+only where it has scripts (`security.lua.allow-rules`).
 
 Below them, **Thresholds and suppression** is the instance's
 `threshold.config` (Suricata's `threshold-file`): a rule's alerts
