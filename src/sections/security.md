@@ -94,6 +94,24 @@ shown *stopped*, and **Start** runs it again as it was; **Remove**
 stops it and takes its files away. One that prevents passes nothing
 while it is stopped, and the host says so, a Critical fault.
 
+### Rules of its own, thresholds and suppression
+
+**Own rules** on an instance's row shows its rules besides the
+ruleset's as a table: each added or changed by its parts (action,
+protocol, from and to with their ports, the way, the message, the sid,
+the rev and its other options) or the whole as text, disabled (kept in
+its rules file, commented out) or deleted. A new rule takes the next
+local sid (1000000 and above). Every change applies the instance
+again, so `suricata -T` checks it before it replaces what runs.
+
+Below them, **Thresholds and suppression** is the instance's
+`threshold.config` (Suricata's `threshold-file`): a rule's alerts
+suppressed, for every address or by source or destination; told at
+most so many times in so long (`threshold`, `event_filter`); or past a
+rate, its action changed for a while (`rate_filter`, a drop where it
+prevents). **Suppress** beside an alert adds a suppression of that
+rule from that source address.
+
 ### Rules
 
 **Rules**, beside **Instances**, is the ruleset `suricata-update`
