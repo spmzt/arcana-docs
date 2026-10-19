@@ -94,6 +94,24 @@ shown *stopped*, and **Start** runs it again as it was; **Remove**
 stops it and takes its files away. One that prevents passes nothing
 while it is stopped, and the host says so, a Critical fault.
 
+### Sources
+
+**Sources** is where `suricata-update` fetches the ruleset from: the
+sources of its index (**Fetch the list of sources** runs
+`suricata-update update-sources`), each with its vendor, license and
+what it is, and whether it is enabled here. With none enabled it
+fetches Emerging Threats Open. **Enable** a commercial one (ET Pro,
+Secureworks) asks for its secret code; the agent writes
+`suricata-update`'s own file of the source,
+`/var/lib/suricata/update/sources/NAME.yaml`, root's alone, so the code
+is on no command line, in no task's title and in no trace. **Disable**
+keeps it, **Remove** takes it away, and **Add by address** adds a
+`.rules` file or an archive of them by `https`, `http` or `file:///`. A
+change takes effect when the ruleset is fetched again. `arcanactl
+suricata sources`, `source-enable name=et/pro secret-code=...`,
+`source-disable`, `source-remove` and `source-add name=... url=...` do
+the same.
+
 ### Rules of its own, thresholds and suppression
 
 **Own rules** on an instance's row shows its rules besides the
