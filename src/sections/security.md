@@ -89,6 +89,26 @@ the latest shown under it, and each is an event in the host's log.
   that adds it runs on its own rules, and its job says so.
   `arcanactl suricata update` does the same.
 
+An instance's form has Suricata's settings, folded, each Suricata's
+default unless given:
+
+- **Logging**: what `eve.json` has besides alerts (HTTP, DNS, TLS,
+  SSH, flows and the other event types), an alert's packet and payload,
+  and the statistics every so many seconds (10 unless told; 0 none),
+  which the graphs read.
+- **Performance**: the runmode (`workers`: one thread does all of a
+  packet), the pattern matcher (Hyperscan where it is built in), the
+  detect profile, the CPUs of its management and worker threads
+  (`cpu-affinity`, as `cpuset(1)` numbers them) and the packets pending.
+- **Memory**: the memcaps of flows, the stream, reassembly, fragments,
+  hosts and HTTP (`64mb`, `512kb`, `1gb`).
+- **Stream and HTTP**: the stream inspected before it passes where it
+  prevents (`stream.inline`), how deep each is reassembled, streams
+  picked up midway, how much of an HTTP request's and response's body is
+  inspected, and what is done past a limit (`exception-policy`).
+- **Its own YAML**: keys the form does not set, checked by
+  `suricata -T` with the rest.
+
 **Stop** stops an instance on the host and keeps its configuration,
 shown *stopped*, and **Start** runs it again as it was; **Remove**
 stops it and takes its files away. One that prevents passes nothing
