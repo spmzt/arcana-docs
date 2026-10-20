@@ -58,19 +58,35 @@ both, and deleted the same ways.
 
 ![A part's rules, one being changed](../img/sec-firewall-part.png)
 
-A rule is pressed to change it in its own row: its number, its words as
-they are kept, now and keep; saved, it is changed as one job: ipfw
-reads the new rule first without doing it (`ipfw -n`), and only then is
-the old one deleted where it was and the new one added where it is to
-be; if ipfw refuses the new one after all, the old one is put back as
-it was. A rule's words go to ipfw without a shell, so an interface's
+The rules Arcana changes are those of set 0, the set the kept rules are
+applied as. Rules of other sets (SD-WAN's own, the default rule's, the
+ones Apply holds back in set 1) are shown greyed and are never changed
+from here: ipfw's `delete N` would take every set's rule N, so Arcana
+always says `set 0 delete N`.
+
+Two rules may share a number; each is a row of its own, paired with its
+kept line by its words. A rule is pressed to change it in its own row:
+its number, its words as they are kept, now and keep. Saved, it is
+changed as one job, and only that rule: ipfw reads every rule the
+number is to have first without doing it (`ipfw -n`), then one script
+of ipfw's deletes the number and adds them back with the new one; if
+the kernel refuses a line after all, the number's rules are put back as
+they were listed. **Delete** takes that rule alone, named by its words;
+the other rule of its number stays. Without words, a number with
+several rules is refused, nothing touched. A rule's words go to ipfw without a shell, so an interface's
 pattern is written bare (`via wg[0-1]`, `recv wg*`); quotes around a
 word are taken off. As a rule is typed, the words
 that may come next are offered in ipfw's order: the action, what the
 packet is, `from` and an address (the host's tables among them), `to`,
 and the options. **▲** and **▼** put a number before the rule above or
 after the one below, for Save to move it there; a rule dragged and
-dropped before or after another of its part opens the same way.
+dropped before or after another of its part opens the same way. Where
+no number is free there, the rules in the way move on by one, the
+farthest first (01702 becomes 01703, then the rule takes 01702), as
+one job asked first: each rule is added at its new number before its
+old one is deleted, and the job does nothing unless every number is
+free when it is reached. A rule that shares its number moves past its
+twin first.
 
 While **Live** is lit, the part is read again every five seconds, and
 each rule shows how many packets a second it took since the look
@@ -97,18 +113,31 @@ lines), which the host loads when it starts.
     not `/etc/rc.firewall`: its `ipfw` commands are taken out of it,
     whether written as `ipfw`, its path or a variable holding it
     (`${fwcmd} add …`), their options off, a line continued with `\`
-    joined and the shell's quoting taken off; the shell's own lines
-    (variables, `if`, `fi`) are left in as comments;
+    joined and the shell's quoting taken off. The script's variables
+    are followed as the shell sets them, so the Handbook's style reads
+    as the rules it makes: `cmd="ipfw -q add"`, `pif="em0"` and
+    `$cmd 00502 allow tcp from me to any out via $pif setup keep-state`
+    become `add 00502 … via em0 …`. A line naming a variable that is not
+    known here is left out and said so; a rule the script adds inside an
+    `if`, `case` or loop is taken, with a note that it may be added only
+    at times. The shell's own lines are left in as comments;
   - else the file `firewall_type` names.
 
   What applying does itself (`flush`, `set`, `delete`) is left in as
   a comment.
-- **What Apply would change** sets the kept rules beside the kernel's:
-  the rules Apply would add, those it would remove, and those whose
-  words differ.
-- **Apply the kept rules** makes them the whole ruleset without a gap.
-  The rules that were there wait in set 1: if the console does not
-  reach the host afterwards, the host swaps them back by itself.
+- **What Apply would change** sets the kept rules beside set 0's of
+  the kernel: the rules Apply would add, those it would remove, and
+  those whose words differ. Each kept rule is compared as ipfw writes it
+  back (`ipfw -n`, the kernel not asked), so `all` for `ip`, a port's
+  name or `keep-state` without `:default` is no difference.
+- **Apply the kept rules** makes them the whole of set 0 without a gap.
+  When rules the kernel has now are not kept, the question says which
+  would be gone, by number, and the word `apply` is typed to go on. The
+  rules that were there wait in set 1: if the console does not reach
+  the host afterwards, the host swaps them back by itself.
+- The first rule kept when none is kept yet keeps the kernel's set 0
+  rules first, marked with a comment, so that applying, or the next
+  boot, does not take away what the host runs with.
 
 ## Dynamic states
 
