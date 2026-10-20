@@ -65,7 +65,28 @@ keeps the clear one nowhere; the tab shows the users' names) and
 **secrets** (the smart host's sign-in, `relay user:password`; the tab
 shows the labels).
 
-A table opened lists its entries, each with **Remove** (asked first;
+## Your own smtpd.conf
+
+An smtpd.conf that Arcana's form did not write is yours, and the tab
+works with it as it is: **Configuration** shows it as text, **Check**
+has the host read it with `smtpd -n`, and **Save and restart smtpd**
+puts it in place once smtpd takes it, keeping the one before as
+`smtpd.conf.arcana-old`. The form is there on asking, with a warning:
+it writes the whole file. The agent refuses to let the form replace a
+file it did not write unless that is asked for.
+
+The **Tables** are those your smtpd.conf declares (`table NAME
+[BACKEND:]PATH`), at their own paths: `file:` tables by their first
+word (an alias without its colon), `passwd:` tables by the name before
+the first colon. A user given a password gets it hashed by OpenSMTPD's
+`encrypt`, written as the other lines are (a `{SHA512-CRYPT}` scheme
+kept), the rest of their line (uid, gid, home, shell) untouched; a new
+user gets the fields every other line has alike, or empty ones. Tables
+a listener signs users in by, and a relay's sign-in, show names alone.
+`db:` tables are made the admin's way (`makemap`) and are not written
+here.
+
+
 every other entry is kept). **Add or change** puts lines in by their
 first word: a user there already gets the new password, an alias the
 new address, a new one is added, and nothing else is touched. Writing
