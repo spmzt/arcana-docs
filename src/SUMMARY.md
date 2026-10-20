@@ -52,6 +52,7 @@
 - [Workflows](sections/workflows.md)
 - [Security](sections/security.md)
 - [Storage: NFS, iSCSI, HAST](sections/storage-services.md)
+- [Mail: OpenSMTPD](sections/mail.md)
 - [Builder](sections/builder.md)
 - [Troubleshoot](sections/troubleshoot.md)
 - [Settings](sections/settings.md)
