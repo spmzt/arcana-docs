@@ -74,7 +74,14 @@ loopback interface out of scope for a peer elsewhere
 leaves and the console's attempt times out. A listener bound to such
 addresses alone says so here; listen on an address of a real interface
 too (`--sctp-also`, above) and have the console reach the agent by
-that one, or keep that host on TCP.
+that one, or keep that host on TCP. An "SCTP also" address that is itself on a
+loopback interface is named with the same warning: it gives no path
+either.
+
+Moving a host from `tcp://` to `sctp://` at the same address and port
+moves it to the SCTP listener the agent already has there, beside the
+TCP one: that listener is the host's own from then on, and closing the
+TCP listener leaves it up.
 
 The agent's certificate must name the new address, or the name the
 console checks for the host. The local socket is never closed, nor the
