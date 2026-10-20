@@ -263,3 +263,21 @@ filter that prevents is only as available as Suricata.
 form has it; `[]` stops them all. What runs, and the forms as saved,
 are in `GET /api/servers/<id>/sdwan` (`proxy`, `ids`, `security_proxy`,
 `security_ids`, `clamav`).
+
+## Sandboxed programs
+
+FreeBSD's capsicum(4) is a sandbox a process enters for good: from
+then on it keeps the descriptors it holds and can name nothing else
+on the system. Arcana's programs enter it where their work allows:
+
+- **arcanactl** once the agent is connected: the agent's answers are
+  decoded and printed in the sandbox; files named on the command line
+  are opened for it by Casper's fileargs service.
+- **arcana-enrol** once the console has answered: the answer is
+  parsed and the certificate, key and CA are written in the sandbox.
+- **jailconf** once `jail.conf` and its includes are read: the edit,
+  its check and the write happen in the sandbox.
+
+The agent and the console cannot enter it: their work is running
+programs and opening files by name. The agent's helpers for a jail's
+network exist to do exactly that inside the jail.

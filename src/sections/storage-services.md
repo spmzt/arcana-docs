@@ -8,13 +8,14 @@ again when it ends. A host's own disks, pools and datasets are its
 
 ## NFS
 
-The NFS server: `nfsd(8)` with `mountd(8)` and `rpcbind(8)`, and for
-NFSv4 `nfsuserd(8)`'s names.
+The NFS server, NFSv4 alone: `nfsd(8)` with `nfsv4_server_only`
+(no NFSv3, so no `rpcbind(8)`), `mountd(8)` for the exports, and
+for NFSv4's names `nfsuserd(8)`. The exports live with ZFS: the
+NFSv4 root is a directory on ZFS, and datasets share themselves.
 
-- **Serves NFS** enables nfsd (`nfs_server_enable`, with `rpcbind` and
-  `mountd`) and starts it, or stops it.
-- **NFSv4**, and **NFSv4 alone** (`nfsv4_server_enable`,
-  `nfsv4_server_only`: no NFSv3, mountd for the exports alone).
+- **Serves NFS** enables nfsd (`nfs_server_enable`,
+  `nfsv4_server_enable`, `nfsv4_server_only`, with `mountd`) and
+  starts it, or stops it.
 - **NFSv4 up to** 4.0, 4.1 or 4.2 (`vfs.nfsd.server_max_minorversion`,
   kept in `sysctl.conf`). 4.2 brings server-side copy
   (`copy_file_range(2)`), sparse files (`SEEK_HOLE`) and allocation.
@@ -26,15 +27,23 @@ NFSv4 `nfsuserd(8)`'s names.
   (`mount -o nfsv4,minorversion=2,pnfs`) read and write a file's data on
   the data servers directly, the metadata server telling them where.
 
-**What it exports** is `/etc/exports` (`exports(5)`): a line a
-directory and who may mount it, and for NFSv4 its root, a `V4:` line.
-Saving writes it and has mountd read it again. **Exported now** is what
-mountd says (`showmount -e`). A ZFS dataset may export itself instead
-(`sharenfs`, its Storage tab).
+**What it exports** is `/etc/exports` (`exports(5)`): NFSv4's root,
+a `V4:` line naming a directory on ZFS, then each a line a directory
+and who may mount it. Saving writes it and has mountd read it again;
+the agent refuses a root that is not on ZFS (`statfs(2)` says what it
+is on), and any text that exports without a `V4:` line, since NFSv4
+alone serves nothing without its root. The tab shows the root and
+whether it is on ZFS.
 
-`arcanactl nfs exports FILE` and `arcanactl nfs server enable=yes v4=yes
-minor=2 threads=16 pnfs=ds1:/DSstore0,ds2:/DSstore1 mirror=2` do the
-same.
+**ZFS shares** are the datasets whose `sharenfs` property is on
+(`zfsprops(7)`): `zfs` writes them to `/etc/zfs/exports`, which
+mountd reads beside `/etc/exports`, and tells mountd itself. Share a
+dataset by name with `on` or `exports(5)` options; **Stop sharing**
+sets it `off`. **Exported now** is what mountd says (`showmount -e`).
+
+`arcanactl nfs exports FILE`, `arcanactl nfs share dataset=zroot/export
+sharenfs=-maproot=root` and `arcanactl nfs server enable=yes minor=2
+threads=16 pnfs=ds1:/DSstore0,ds2:/DSstore1 mirror=2` do the same.
 
 ## iSCSI
 
