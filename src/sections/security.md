@@ -127,7 +127,12 @@ default unless given:
   objects under `/usr/local/lib` the admin installed; the host loads
   none that is not root's and written by root alone.
 - **Its own YAML**: keys the form does not set, checked by
-  `suricata -T` with the rest.
+  `suricata -T` with the rest; the keys the form owns (`plugins`,
+  `run-as`, `unix-command`, the outputs and the rule files) it may not
+  set again.
+
+The form goes to the host as it is: the agent renders Suricata's YAML
+from it and checks it there, so what runs is what was checked.
 
 **Stop** stops an instance on the host and keeps its configuration,
 shown *stopped*, and **Start** runs it again as it was; **Remove**

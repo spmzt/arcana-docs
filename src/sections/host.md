@@ -164,8 +164,9 @@ it lacks. **Apply** then writes them, each beside itself and renamed
 into place, the files before kept under
 `/var/backups/arcana/config-<time>`; a host name of its own can be put
 in `rc.conf` instead of the bundle's. From another host, the console
-reads that host's bundle with its secrets itself: they do not pass
-through the page. Nothing is restarted: the files take hold at the next
+reads that host's bundle itself, without its secrets: a host's keys
+(WireGuard's, strongSwan's, the agent's own) are its identity and stay
+its own; the host applied to keeps or makes its own. Nothing is restarted: the files take hold at the next
 boot. The packages it lacks are installed only when **Install** is
 pressed.
 
