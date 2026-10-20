@@ -57,18 +57,27 @@ host beside the file, so the tab fills it from there.
 
 ## Tables
 
-Each table is a file of the agent's, written whole, and read again by
-smtpd at once (`smtpctl update table`): **aliases**, **virtuals**,
-**domains**, **senders**, and two kept root's alone: **credentials** (a
-user and a password a line: the host hashes each with OpenSMTPD's
-`encrypt` and keeps the clear one nowhere; the tab shows the users'
-names) and **secrets** (the smart host's sign-in, `relay user:password`;
-the tab shows the labels).
+Each table is a file of the agent's, read again by smtpd at once
+(`smtpctl update table`): **aliases**, **virtuals**, **domains**,
+**senders**, and two kept root's alone: **credentials** (a user and a
+password a line: the host hashes each with OpenSMTPD's `encrypt` and
+keeps the clear one nowhere; the tab shows the users' names) and
+**secrets** (the smart host's sign-in, `relay user:password`; the tab
+shows the labels).
+
+A table opened lists its entries, each with **Remove** (asked first;
+every other entry is kept). **Add or change** puts lines in by their
+first word: a user there already gets the new password, an alias the
+new address, a new one is added, and nothing else is touched. Writing
+the whole table at once is folded away under **Replace the whole
+table**, since an entry not written there is gone.
 
 ```
 arcanactl smtpd
 arcanactl smtpd conf form.json
 arcanactl smtpd table credentials users.txt
+arcanactl smtpd entry credentials carol.txt
+arcanactl smtpd unentry credentials bob
 arcanactl smtpd enable yes
 arcanactl smtpd pause mta
 arcanactl smtpd remove all
