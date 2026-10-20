@@ -1,7 +1,9 @@
 # Mail: OpenSMTPD
 
-The **Mail** tab of a host is OpenSMTPD, the port `mail/opensmtpd`, a
-plugin: the tab shows how to install it until it is there. FreeBSD
+**Mail**, beside BIRD and IPsec among a host's plugin tabs, is
+OpenSMTPD, the port `mail/opensmtpd`: on the host itself, or in a jail
+of it (a jail with the host's network or one of its own; the tab says
+which). Until it is installed anywhere the tab shows how. FreeBSD
 itself comes with `sendmail(8)` and `dma(8)` for the host's own mail;
 OpenSMTPD serves a domain's. Each change is a task; the tab reads the
 host again when it ends.
