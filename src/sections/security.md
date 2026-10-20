@@ -222,12 +222,13 @@ here. A rule's sid shows its text.
 Each rule can be enabled, disabled, made a **Drop** (on, and where an
 instance prevents, what it matches does not pass), or put back **as it
 ships**. The agent keeps what is set by sid and gives it to
-`suricata-update` every time it runs, as its own `enable.conf`,
-`disable.conf` and `drop.conf` (`--enable-conf`, `--disable-conf`,
-`--drop-conf`), so a choice holds when the ruleset is fetched again; a
-change makes the ruleset again from what was fetched (`--offline`) and
-the instances read it. Files of those names in `/usr/local/etc/suricata`
-are not read. `arcanactl suricata rules q=... only=...` and
+`suricata-update` every time it runs (`--enable-conf`,
+`--disable-conf`, `--drop-conf`, files of the agent's own beside its
+other kept files), so a choice holds when the ruleset is fetched again;
+a change makes the ruleset again from what was fetched (`--offline`)
+and the instances read it. suricata-update's own `enable.conf`,
+`disable.conf` and `drop.conf` in `/usr/local/etc/suricata` are not
+read. `arcanactl suricata rules q=... only=...` and
 `arcanactl suricata rule on=sid,...` do the same.
 
 Each configuration is checked by `suricata -T` before it is run, and

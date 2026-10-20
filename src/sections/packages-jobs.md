@@ -37,7 +37,7 @@ When `pkg` refuses packages built for a newer FreeBSD than the host's
 (OSVERSION), the console asks whether to go on anyway, and approved,
 does it again with `IGNORE_OSVERSION=yes`.
 
-From a shell: `arcanactl packages [-i] [-4 | -6] [jail]` (with the
+From a shell: `arcanactl packages [-i] [-r] [-4 | -6] [jail]` (with the
 repositories), `pkg-upgrade [-O] [-r repo] …`, `pkg-clean [-a] [-j jail | -J]`, `pkg-install [-O] [-4 | -6] [-r repo]
 [-j jail] package …`.
 
