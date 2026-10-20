@@ -62,22 +62,6 @@ to `dma(8)`, the DragonFly Mail Agent, which delivers or relays it as
 names another program, and the `mail_*` keys set what the page starts
 from.
 
-**Mail sent by** chooses the way. *sendmail* is the host's own, above.
-*smtp* has the console hand the mail to a relay itself, for a host whose
-`dma(8)` relays nowhere:
-
-- **SMTP relay** and **port**: 587 with *starttls* (RFC 3207), 465 with
-  *tls* from the first byte (RFC 8314), 25 with *none*, for a relay of
-  your own network;
-- the relay's certificate is checked against the system's CAs
-  (`/etc/ssl/cert.pem`, made by `certctl(8)`) and against its name, with
-  TLS 1.2 at least; one that does not check out is not sent to;
-- **SMTP user** and **password** sign in (AUTH PLAIN, RFC 4954), over TLS
-  only: with *none* a password is refused, not sent. The password is
-  kept in the data directory's `settings.json`, readable by the console
-  alone (0600); it is never sent back to the page, which says only
-  whether one is set, and left empty when saved it stays as it is.
-
 Each step waits fifteen seconds at most, so a relay that does not answer
 delays the mail no longer.
 
