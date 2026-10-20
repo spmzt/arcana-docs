@@ -121,6 +121,12 @@ lines), which the host loads when it starts.
     known here is left out and said so; a rule the script adds inside an
     `if`, `case` or loop is taken, with a note that it may be added only
     at times. The shell's own lines are left in as comments;
+    a script that stages its rules in a set of its own and swaps them
+    in, as Apply does, reads as its rules: their `set N` taken off
+    (Apply gives the kept rules their set), its tables and NAT64
+    instances kept without the set, and its flush, disable and swap
+    left to Apply. A kept rule written with a set of its own is loaded
+    once in Apply's set, not twice;
   - else the file `firewall_type` names.
 
   What applying does itself (`flush`, `set`, `delete`) is left in as
