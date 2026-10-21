@@ -57,10 +57,24 @@ no mail. **Send a test mail** says at once whether mail gets through.
 **FreeBSD:** the console's own host sends the mail with
 `sendmail(8) -t`. As FreeBSD comes, that is `mailwrapper(8)` handing it
 to `dma(8)`, the DragonFly Mail Agent, which delivers or relays it as
-`/etc/dma/dma.conf` says (`SMARTHOST`, `PORT`, `SECURETRANSFER`,
-`AUTHPATH`). Arcana sets up no mail server. In `web.conf`, `sendmail`
-names another program, and the `mail_*` keys set what the page starts
-from.
+`/etc/dma/dma.conf` says. Arcana sets up no mail server. In `web.conf`,
+`sendmail` names another program, and the `mail_*` keys set what the
+page starts from.
+
+**Relayed by dma**, below, sets how dma relays, on a console with an
+agent beside it: **Smart host** (empty: straight to each domain's
+servers), **Port**, **TLS** (none; STARTTLS required, as on 587;
+STARTTLS when the relay offers it; TLS from the start, as on 465),
+**User** and **Password**. The console's host's agent writes them, a
+job like any other: in `dma.conf`, `SMARTHOST`, `PORT`,
+`SECURETRANSFER`, `STARTTLS`, `OPPORTUNISTIC_TLS` and `AUTHPATH` alone,
+the admin's other lines kept; the sign-in as that host's line of
+`/etc/dma/auth.conf` (`user|host:password`), mode 0640 and group `mail`,
+which dma, setgid mail, reads. The password is never shown again: the
+field says it is set, and left empty keeps it. `arcanactl sysfile dma`
+does the same, the password from `ARCANA_DMA_PASSWORD`.
+
+![Relayed by dma: the smart host and its sign-in](../img/set-dma.png)
 
 Each step waits fifteen seconds at most, so a relay that does not answer
 delays the mail no longer.
