@@ -66,18 +66,6 @@ shows its paths: each address of the console's, active, inactive or
 not yet confirmed, its smoothed round trip, and which one is the
 primary path, with the agent's own addresses beside them.
 
-An address on a loopback interface (a router's own address on `lo0`,
-say) answers TCP but not SCTP: FreeBSD's SCTP counts an address of a
-loopback interface out of scope for a peer elsewhere
-(`sctp_is_address_in_scope()` in
-[sctp(4)](https://man.freebsd.org/sctp/4)), so the INIT-ACK never
-leaves and the console's attempt times out. A listener bound to such
-addresses alone says so here; listen on an address of a real interface
-too (`--sctp-also`, above) and have the console reach the agent by
-that one, or keep that host on TCP. An "SCTP also" address that is itself on a
-loopback interface is named with the same warning: it gives no path
-either.
-
 Moving a host from `tcp://` to `sctp://` at the same address and port
 moves it to the SCTP listener the agent already has there, beside the
 TCP one: that listener is the host's own from then on, and closing the
