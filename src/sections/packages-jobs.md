@@ -30,6 +30,12 @@ automatically as what another needs, its size, its port and what it is.
   jail's packages at once (`pkg upgrade -y` in each), a job each in one
   batch, after asking: a jail without `pkg`, or whose repositories
   cannot be read, fails alone. The host's own packages are not touched.
+  The agent runs four of these jobs at once, each in a jail of its own,
+  a jail's own one after another, so a download that stalls in one jail
+  holds up no other; the next job of another kind waits for them.
+  A `pkg` that says nothing for ten minutes (`--pkg-idle`) is stopped
+  with what it started in the jail, and its job fails saying so; one
+  at work can also be cancelled from **Recent tasks**.
 - **Install…** installs packages by name, on the host or in the jail
   picked (`pkg install -y`).
 
