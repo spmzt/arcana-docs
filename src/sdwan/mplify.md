@@ -82,6 +82,15 @@ other keys, for the rotation to come. Every SA gets an anti-replay
 window of 1024 packets: without one, the kernel's two ends disagree
 on the authenticated data of an AEAD cipher under ESN and every
 packet fails its check.
+In safe mode (the console sends every ipsec-sa job so, and the IPsec
+tab's **+ manual SAs** form ticks it), a job the console does not
+confirm is put back by the host: the key pair, the next pair and what
+was set from their files, the pair's SAs out of the kernel and those
+the state says were in derived again from the words a derive keeps
+(peer, epoch, algorithms, directions, lifetime), the next pair's too,
+so a rotation half done comes back as it stood. SAs set by hand from
+keys given have no such words, their keys being nowhere once set, so a
+safe job over them is refused before it changes anything.
 
 ## Conformance
 
@@ -93,13 +102,13 @@ jobs.
 
 | Requirement | Document attribute | Done by |
 |---|---|---|
-| R89–R92 the VRFs of each UCS, the service, breakout and subscriber domains | `ucs_end_points[].vrf`, `swvcs[].domains.service.fib`, `domains.breakout.fib`, `swvcs[].fib` | routing tables by setfib, net.fibs raised |
+| R89–R92 the VRFs of each UCS, the service, breakout and subscriber domains | `ucs_end_points[].vrf`, `swvcs[].domains.service.fib`, `domains.breakout.fib`, `swvcs[].fib` | routing tables by setfib, net.fibs raised; on an edge with `own_table` the service's table is the host's own (FIB 0), a deviation the edge says: its host's jails and daemons then see the service's routes ([the mesh](mesh.md)) |
 | R93 NTP server addresses | `edges[].ntp` | ntp.conf, ntpd |
 | R94, R95 UCS UNI and End Point interface identifiers | `ucs_end_points[].interface` | the host's interface |
 | R96 MEF 10.4 Ethernet attributes (physical links, frame size, EVC EPs, C-tags, token share, envelopes) | — | not done: the interfaces are what the host has |
 | R97 auto-negotiation | — | not done: ifconfig media is not written |
 | R98–R101 IPv4 and IPv6 address, static or dynamic, prefix, gateway | `ucs_end_points[].address`, `gateway`, `addressing` (static, dhcp, slaac) | the interface's address, dhclient, rtsol; one address per end point, not both families |
-| R102 the VRF of each UCS UNI | `ucs_end_points[].vrf` | ifconfig fib, tunnelfib |
+| R102 the VRF of each UCS UNI | `ucs_end_points[].vrf` | ifconfig fib, tunnelfib (wg too, unless a `relay` makes it reach a process in table 0); on an own-table edge `net.add_addr_allfibs` is 1, so the uplinks' connected routes are in the host's table as well |
 | R103 the underlay's routing protocol | `ucs_end_points[].routing` (bgp, ospf) | a BIRD instance per underlay table |
 | R104 UCS UNIs put into service | — | the apply's step 3 |
 | R105, R106, R113, R115, R116 the CTVC: interface, address and prefix, its underlay interface, the far address, the service VRF | `swvcs[].control_plane.ctvc` (a UCS) | the control tunnel, step 4, in the service's table |
@@ -119,7 +128,7 @@ jobs.
 | R141–R144 GRE of type 0x8847 and the three labels | — | not supported |
 | R145, R146 the SD-WAN UNI's interface, VLAN, state, frame size | `end_points[].uni.interface`, `vlan`, `max_frame` | the interface or a vlan(4) on it, disabled until step 13 |
 | R147–R150 the UNI's IPv4 and IPv6 addresses, static or dynamic | `uni.ipv4`, `uni.ipv6` (`static`, `dhcp`, `slaac`, `none`) | the provider's addresses, dnsmasq, rtadvd |
-| R151 the UNI in the subscriber VRF | `swvcs[].fib` | ifconfig fib |
+| R151 the UNI in the subscriber VRF | `swvcs[].fib` | ifconfig fib; not moved on an own-table edge, nor a `host_addressed` UNI's addresses |
 | R152 static routes | `uni.routes` | route(8) in the table |
 | R153 BGP peers at the UNI: address, AS, MD5, password | `uni.routing.bgp` (`neighbors`, `as`, `password`) | BIRD |
 | R154 application flows | `swvcs[].flows` | ipfw rules |
