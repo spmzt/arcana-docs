@@ -22,6 +22,14 @@ Pick a jail on its host's **Jails** tab for its own page.
   add one, live (on the running jail) or in `jail.conf`, or both.
 - **Jail**: where it lives, which configuration file defines it,
   whether it has a network of its own (vnet), whether it persists.
+- **Permissions**: jail(8)'s `allow.*` parameters (raw sockets,
+  sysvipc, mounts of each kind, chflags, mlock, reserved ports, and the
+  rest this kernel has), each as the running jail has it now and as
+  its file says. **Change** sets any of them: allowed, refused, or
+  taken out of its file; on the running jail at once (`jail -m`), in
+  its file for the next start, or both; in safe mode unless unticked,
+  so a change the console cannot confirm is put back by the host, the
+  values and the file. From a shell, `arcanactl allow` does the same.
 - **Configuration as jail(8) reads it**: the parameters, after
   `jail.conf`'s defaults and includes are applied.
 - **History**: what was done to this jail from the console.
