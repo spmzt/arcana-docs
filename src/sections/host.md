@@ -5,6 +5,13 @@ host is (FreeBSD's version and machine, CPUs, memory, uptime, whether
 the agent runs as root, the agent's version) and carries **Update
 agent** when the host runs another build than the console's.
 
+**Reboot** restarts the host with
+[shutdown(8)](https://man.freebsd.org/shutdown/8) `-r`, a minute after
+it is asked, so the job's answer reaches the console before the host
+goes; the dialog wants the host's name typed first. It is never undone
+and never in safe mode, and a jail is restarted from its own page, not
+rebooted. From the command line: `arcanactl reboot`.
+
 ## Summary
 
 Usage gauges with their recent history, counts of jails, services,
