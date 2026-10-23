@@ -215,6 +215,40 @@ The security keys and passkeys that may sign in: each can be removed,
 and another registered. Each key belongs to a user; the owner sees
 them all, with whose each is, everyone else their own.
 
+### Passwords
+
+A user may also have a **password** of the console's own, beside their
+keys. **Password…** in the account menu (your name, at the end of the
+top bar) sets yours; the owner sets anyone's with **Password** on their
+row under Users, where a user who has one is marked *password*. It is
+12 characters at least and 72 bytes at most, and **Take it away**
+removes it. Only a session opened with a key sets one: a password
+never sets another. Setting it again, or taking it away, signs out the
+sessions it opened. A user the directory keeps (below) has the
+directory's password, not one here.
+
+With a password set, the sign-in page offers **Sign in with a
+password**: the user name and the password. A user with a password
+here is checked against it and nothing else; any other user, against
+the directory, when one is set. A session opened by a password is
+limited as an API token's is: it does what the user's roles allow on
+the hosts, but the console's settings, sign-in keys, users, API tokens
+and CA stay with a key. Five failed sign-ins in a minute, by either
+password, put every sign-in by password on hold for the rest of it.
+`POST /api/auth/password` (`{"user", "password"}`) sets one, and
+`POST /api/auth/login/password` signs in.
+
+<div class="freebsd">
+
+**FreeBSD:** the password is kept as a bcrypt hash made by the base
+system's [crypt(3)](https://man.freebsd.org/crypt/3) (`$2b$`, cost 12,
+about a quarter of a second to check), the same scheme as
+`passwd_format=blf` in `login.conf`; the hash is never sent back, and
+a user without a password is checked against a hash of nothing all the
+same, so the time a refusal takes says not which users have one.
+
+</div>
+
 ### Directory (LDAP)
 
 The directory the console may also sign people in by:
@@ -228,12 +262,13 @@ up as, or none for an anonymous lookup. The user's own bind, with the
 password typed, is what checks it; an empty password is refused before
 it is sent, since a directory takes one as an anonymous bind.
 
-With a directory set, the sign-in page offers **Sign in with the
-directory**. A session opened so is limited as a token's: it does
-everything on the hosts, but the console's own settings, sign-in keys,
-API tokens and CA stay with a security key. Five failed sign-ins in a
-minute put every sign-in on hold for the rest of it, and each attempt
-is in the console's log.
+With a directory set, the sign-in page offers **Sign in with a
+password**, the directory's user name and password, for any user who
+has no password of the console's own. A session opened so is limited as
+a token's: it does everything on the hosts, but the console's own
+settings, sign-in keys, users, API tokens and CA stay with a security
+key. Five failed sign-ins in a minute put every sign-in by password on
+hold for the rest of it, and each attempt is in the console's log.
 
 <div class="freebsd">
 
