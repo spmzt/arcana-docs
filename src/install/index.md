@@ -12,8 +12,8 @@ Setting Arcana up takes four steps, each a chapter of this part:
 
 ## What you need
 
-- **FreeBSD 15.1 or later** on every host: 15.1-RELEASE, 15-STABLE or
-  16-CURRENT. Older releases are not supported.
+- **FreeBSD 16.0 or later** on every host: 16-CURRENT until 16.0 is
+  released. FreeBSD 15 and older are not supported.
 - **A name for the console** that your browser reaches over HTTPS with
   a certificate it trusts, such as one from Let's Encrypt. Security
   keys and passkeys (WebAuthn) work only on such a page, or on

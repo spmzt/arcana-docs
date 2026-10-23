@@ -17,7 +17,7 @@
 
 ## Building
 
-Base `make(1)` and `bsd.*.mk`, on FreeBSD 15.1 or later; see [Building
+Base `make(1)` and `bsd.*.mk`, on FreeBSD 16.0 or later; see [Building
 and packages](../install/building.md) for what the console needs. In a
 fresh checkout, `make obj` first, so that what is built goes under
 `obj/` and not beside the sources.
