@@ -188,6 +188,15 @@ restarting while something happens to it; unknown when the host does
 not answer), with **Start**, **Stop**, **Restart** and **Kill**. Those
 running come first; **Sort** orders by running or by name.
 
+**At boot** (lit) or **Not at boot** says whether rc.d/jail starts the
+jail when the host boots, by `rc.conf`'s `jail_enable` and `jail_list`,
+and pressed changes it there alone, the jail as it is now. rc.d/jail
+starts every jail when `jail_list` is empty, so Arcana never leaves it
+empty: leaving one out of all makes the list every other jail, putting
+one in with `jail_enable` off makes the list that jail alone, and
+leaving out the last one named turns `jail_enable` off. From the
+command line: `arcanactl enable|disable <jail>`.
+
 ### A jail's page
 
 Each jail has a page of its own: its actions; its addresses, changed
