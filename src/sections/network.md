@@ -48,6 +48,29 @@ hops (ECMP), which the table shows as a row for each, **Path** saying
 which of how many. A route of several gateways is not kept in `rc.conf`
 from here.
 
+A route kept in `rc.conf` is `route_<name>` in `static_routes`
+(`ipv6_route_<name>` in `ipv6_static_routes`), as rc.d/routing reads it
+at boot. Give it a **Name** that says where it goes: the host it goes
+to, or that host and the interface it leaves by (`router1`,
+`edge2_gre0`). Left empty, a route keeps the name `rc.conf` already
+knows it by, and a new one is called `arc_` and its destination. A
+route `rc.conf` keeps is found by its destination and routing table,
+whatever its name, so a route written by hand is deleted or renamed
+the same way.
+
+**Kept in rc.conf**, beside **In the table**, lists what `rc.conf`
+keeps, of the host or of the jail chosen: each route by its name, with
+the words `route(8)` is given and what they say (destination, gateway,
+kind, routing table), and the default routers of each table under them.
+A variable no list names is marked *not listed* (it is not added at
+boot), and a name without its variable *no variable*. The pencil keeps a
+route by another name, its words as they are; the cross forgets it in
+`rc.conf`. Neither touches the kernel's table: they are for a route
+another program puts there now, BIRD say, kept from an earlier day.
+From the command line these are `arcanactl route keep add <destination>
+name <word>`, `arcanactl route keep delete <destination>` and
+`arcanactl net kept-routes`.
+
 **Look up a route** asks for an address and tells the route the host
 would take to it, as the kernel tells it, and every other route that
 covers the address, the most specific first.
