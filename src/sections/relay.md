@@ -54,6 +54,37 @@ the form leaves it empty.
 Both ends need the same mode, key and kind of ratios. The tab sets one
 end: open the far host's tab for the other.
 
+## Several relays
+
+A host that carries several tunnels over FEC, toward different far
+ends, runs a relay for each. Where the port's rc script runs several
+(it has `speederv2_profiles`), the tab shows a row of relays above the
+rest: **the plain one**, `speederv2_flags`, and one per profile, each
+with a dot that says whether it runs. **+ Another relay** opens the
+same form with a **Name**, letters, digits and `_`. Everything the tab
+does after that is for the relay picked: its flags, its ratios, its
+reports, its history and its log lines.
+
+<div class="freebsd">
+
+**FreeBSD:** each relay is a profile of the rc script, as many base
+services have them: `speederv2_profiles="lte fiber"` lists them, and
+each one's words are `speederv2_<name>_flags` (and
+`speederv2_<name>_user` when it is not `speederv2_user`). `service
+speederv2 start` starts them all and `service speederv2 start lte`
+one. Each runs under its own daemon(8), with its pidfile in
+`/var/run/speederv2/<name>.pid` and its syslog tag `speederv2-<name>`,
+which is how the tab finds its reports in the log.
+
+</div>
+
+While any profile is listed, the rc script runs only those, not the
+relay of `speederv2_flags`: the tab says so when that one is set too.
+**Enable** and **Disable** are the service's, so every relay's.
+**Remove** stops a relay, unsets its variables and takes its name out
+of the list, asked first, in safe mode on the host like every other
+change here.
+
 ## Changing the ratios while it runs
 
 **Ratios**, under how it is set, changes them. A relay that runs with a
@@ -126,4 +157,6 @@ From the command line: `arcanactl speeder` reads it, and `arcanactl
 speeder conf role=client listen=… remote=… [mode=…] [mtu=…] [fec=…]
 [timeout=…] [report=…] [fifo=…] [key=… | nokey] [extra=…]`, `speeder fec
 x:y,…` and `speeder enable | disable | start | stop | restart` change
-it (`-s` for safe mode, `-j` for a jail).
+it (`-s` for safe mode, `-j` for a jail). `profile=<name>` added to any
+of them but enable and disable is for one of several relays, and
+`speeder remove profile=<name>` takes one away.
