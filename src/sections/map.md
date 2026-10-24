@@ -82,6 +82,31 @@ its peer, by its public key, at its outer address. Each end is made in
 safe mode, and kept in `rc.conf` unless told otherwise. A tunnel picked
 on the map is destroyed with one button, both ends.
 
+While a line is drawn, points stream along it toward the pointer and
+every host it can be dropped on breathes a dotted outline round its
+box (WebGL; the dashed line and lit boxes alone without it).
+
+## Drawing a routing session
+
+The same line makes a routing session instead: the dialog's top asks
+what joins the two, **a tunnel**, **a BGP session**, **an OSPF
+adjacency** or **BFD**. For a session it offers what the session goes
+over, each tunnel or point-to-point link the map has between them (by
+their inner addresses) and each network both have an address in; for
+BGP, each end's AS, as each host's BIRD says it in a session it has;
+and BFD with it, on by default.
+
+A session is written into each host's BIRD, one end at a time.
+**Open the first end's BIRD** opens that host's BIRD with the protocol's
+form filled in: a BGP neighbour named for the far host, its address,
+AS and the source address; for OSPF the interface, added to the
+instance of that family the host runs (version 2 for IPv4, 3 for
+IPv6), or to a new one; for BFD the neighbour on that interface. It is
+looked at, changed if need be, and saved as any protocol is, in safe
+mode. Once it is saved, a note above the BIRD tab offers the other
+end: **Open its BIRD** opens the far host's form, filled in from its
+own side.
+
 ## Look up the route
 
 Asks each host on the way which route it takes to an address, follows
