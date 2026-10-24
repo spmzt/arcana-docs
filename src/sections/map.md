@@ -22,6 +22,14 @@ as the bytes a second that way. A link that is down breathes red at
 its middle. On a tunnel or a point-to-point link, each end's interface
 is written at its own end, and what it carries in the middle.
 
+A tunnel measured from the Overlay tab's Quality view carries its
+probes as well: under its rate, its last sample (the one-way delay,
+its variation and the share lost), and on it probes, white points one
+way and the other, that cross in a time that grows with the delay
+measured, leave early or late by the variation, and vanish in a red
+flash at the share lost. A lossy tunnel looks it at a glance. The map
+reads those monitors every quarter of a minute while it is shown.
+
 A host where a change made in safe mode waits to be confirmed has a
 fuse round its box: a ring of points that burns down as the time the
 agent gave it runs out, amber, then red for its last ten seconds, with
