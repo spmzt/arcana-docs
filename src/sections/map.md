@@ -22,12 +22,21 @@ as the bytes a second that way. A link that is down breathes red at
 its middle. On a tunnel or a point-to-point link, each end's interface
 is written at its own end, and what it carries in the middle.
 
-The moving traffic is drawn by WebGL 2 under the map, from the same
+A host where a change made in safe mode waits to be confirmed has a
+fuse round its box: a ring of points that burns down as the time the
+agent gave it runs out, amber, then red for its last ten seconds, with
+"undone in … unless confirmed" under it. The console confirms a change
+by reaching the host again over a new connection, so a fuse that keeps
+burning means the change has cut the console off, and the agent will
+put it back when the fuse is out.
+
+The moving traffic and the fuses are drawn by WebGL 2 under the map, from the same
 C program as the rest of the page; the map itself, with everything a
 pointer or a screen reader needs, stays SVG on top of it. A browser
 without WebGL 2 shows dashes running along the links instead, and
-with Settings › Motion off, or motion reduced in the
-system's settings, nothing moves.
+the words under a host without its fuse. With Settings › Motion off,
+or motion reduced in the system's settings, the traffic does not
+move; a fuse still burns, since it is the change's state.
 
 Routing is drawn too, from what each host's BIRD says: a BGP session or
 an OSPF adjacency between two hosts as a link of its own kind, and a
