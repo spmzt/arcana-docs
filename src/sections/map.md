@@ -16,10 +16,18 @@ A link is drawn only between hosts of this console: a tunnel whose far
 end is an address of another host, a point-to-point address whose peer
 is one, or two hosts with addresses in the same network. Three or more
 hosts in one network join a node of its own. A link carries its
-traffic: its width and the dots that run along it follow the rate of
-the interface behind it. On a tunnel or a point-to-point link, each
-end's interface is written at its own end, and what it carries in the
-middle.
+traffic: its width follows the rate of the interface behind it, and
+points of light run along it, one lane each way, as many and as fast
+as the bytes a second that way. A link that is down breathes red at
+its middle. On a tunnel or a point-to-point link, each end's interface
+is written at its own end, and what it carries in the middle.
+
+The moving traffic is drawn by WebGL 2 under the map, from the same
+C program as the rest of the page; the map itself, with everything a
+pointer or a screen reader needs, stays SVG on top of it. A browser
+without WebGL 2 shows dashes running along the links instead, and
+with Settings › Motion off, or motion reduced in the
+system's settings, nothing moves.
 
 Routing is drawn too, from what each host's BIRD says: a BGP session or
 an OSPF adjacency between two hosts as a link of its own kind, and a
