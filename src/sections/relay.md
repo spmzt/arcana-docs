@@ -83,6 +83,36 @@ the two, depending on how many packets the traffic gathers into a
 group within the timeout. Its last lines in the log are at the foot of
 the tab.
 
+### Its history
+
+Under the table, the overhead of each interval between two reports,
+both ways, as two lines over the intervals the log still holds (240 at
+most, those since the relay last started). The relay counts from its
+start, so the overall overhead hides a change of traffic or of ratios.
+The lines show it.
+
+## What FEC does to the tunnel
+
+The overhead is what FEC costs; what it buys is measured beside it.
+**Measure what FEC does** sets two tunnel monitors (see
+[Tunnel quality](network.md#tunnel-quality)), probed side by side:
+
+- **without FEC**, `fec-raw`: ICMP straight over the underlay to the far
+  relay's host, in the relay's own routing table. The address is
+  filled in from a client's `remote=`.
+- **with FEC**, `fec-tunnel`: ICMP through the tunnel the relay carries,
+  to an address at its other end, in the tunnel interface's table.
+
+The tab shows each one's delay, variation and loss, the mean of their
+last 30 samples, beside each other, and the difference: **FEC's part**.
+It is usually some delay added (the relay holds a group for its
+timeout) for loss taken away. Next to them is the overhead to the
+server, lately. **Stop comparing** takes both monitors away.
+
+A network that filters may treat ICMP unlike the relay's UDP: where
+it does, the underlay's figures are its ICMP's, not what the relay's
+packets meet.
+
 ## Safe mode
 
 On the host every change is sent in safe mode. A relay often carries
