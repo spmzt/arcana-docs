@@ -27,32 +27,54 @@ agent want it off: they then need neither Kore nor Emscripten.
 ```sh
 git clone --recurse-submodules https://github.com/spmzt/arcana.git
 cd arcana
-pkg install libcbor                    # what cblink needs
-make WITHOUT_CONSOLE=yes               # a host's programs only
-make install WITHOUT_CONSOLE=yes
-```
-
-The `cblink` library and its code generator come with the tree as a
-submodule and are built first, so nothing of them needs installing.
-
-For the console as well, the build needs:
-
-- **Kore 4.3** built with task threads (`TASKS=1`), from the port
-  above;
-- **Emscripten** (`pkg install emscripten`), which compiles the panel
-  from C to WebAssembly;
-- **libucl's sources**, which the panel compiles in: the system's
-  sources under `/usr/src/contrib/libucl`, or a checkout of libucl
-  0.9.4 named with `LIBUCL_SRC`;
-- optionally **Chromium** (`pkg install chromium`), whose chromedriver
-  drives the browser tests.
-
-```sh
-cp config.mk.sample config.mk          # where Kore is, if not /usr/local
-make                                   # LIBUCL_SRC=/path without /usr/src
+make check-deps                        # what is needed, and what is missing
+make install-missing-packages          # as root: pkg install what is missing
+make install-kore                      # as root, once, for the console
+make                                   # checks the same first
 make check                             # the tests, with kyua(1)
 make install                           # under /usr/local
 ```
+
+`make check-deps` asks pkg(8) what is installed, and lists what is
+missing as packages; `make install-missing-packages` installs them with
+`pkg install` (add `WITH_TEST_TOOLS=yes` for the tests' tools too).
+`make` itself checks first, and stops with that list rather than a
+compiler's error. A host that runs only jails needs less: `make
+WITHOUT_CONSOLE=yes` and `make install WITHOUT_CONSOLE=yes`.
+
+The `cblink` library and its code generator come with the tree as a
+submodule and are built first, so nothing of them needs installing.
+What the build needs:
+
+- **libcbor** (`devel/libcbor`), for cblink, and **libyang 3**
+  (`net/libyang3`), which its code generator reads the wire's YANG
+  modules with, to build only;
+- for the console:
+  - **Kore 4.3** built with task threads (`TASKS=1`), which is no
+    package. `make install-kore` builds the port shipped in the tree,
+    `port/www/kore`, with the ports framework (the ports tree in
+    `/usr/ports`). A copy elsewhere is named in `config.mk`
+    (`config.mk.sample` says how);
+  - **Emscripten** (`devel/emscripten`), which compiles the panel from C
+    to WebAssembly;
+  - the sources of **libucl** and **libyaml**, which the panel compiles
+    in (WebAssembly needs their sources, not a built library): the
+    system's, under `/usr/src/contrib`. Without `/usr/src`, they come
+    from pkgbase's `FreeBSD-src` package, which `make
+    install-missing-packages` lists, or from trees named with
+    `LIBUCL_SRC` and `LIBYAML_SRC` (libucl 0.9.4 and libyaml 0.2.5, the
+    releases base imports, which the port fetches);
+- for the tests: **git**, **curl**, **python3**, and **Chromium**,
+  whose chromedriver drives the browser tests.
+
+<div class="freebsd">
+
+**FreeBSD:** what is installed is pkg(8)'s to say (`pkg info -e`), and
+pkgbase installs the system's sources as a package like any other.
+Kore, which the ports tree does not carry, is built by its own port
+here.
+
+</div>
 
 `make check` skips the tests that need root. Run as root, they drive
 throwaway jails and interfaces of their own, never what is already on
