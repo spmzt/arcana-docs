@@ -338,6 +338,60 @@ alias`. In a jail's own network the vhids are the jail's.
 
 </div>
 
+## Tunnel quality
+
+**Tunnel quality**, among the Network tab's views, lists every tunnel
+of the host, or of the vnet jail picked: gre, gif, WireGuard, IPsec,
+and any interface with a far end. Each tunnel is either measured or
+offered **Measure**. A measured tunnel shows its **delay**, its
+**variation** and its **loss**, with their trend. This works on any
+tunnel, outside SD-WAN: a tunnel made by hand, by rc.conf or by
+another tool is measured all the same, and an SD-WAN apply never
+touches a monitor.
+
+- The **delay** is one way: half the mean round trip of a sample's
+  answers.
+- The **variation** is the mean difference between one answer's delay
+  and the next's.
+- The **loss** is the share of a sample's probes not answered.
+
+**Measure** opens the measuring dialog:
+
+- **Far end**: the tunnel's inner address at the other end. For a gre
+  or a gif it comes from the interface's point-to-point address; a
+  WireGuard peer's is typed.
+- **Routing table**: the interface's own.
+- How often it is probed, and how long a sample is (500 ms and 10 s
+  unless changed).
+- The probes' size and DSCP.
+- Thresholds, each optional: a delay, a variation (ms) and a loss (%).
+
+A value over its threshold shows in red. **Change** opens the same
+dialog for a measured tunnel, and its samples are kept when it still
+probes the same address the same way. **Stop** takes the monitor away.
+The view is read again every few seconds while it is shown.
+
+A monitor whose tunnel stops answering, or answers again, is an event,
+`monitor`. A metric crossing its threshold either way is another,
+`monitor-threshold`. Workflows can begin on either ("a measured tunnel
+stops answering", "answers again", "crosses its threshold"), for one
+tunnel or any.
+
+<div class="freebsd">
+
+**FreeBSD:** the agent's prober sends ICMP echo on a raw socket set to
+the tunnel's routing table with `SO_SETFIB`, its DSCP set by `IP_TOS`
+or `IPV6_TCLASS`. The SD-WAN's probes use the same prober, and needs
+root. A vnet jail's monitor is probed from the jail's own network,
+through a socket the agent's helper makes there. The monitors are kept
+in `monitors.json` (`monitors@<jail>.json`) beside `history.conf`, and
+probed again when the agent starts. From the command line: `arcanactl
+monitor`, `monitor set name=… [interface=…] [address=…] [fib=…]
+[interval=…] [eval=…] [delay-max=…] [ipdv-max=…] [loss-max=…]` and
+`monitor remove name=…` (`-j` for a jail).
+
+</div>
+
 ## A jail's own network
 
 A jail with a network of its own (vnet) has that network here, and in
