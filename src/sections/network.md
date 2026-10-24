@@ -392,6 +392,40 @@ monitor`, `monitor set name=… [interface=…] [address=…] [fib=…]
 
 </div>
 
+### Each tunnel from both ends
+
+The fleet's Network page shows the same monitors per tunnel rather than
+per host: its **Overlay** tab has two views, **Tunnels** and
+**Quality**. Quality lists every tunnel of the fleet once, with both of
+its ends side by side. A gre or gif is matched to its far end by
+outer addresses, and a WireGuard interface by peer keys; a tunnel whose
+far end no host of the fleet has is listed with one end.
+
+Each end is measured twice:
+
+- **over the tunnel** (the overlay): ICMP to the far end's inner
+  address, in the interface's own routing table;
+- **under it** (the underlay): ICMP to the far end's outer address, in
+  the interface's `tunnelfib`, the table its encapsulated packets
+  leave by.
+
+**Measure** opens one dialog for both ends, filled in from the
+interfaces: the four addresses and the four routing tables, each of
+which can be changed (a host whose underlay sits in another FIB is
+the case this is for), how often to probe and how long a sample is. It
+sets four monitors, `ov-<interface>` and `ul-<interface>` on each end,
+which are the ordinary monitors of [Tunnel quality](#tunnel-quality):
+the host's own view shows them too, the underlay's row under the
+tunnel's.
+
+The row says each monitor's last sample. **Charts** opens the tunnel
+under the table: three charts, **Loss**, **Delay** and **Jitter**, each
+with four lines, A to B and B to A over the tunnel (solid) and under
+it (dashed). The overlay's delay less the underlay's is what the
+tunnel itself adds, and loss on the overlay alone points at the tunnel
+rather than the path under it. **Change** opens the dialog again,
+and **Stop** takes all four monitors away.
+
 ## A jail's own network
 
 A jail with a network of its own (vnet) has that network here, and in
