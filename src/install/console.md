@@ -1,8 +1,9 @@
 # The console
 
-The console is a module of the Kore web server, `arcana-console.so`,
-and runs as an unprivileged user. It serves the panel and its JSON API,
-keeps the fleet's state in a data directory, and talks to the agents.
+The console, `arcana-console`, is its own web server, built on
+libwebsockets, and serves as an unprivileged user. It serves the panel
+and its JSON API, keeps the fleet's state in a data directory, and
+talks to the agents.
 
 ## Set it up
 
@@ -10,30 +11,24 @@ keeps the fleet's state in a data directory, and talks to the agents.
 pw useradd arcana -d /var/db/arcana -s /usr/sbin/nologin
 install -d -o arcana -m 0700 /var/db/arcana
 cd /usr/local/etc/arcana
-cp kore.conf.sample kore.conf          # the name, certificate, address
-cp web.conf.sample web.conf            # rp_id, origin
+cp web.conf.sample web.conf            # address, certificate; rp_id, origin
 sysrc arcana_console_enable=YES
 service arcana_console start
 ```
 
-The console's HTTPS certificate must be **RSA**: Kore keeps the private
-key out of its worker in a key manager, which signs with nothing else.
-
-## kore.conf
-
-How the web server listens and which certificate it shows. Change the
-domain, the certificate's paths and, if need be, the addresses it binds
-to:
-
-```text
-{{#include ../../arcana/www/arcana-console/conf/kore.conf.sample}}
-```
+It is two processes. The supervisor, root, listens on the addresses
+and reads the certificate and its key, which may be RSA or EC; it
+starts the worker, which serves as `arcana`, and starts it again if it
+ever dies. The worker serves on the supervisor's sockets, so a restart
+of it refuses no one.
 
 ## web.conf
 
-The console's own settings, in UCL. At the least, `rp_id` and `origin`
-must be the name and the exact address your browser uses: a security
-key signs for that name and no other.
+The console's settings, in UCL. Its `server` block says where it
+listens and which certificate it shows; the rest is the console's own.
+At the least, `rp_id` and `origin` must be the name and the exact
+address your browser uses: a security key signs for that name and no
+other.
 
 ```text
 {{#include ../../arcana/www/arcana-console/conf/web.conf.sample}}

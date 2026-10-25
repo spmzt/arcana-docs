@@ -86,9 +86,9 @@ you sign, and its way is this:
    body of one HTTPS request, and the box is closed. A browser cannot
    be made to forget a string at once: close the tab when you are done
    on a machine you share.
-2. **The console.** The request is read into memory (Kore keeps bodies
-   in memory, `http_body_disk_offload` off), parsed, and put into a
-   job for the host. The raw body, Kore's copy of it, the parsed JSON's
+2. **The console.** The request is read into memory (the console keeps
+   bodies in memory, never on disk), parsed, and put into a job for
+   the host. The raw body, the server's copy of it, the parsed JSON's
    copy and the job's are each overwritten with zeros
    (`explicit_bzero(3)`) as soon as they are no longer needed. It is
    not in the console's log, its audit trail (which records *ssh sign*

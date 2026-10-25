@@ -1,8 +1,8 @@
 # The console in a container
 
 The console is also published as a container image, built on FreeBSD:
-`ghcr.io/spmzt/arcana`. It runs Kore unprivileged (uid 4310) on port
-8443: HTTPS with an RSA certificate mounted as `console.pem` and
+`ghcr.io/spmzt/arcana`. It runs the console unprivileged (uid 4310) on
+port 8443: HTTPS with a certificate (RSA or EC) mounted as `console.pem` and
 `console.key` in `/usr/local/etc/arcana`, or plain HTTP behind a
 reverse proxy that does the HTTPS.
 
@@ -20,7 +20,8 @@ podman exec arcana cat /var/db/arcana/setup-token
 | `ARCANA_ORIGIN` | `https://` and the name | The exact origin the browser uses |
 | `ARCANA_PORT` | `8443` | The port it listens on |
 
-A mounted `web.conf` or `kore.conf` replaces the one the image makes.
+A mounted `web.conf` replaces the one the image makes; its `server`
+block then says where to listen, with `user = ""`.
 The console's CA lives in the `arcana` volume; to use one of your own,
 mount `ca.pem`, `client.pem` and `client.key` into
 `/usr/local/etc/arcana`, readable by uid 4310 (see [Certificates of

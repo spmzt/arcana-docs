@@ -5,7 +5,7 @@ Only the agent. Everything else is built to need as little as it can.
 | Part | Runs as | Why |
 |---|---|---|
 | `arcana-agent` | root | It changes the host: jails, interfaces, routes, the firewall, packages. |
-| The console (Kore and `arcana-console.so`) | `arcana` | It only talks: to your browser, and to the agents as a client. Kore's key manager keeps the HTTPS key out of the worker. |
+| The console (`arcana-console`) | `arcana` | It only talks: to your browser, and to the agents as a client. Its supervisor alone is root: it listens, reads the HTTPS key and starts the worker again if it dies. |
 | The panel | your browser | A web page, under the browser's own rules. |
 | Builds the agent runs | `nobody` | When a host builds Arcana from its repository, `git` and `make` run as `nobody`; only installing runs as root. |
 

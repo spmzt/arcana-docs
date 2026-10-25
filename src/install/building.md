@@ -5,14 +5,11 @@ two ways to get it onto a host: the port, or the source tree.
 
 ## The port
 
-Arcana's tree carries its ports: `port/sysutils/arcana`, and
-`port/www/kore` for the web server the console runs in, built with the
-task threads the console needs. Neither is in the FreeBSD ports tree
-yet; copy them into your ports tree, or a `poudriere` overlay, and
-build as any port:
+Arcana's tree carries its port, `port/sysutils/arcana`. It is not in
+the FreeBSD ports tree yet; copy it into your ports tree, or a
+`poudriere` overlay, and build it as any port:
 
 ```sh
-cp -R arcana/port/www/kore /usr/ports/www/kore
 cp -R arcana/port/sysutils/arcana /usr/ports/sysutils/arcana
 cd /usr/ports/sysutils/arcana && make install clean
 ```
@@ -20,7 +17,7 @@ cd /usr/ports/sysutils/arcana && make install clean
 The port's `CONSOLE` option, on by default, builds the console too.
 Turned off, only what a host runs is built: `arcana-agent`,
 `arcanactl`, `arcana-enrol` and `jailconf`. Hosts that only run an
-agent want it off: they then need neither Kore nor Emscripten.
+agent want it off: they then need neither libwebsockets nor Emscripten.
 
 ## From the source tree
 
@@ -29,7 +26,6 @@ git clone --recurse-submodules https://github.com/spmzt/arcana.git
 cd arcana
 make check-deps                        # what is needed, and what is missing
 make install-missing-packages          # as root: pkg install what is missing
-make install-kore                      # as root, once, for the console
 make                                   # checks the same first
 make check                             # the tests, with kyua(1)
 make install                           # under /usr/local
@@ -50,10 +46,8 @@ What the build needs:
   (`net/libyang3`), which its code generator reads the wire's YANG
   modules with, to build only;
 - for the console:
-  - **Kore 4.3** built with task threads (`TASKS=1`), which is no
-    package. `make install-kore` builds the port shipped in the tree,
-    `port/www/kore`, with the ports framework (the ports tree in
-    `/usr/ports`). A copy elsewhere is named in `config.mk`
+  - **libwebsockets** (`net/libwebsockets`), the console's HTTP and
+    WebSocket server. A copy elsewhere is named in `config.mk`
     (`config.mk.sample` says how);
   - **Emscripten** (`devel/emscripten`), which compiles the panel from C
     to WebAssembly;
@@ -71,8 +65,6 @@ What the build needs:
 
 **FreeBSD:** what is installed is pkg(8)'s to say (`pkg info -e`), and
 pkgbase installs the system's sources as a package like any other.
-Kore, which the ports tree does not carry, is built by its own port
-here.
 
 </div>
 

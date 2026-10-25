@@ -5,14 +5,14 @@
 | Path | Is |
 |---|---|
 | `usr.sbin/arcana-agent` | the agent, its source laid out by the seven Archives |
-| `www/arcana-console` | the console, a Kore module |
+| `www/arcana-console` | the console, its own server on libwebsockets |
 | `www/arcana-ui` | the panel, C compiled to WebAssembly |
 | `usr.sbin/arcanactl`, `usr.sbin/arcana-enrol`, `usr.sbin/jailconf` | the command-line programs |
 | `lib/libjailconf` | the in-place editor of `jail.conf` |
 | `share/arcana/arcana.yaml` | the agent's protocol, from which both sides' code is generated |
 | `share/arcana/jobs.yaml` | the kinds of job, checked against `arcana.yaml` at the build |
 | `cblink/` | the protocol's library and generator, a submodule |
-| `port/` | the ports of Arcana and of Kore |
+| `port/` | Arcana's port |
 | `docs/` | the developers' pages: the architecture, the naming, the plans, what is to do |
 
 ## Building
