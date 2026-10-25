@@ -16,10 +16,9 @@ A link is drawn only between hosts of this console: a tunnel whose far
 end is an address of another host, a point-to-point address whose peer
 is one, or two hosts with addresses in the same network. Three or more
 hosts in one network join a node of its own. A link carries its
-traffic: its width follows the rate of the interface behind it, and
-points of light run along it, one lane each way, as many and as fast
-as the bytes a second that way. A link that is down breathes red at
-its middle. On a tunnel or a point-to-point link, each end's interface
+traffic: its width and the dashes that run along it follow the rate
+of the interface behind it. A link that is down breathes red at its
+middle. On a tunnel or a point-to-point link, each end's interface
 is written at its own end, and what it carries in the middle.
 
 A tunnel measured from the Overlay tab's Quality view carries its
@@ -38,13 +37,13 @@ by reaching the host again over a new connection, so a fuse that keeps
 burning means the change has cut the console off, and the agent will
 put it back when the fuse is out.
 
-The moving traffic and the fuses are drawn by WebGL 2 under the map, from the same
-C program as the rest of the page; the map itself, with everything a
-pointer or a screen reader needs, stays SVG on top of it. A browser
-without WebGL 2 shows dashes running along the links instead, and
-the words under a host without its fuse. With Settings › Motion off,
-or motion reduced in the system's settings, the traffic does not
-move; a fuse still burns, since it is the change's state.
+The red breath, the probes and the fuses are drawn by WebGL 2 under
+the map, from the same C program as the rest of the page; the map
+itself, with everything a pointer or a screen reader needs, stays SVG
+on top of it. A browser without WebGL 2 shows the words under a host
+without its fuse. With Settings › Motion off, or motion reduced in the
+system's settings, nothing moves but a fuse, which is the change's
+state.
 
 Routing is drawn too, from what each host's BIRD says: a BGP session or
 an OSPF adjacency between two hosts as a link of its own kind, and a
@@ -87,8 +86,10 @@ ones, asks for the kind (gif, gre, WireGuard, vxlan), and creates an
 interface on each host, the two ends of one tunnel. For WireGuard each
 host makes its own key; once both have one, each is given the other as
 its peer, by its public key, at its outer address. Each end is made in
-safe mode, and kept in `rc.conf` unless told otherwise. A tunnel picked
-on the map is destroyed with one button, both ends.
+safe mode, and kept in `rc.conf` unless told otherwise. Under the
+fields the dialog says what each host is to run, `ifconfig` line by
+line, and says it again as a field changes. A tunnel picked on the map
+is destroyed with one button, both ends.
 
 While a line is drawn, points stream along it toward the pointer and
 every host it can be dropped on breathes a dotted outline round its
