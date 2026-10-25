@@ -25,8 +25,8 @@ A tunnel measured from the Overlay tab's Quality view carries its
 probes as well: under its rate, its last sample (the one-way delay,
 its variation and the share lost), and on it probes, white points one
 way and the other, that cross in a time that grows with the delay
-measured, leave early or late by the variation, and vanish in a red
-flash at the share lost. A lossy tunnel looks it at a glance. The map
+measured, leave early or late by the variation, and fade out on the
+way at the share lost. A lossy tunnel looks it at a glance. The map
 reads those monitors every quarter of a minute while it is shown.
 **tunnel quality** in the legend, there once a tunnel is measured,
 takes the probes and the samples off the map and puts them back; the
