@@ -54,8 +54,21 @@ A UCS End Point on a WireGuard underlay takes:
   there) instead of the far underlay address, and the relay itself
   reaches the far edge's underlay at `port`; the relay's own UDP is
   sent by the end point's `vrf` (an ipfw `setfib` rule in the service's
-  set, before the zones). The relay process is yours: Arcana installs
-  nothing.
+  set, before the zones). The relay process is yours, unless the
+  relay names its plugin:
+  - `plugin: speederv2` (UDPspeeder, see [FEC relay](../sections/relay.md)),
+    with `fec` (its ratios, `20:10` unless said) and `mode` (0 or 1,
+    1 unless said), the same at both ends: the apply makes both ends.
+    On this edge a client, listening at `endpoint` and sending to the
+    far underlay at `port`; on the far edge a server, listening on its
+    underlay at `port` and handing the packets to its own wg port.
+    Each is a profile of the plugin's rc script (`c_<interface>`,
+    `s_<interface>`), with its reports every 10 s and a fifo of its own
+    in `/var/run/speederv2`, so its ratios change on its tab without
+    dropping the tunnel; it is enabled, started, and taken away with
+    the tunnel. UDPspeeder must be installed on both edges, with an rc
+    script that runs several relays: the apply says so and waits, and
+    installs nothing.
 - `vrf`: as for any uplink, the table the underlay is in; a wg tunnel
   over such an end point gets that table as its `tunnelfib` too, so
   its outer packets leave by the uplink's table and never by the
