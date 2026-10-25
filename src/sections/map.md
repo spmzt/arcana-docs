@@ -17,8 +17,8 @@ end is an address of another host, a point-to-point address whose peer
 is one, or two hosts with addresses in the same network. Three or more
 hosts in one network join a node of its own. A link carries its
 traffic: its width and the dashes that run along it follow the rate
-of the interface behind it. A link that is down breathes red at its
-middle. On a tunnel or a point-to-point link, each end's interface
+of the interface behind it. A link that is down is drawn dashed and
+faded. On a tunnel or a point-to-point link, each end's interface
 is written at its own end, and what it carries in the middle.
 
 A tunnel measured from the Overlay tab's Quality view carries its
@@ -28,6 +28,9 @@ way and the other, that cross in a time that grows with the delay
 measured, leave early or late by the variation, and vanish in a red
 flash at the share lost. A lossy tunnel looks it at a glance. The map
 reads those monitors every quarter of a minute while it is shown.
+**tunnel quality** in the legend, there once a tunnel is measured,
+takes the probes and the samples off the map and puts them back; the
+choice is kept in the browser.
 
 A host where a change made in safe mode waits to be confirmed has a
 fuse round its box: a ring of points that burns down as the time the
@@ -37,7 +40,7 @@ by reaching the host again over a new connection, so a fuse that keeps
 burning means the change has cut the console off, and the agent will
 put it back when the fuse is out.
 
-The red breath, the probes and the fuses are drawn by WebGL 2 under
+The probes and the fuses are drawn by WebGL 2 under
 the map, from the same C program as the rest of the page; the map
 itself, with everything a pointer or a screen reader needs, stays SVG
 on top of it. A browser without WebGL 2 shows the words under a host
