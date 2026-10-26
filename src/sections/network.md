@@ -100,6 +100,17 @@ them apart.
 Each interface with its state and link, addresses, MTU, hardware
 address, a tunnel's two ends, and its traffic in all and as it is now.
 
+The host's table is read by the standard models, as an SDN controller
+reads a device: the console asks the agent for RFC 8343's
+`ietf-interfaces` and RFC 8344's `ietf-ip`, with RFC 8529's network
+instances for the FIBs, by cblink's YANG family (YANG-CBOR, RFC 9254),
+and makes the rows of what comes. The agent reads them as ifconfig(8)
+does: getifaddrs(3), the `SIOCGIFFIB`, `SIOCGTUNFIB`,
+`SIOCGIFPSRCADDR`/`SIOCGIFPDSTADDR` and media ioctls. `arcanactl get
+interfaces` shows the same as RFC 7951's JSON. A jail's table, and the
+CARP and Span tabs, still come from the agent's own table, which also
+carries what the models do not have yet (CARP, the interface flags).
+
 - **+ address** adds an address, and its cross takes it off.
 - **Up** and **Down** change the interface's state; **Edit** its MTU
   and description.
