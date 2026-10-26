@@ -16,12 +16,23 @@ sysrc arcana_console_enable=YES
 service arcana_console start
 ```
 
-It is two processes. The supervisor, root, listens on the addresses
-and reads the certificate and its key, which may be RSA or EC (browsers
-then get HTTP/2, others HTTP/1.1); it
-starts the worker, which serves as `arcana`, and starts it again if it
-ever dies. The worker serves on the supervisor's sockets, so a restart
-of it refuses no one.
+It is three processes. The supervisor, root, listens on the addresses
+and starts the worker, which serves as `arcana`, again if it ever dies;
+the worker serves on the supervisor's sockets, so a restart of it
+refuses no one. The certificate may be RSA or EC (browsers then get
+HTTP/2, others HTTP/1.1), and its key is never in the worker: a key
+manager, forked by the worker while it is still root, reads the key,
+becomes `arcana`, and signs each handshake's digest for the worker.
+
+<div class="freebsd">
+
+**FreeBSD:** the key manager runs in capability mode, `capsicum(4)`:
+after `cap_enter(2)` it can open nothing, connect nowhere, and only read
+and write the one socket it shares with the worker
+(`cap_rights_limit(2)`). A flaw that lets an attacker read the worker's
+memory finds no key there.
+
+</div>
 
 ## web.conf
 
