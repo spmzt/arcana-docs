@@ -20,9 +20,7 @@ rest. The console reads the Network tab's interfaces this way, and
 
 What a plugin's program reads (BIRD, WireGuard, netgraph) is left out
 where the program is not installed or does not answer: a read of
-everything is not lost for one host's lack of BIRD. Changes still go
-by the agent's jobs; editing these models and calling their actions is
-the next part of the work (`docs/PLAN-SDN-YANG.md`).
+everything is not lost for one host's lack of BIRD.
 
 ## Reading it
 
@@ -36,13 +34,59 @@ The answer is RFC 7951's JSON: a member is `module:name` where its
 module changes, 64-bit numbers and decimals are strings, an identity is
 `module:name`, an `empty` leaf `[null]`.
 
+## Actions and jobs
+
+Some of the modules' actions are served, each done as the agent's own
+operation does it, what changes the host one change at a time:
+
+| Action | On | Done as |
+|---|---|---|
+| `start`, `stop`, `restart`, `kill` | `jails/jail` *name* | jail(8), as the Start and Stop buttons |
+| `start`, `stop`, `restart`, `reload` | `services/service` *name* | service(8) |
+| `signal`, `renice` | `processes/process` *pid* | kill(2), setpriority(2), the process's start time checked |
+| `cancel`, `confirm` | `jobs/job` *id* | the job queue's own |
+| `refresh` | `packages` | `pkg update` |
+| `read` | `logs` | the end of a log, as the Log tab reads it |
+| `routes` | `bird` | `birdc show route` |
+
+```
+arcanactl action jails/jail web restart
+arcanactl action processes/process 4242 signal signal=HUP
+arcanactl action logs read name=messages lines=20
+```
+
+`arcana-jobs`' `submit` rpc takes changes as the jobs of
+[Jobs and the queue](jobs.md), each checked as the agent checks a
+submitted job (and refused where it would cut the console off), and
+answers with their ids. Editing the configuration as YANG data (an
+EDIT of `running`) is the next part of the work
+(`docs/PLAN-SDN-YANG.md`): until then, changes go by jobs.
+
+## Notifications
+
+Every event the host tells (the Log's events) is also an
+`arcana-events:event` notification on the YANG family's group:
+
+```
+arcanactl notifications
+{"ietf-restconf:notification":{"eventTime":"2026-10-27T01:20:05Z","arcana-events:event":{...}}}
+```
+
+## From the console
+
+`GET /api/servers/<id>/data?node=interfaces,routing` answers with the
+host's YANG data under `data`, as RFC 7951's JSON, for a script or a
+tool that speaks YANG rather than Arcana's own API.
+
 ## On the wire
 
 The models travel over cblink's YANG family, family 1, beside the
 agent's own on the same mTLS connection: a GET names the top-level nodes
 by SID and gets their values back as YANG-CBOR (RFC 9254), CORECONF's
-FETCH in shape (draft-ietf-core-comi). Each request runs on a thread of
-its own, so a slow read (ZFS, BIRD) holds no other. As the agent's own
-family, another host's certificate is refused: only the console asks.
+FETCH in shape (draft-ietf-core-comi); an action goes with its target,
+the list entry, as an instance-identifier (RFC 9254), CORECONF's POST.
+Each request runs on a thread of its own, so a slow read (ZFS, BIRD)
+holds no other. As the agent's own family, another host's certificate
+is refused: only the console asks.
 The SIDs are in RFC 9595's experimental range for now
 (`share/yang/SIDS.md`).
