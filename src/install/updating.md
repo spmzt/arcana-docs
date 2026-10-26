@@ -52,3 +52,11 @@ restart the service.
 The agent and the console each have a version, and every change to one
 bumps it. A host's header shows its agent's version; the console's is
 beside its name at the top of the panel.
+
+Update the agents before the console when a console's release says it
+needs them newer; until they are, what needs them stops with the
+agent's refusal, nothing else changed. So far:
+
+| Console | Needs agents | For |
+|---|---|---|
+| 0.317.0 | 0.211.0 | SD-WAN: a zone's URL filtering, middlebox or malware scanning (the proxy's lists, a file each) |
