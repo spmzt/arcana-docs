@@ -5,8 +5,8 @@ have (an Internet line, a private MPLS circuit, a 5G modem), and sends
 each kind of traffic by the link that suits it best at the moment, as a
 policy says. Arcana builds such services on FreeBSD hosts, in the terms
 of **MEF 70.2**, the open standard for SD-WAN services, and adds what
-**Mplify 119** (the Universal SD-WAN Edge) and **MEF 88** (security
-policies) ask for. It uses no vendor's words and no vendor's model.
+**Mplify 119** (the Universal SD-WAN Edge) and **MEF 138** (security
+functions) ask for. It uses no vendor's words and no vendor's model.
 
 ![The SD-WAN dashboard: two edges, the tunnels between them](../img/sd-overview.png)
 
@@ -106,7 +106,7 @@ or only those the services use there.
 | **Services** | a service's end points, zones, flows, policies, topologies and rate limiters, with their forms |
 | **Edges** | what the services make on each edge, **Deploy**, and the past applies |
 | **Paths** | each tunnel's delay, variation and loss, the steering, BFD, the keys, faults |
-| **Security** | MEF 88 security policies, lists and feeds, the record of what was denied |
+| **Security** | MEF 138 security function policies and the security policies made of them, lists and feeds, the record of what was denied |
 | **Identities** | the people let in at remote end points, each a WireGuard key |
 | **Document** | the whole as JSON, **Check** and **Keep**, and **Start from an example** |
 

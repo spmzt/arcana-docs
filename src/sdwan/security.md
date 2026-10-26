@@ -1,58 +1,129 @@
-# Security: MEF 88 and access by identity
+# Security: MEF 138 and access by identity
 
-A service's security policies are MEF 88's: addresses allowed and
-denied, domains denied, DNS kept to the provider's resolver, a rate, a
-log, URLs filtered by a proxy; and its remote end points let people in
-by identity, each a WireGuard key the console issues and revokes. The
-**Security** and **Identities** tabs hold them.
+A service's security is MEF 138's Security Functions, each with a
+policy of its own: addresses, ports and protocols filtered; domain
+names; URLs; TLS opened by a middlebox; malware; DNS itself; and the
+answers DNS gives. Its remote end points let people in by identity,
+each a WireGuard key the console issues and revokes. The **Security**
+and **Identities** tabs hold them.
 
 ## Security
 
-![The Security tab](../img/sd-security.png)
+![The Security tab: function policies and security policies](../img/sd-security-functions.png)
 
-**Security** lists the service's security policies (MEF 88): the
-addresses allowed and denied, the domains denied and whether DNS is
-kept to the provider's resolver, the rate limit, the log, and which
-policies name each; **+ policy** and the pencil edit one. On the
-edges, where a flow's policy names one by `af-security-ingress`, the
-rules of that flow's block get, before the forward, a `deny` of what
-goes to a prefix of the policy's deny list and one of what comes from
-one, each with a `not` for the allow list, `log` where the policy
-says, the prefixes in tables of the policy's own (`sw<fib>_s<n>d4`,
-`d6`, `a4`, `a6`); a `rate-limit` is a dummynet pipe of the policy's
-own, the flow sent through it on the way out by the tunnels. Named by
-`af-security-egress`, the same denies stand on the way out by the UNI.
-The DNS criteria are the base system's unbound(8), `local-unbound`:
-where any policy of a service names a security policy with
-`dns-domain-filter` or `dns-protocol-filter`, each edge with a UNI of
-the service runs an instance of it in the service's table (`sdwan-dns`;
-`arcanactl sdwan dns json` by hand; checked by local-unbound-checkconf
-first, its pid file beside the agent's kept files, started again at
-the agent's start), listening on the UNIs' provider addresses,
-answering the UNIs' subnets, resolving by itself, and answering every
-denied domain and the names beneath it with NXDOMAIN (a local zone
-each; the domains of all the service's filtering policies together).
-With `dns-protocol-filter`, every DNS query from the UNI, UDP or TCP,
-is forwarded to that instance by an ipfw rule (`fwd provider,53`),
-whatever resolver the host asked. Security lists the instances, and
-counts for each policy what its deny rules dropped on every edge
-(packets and bytes, as `ipfw -S show` counts them since the rules were
-made, which the `sdwan` read carries as `rules.counters`, each rule's
-number, packets, bytes and text).
+A **security function policy** (MEF 138 §9) is one function's: its
+Policy ID (`id`, one in the service), the `function`, and three lists.
+
+- **Block**: matched, the traffic is blocked.
+- **Allow**: matched, it is let through, where the entry is more
+  specific than a Block or Quarantine entry that matches too.
+- **Quarantine**: suspicious; blocked as the Block's are, kept apart
+  so that it can be moved to either list later.
+
+Where no entry matches, `no-match` says what is done: `allow` or
+`block`. Each list may also name **lists** (below), feeds or pasted.
+`duration` is how many hours apart the threat data is refreshed: the
+lists a function policy names are fetched at least that often.
+`notify` says whose matches are told: Block and Quarantine where it
+says nothing (MEF 138's Notification modifier).
+
+A **security policy** is what a flow's policy names by
+`af-security-ingress` or `af-security-egress`: the function policies
+it is made of (`function-policies`, one of a function at most), and
+two of Arcana's own that no MEF 138 function is, a `rate-limit` in
+bits per second (a dummynet pipe) and intrusion detection (`ids`,
+below).
+
+```json
+"security_function_policies": [
+  {"id": "office-ippf", "function": "ippf",
+   "block": [{"dav4": ["192.0.2.0/24"]}],
+   "allow": [{"dav4": ["192.0.2.8/29"], "dport": [443]}],
+   "lists": {"block": ["feodo"]},
+   "no-match": "allow", "duration": 6},
+  {"id": "office-dnf", "function": "dnf",
+   "block": ["ads.example"], "no-match": "allow", "duration": 6},
+  {"id": "office-dpf", "function": "dpf",
+   "no-match": "block", "redirect": true, "duration": 6}
+],
+"security_policies": [
+  {"name": "office", "function-policies":
+   ["office-ippf", "office-dnf", "office-dpf"],
+   "rate-limit": 20000000}
+]
+```
+
+The functions, what their entries are, and where they run:
+
+| Function | An entry | On the edge |
+|---|---|---|
+| `ippf` IP, port and protocol filtering | `sav4`, `dav4`, `protv4`, `sav6`, `dav6`, `nextheadv6`, `sport`, `dport`, as a flow's criteria (Table 5) | ipfw, on each flow |
+| `dnf` Domain name filtering | a name, or `*.` and one; each covers the names beneath it | unbound, by zone |
+| `urlf` URL filtering | a host, `*.host`, either with a path, a `*` ending it | Squid, by zone |
+| `mbsf` Middlebox | a TLS version: `ssl3`, `tls1.0` … `tls1.3` | Squid, by zone |
+| `mdr` Malware detection and removal | none: ClamAV's signatures decide | c-icap and ClamAV, by zone |
+| `dpf` DNS protocol filtering | `sav4`, `dav4`, `sav6`, `dav6`, `message-type` `any` (Table 6) | ipfw, on each flow |
+| `pdns` Protective DNS | `type` `A` or `AAAA` and a `value`, an address, a prefix or `any` | unbound, by zone |
+
+There is no `dlp`: FreeBSD has no engine for data loss prevention,
+nor do the packages Arcana uses.
+
+**IPPF** and **DPF** are rules of each flow, as its policy names
+them. In the flow's block on each edge, before the forward, the
+function policy's entries come most specific first: an Allow tags the
+packet (`count tag`, a tag of the function policy's own), a Block or
+Quarantine drops what is not tagged, logged where `notify` says. The
+named lists' prefixes go to a table of the function policy's own a
+family, `sw<fib>_f<n>v4` and `v6`, the list being the value (1 Block,
+2 Quarantine, 3 Allow), so the longest match among them decides; a
+prefix is matched to the flow's destination and to its source. Where
+`no-match` is `block`, the rest of the flow is dropped, and logged.
+DPF does the same for the flow's DNS (UDP and TCP 53, TCP 853 for DNS
+over TLS) that is not for the edge itself, answering what it blocks
+at once with port unreachable; with `redirect` (Arcana's: MEF 138's
+Alter action), DNS it would block goes to the service's resolver on
+the edge instead.
+
+**DNF**, **PDNS**, **URLF**, **MBSF** and **MD+R** serve what a
+zone's clients ask for, so they are the zone's: whatever its policies
+and the end points' maps for it name, one function policy of each, or
+the document is refused. A policy that names one of them by
+`af-security-egress` is refused too: the clients ask on their way in.
+
+- **DNF** and **PDNS** are the service's resolver, the base system's
+  unbound(8), an instance per service on each edge with a UNI of it,
+  in the service's table, on the UNIs' provider addresses. Each zone
+  is a view of its own, chosen by the zone's prefixes
+  (`access-control-view`). DNF's Block and Quarantine are local zones
+  answering NXDOMAIN, its Allow ones answering as they would, the
+  most specific deciding; where `no-match` is `block`, the root
+  answers NXDOMAIN but for the Allow. PDNS looks at the answers: an
+  answer whose address is on its Block (`response-ip`, the `respip`
+  module) is NXDOMAIN.
+- **URLF**, **MBSF** and **MD+R** are Squid, below.
+
+The Security tab lists the function policies, each with its lists,
+No-match, Duration, the packets its rules denied on every edge (as
+`ipfw -S show` counts them, by the rules' comments) and the security
+policies it is in; and the security policies, with their function
+policies, rate limit, IDS and the policies naming them. **+ function
+policy** and **+ policy** add one, the pencil edits it.
 
 ## Lists
 
-**Lists** (SASE-2): a security policy's `ip-block` and
-`dns-domain-filter` may name `lists` beside their own entries. A list
-is a feed, a URL the console's host fetches with the base system's
-fetch(3) (https, http or file) every `interval` hours (6 unless said),
-or entries pasted on the Security tab: one a line, prefixes and domain
-names, `#` for a note. Each is kept in `sdwan-lists.json` with a
-version that moves when its entries change, when it was fetched, and
-the error of a fetch that failed, which keeps the last entries. The
-prefixes of a named list go into the policy's deny tables after its
-own, the domains into its DNS filter; the document is refused for a
-list that is not there.
+**Lists** (SASE-2): a function policy's `lists` names lists for its
+Block, Allow and Quarantine beside its own entries (IPPF, DNF, URLF
+and PDNS). A list is a feed, a URL the console's host fetches with
+the base system's fetch(3) (https, http or file), or entries pasted
+on the Security tab: one a line, prefixes and domain names, `#` for a
+note. Feeds are fetched every `interval` hours (6 unless said), or as
+often as the shortest `duration` of the function policies naming
+lists. Each list is kept in `sdwan-lists.json` with a version that
+moves when its entries change, when it was fetched, and the error of
+a fetch that failed, which keeps the last entries. A function takes
+from a list what it filters by: IPPF and PDNS the prefixes, DNF and
+URLF the domains. The document is refused for a list that is not
+there.
 
 What IPsec decrypts goes past the firewall on its way in by default
 (`net.inet.ipsec.filtertunnel=0`), and a tunnel's payload with it, so
@@ -62,18 +133,18 @@ the rest.
 
 ## The record
 
-**The record** (SASE-2): a policy with `log` has its deny rules log
-each packet to the routing socket (ipfw's `logdst rtsock`, a thousand
+**The record** (SASE-2): IPPF's and DPF's rules log what they block,
+as `notify` says, and every No-match block, to the routing socket (ipfw's `logdst rtsock`, a thousand
 a rule between resets, which the agent asks for), where the agent
 reads them (RTM_IPFWLOG: the rule, its action, the addresses, the
-interface and the rule's comment, which names the service and the
-policy) into a record it keeps for a day beside its files, each an
+interface and the rule's comment, which names the service, the
+function policy and the list) into a record it keeps for a day beside its files, each an
 event `sdwan-security` as it comes, twenty a second at most. The
 `sdwan` read carries the day's count and the latest 500; Security
 shows them from every edge, newest first, with a filter, and **CSV**
 downloads the day's from every edge (`GET /api/sdwan/record.csv`;
-`/api/sdwan/record` as JSON, `?swvc=`, `&policy=`, `&edge=`,
-`&since=` to pick). `GET` and `PUT /api/sdwan/lists` carry the
+`/api/sdwan/record` as JSON, `?swvc=`, `&policy=` (a function
+policy's ID), `&edge=`, `&since=` to pick). `GET` and `PUT /api/sdwan/lists` carry the
 feeds and the interval, `POST /api/sdwan/lists/fetch` fetches now
 (`{"name"}` for one); **Fetch now** on the tab does the same. A list
 may be large: the agent writes a table's entries 64 to a line as
@@ -84,25 +155,41 @@ anew), each changed table is filled beside itself and swapped in with
 `table … swap`, the rules and the steering left as they are.
 `arcanactl sdwan rules @file` reads the JSON from a file.
 
-## URL filters
+## URL filtering and the middlebox
 
-**URL filters** (SASE-4, MEF 88's `url-filter`): a security policy
-with `url-filter` (`mode` sni or inspect, `deny` domains, `lists` by
-name, and `allow`, domains let through whatever the two say: a site
-under a denied one, a list's mistake) has HTTP and TLS from the service's end points forwarded by
-ipfw (ports 80 and 443, to 3128 and 3129 on the edge's own address at
-each end point) to Squid on the edge, an instance per service in its
-table (`sdwan-proxy`, `arcanactl sdwan proxy`). Squid is a plugin:
-installed by hand (`pkg install squid`, the package has SSL, SSL_CRTD
-and TP_IPFW), never by Arcana, and the apply says so where it is
-missing. In mode sni Squid looks at the TLS names (peek) and ends a
-connection to a denied domain, the rest let through unopened
-(splice); in mode inspect it opens TLS (bump) with a CA of the
-instance's own, made once by the agent with `openssl(1)` and kept
-beside its files, whose certificate the Security tab offers for the
-clients to trust. HTTP to a denied domain is refused outright. The
-denied domains, the policy's own and its lists', each cover the
-names beneath. The Security tab lists each edge's instances, their
+A zone with a **URLF**, an **MBSF** or an **MD+R** has its HTTP and
+TLS forwarded by ipfw, from the zone's prefixes (ports 80 and 443, to
+3128 and 3129 on the edge's own address at each end point), to Squid
+on the edge, an instance per service in its table (`sdwan-proxy`,
+`arcanactl sdwan proxy`). Squid is a plugin: installed by hand (`pkg
+install squid`, the package has SSL, SSL_CRTD and TP_IPFW), never by
+Arcana, and the apply says so where it is missing. It decides by zone,
+the zone's prefixes its `src`.
+
+- **Without an MBSF**, Squid looks at the TLS name (peek) and ends the
+  connection to a host the URLF blocks (terminate), letting the rest
+  through unopened (splice); a cleartext request is decided by its
+  host, and its path. A URL with a path over HTTPS can only be seen
+  where TLS is opened, so such an entry needs the zone's MBSF, or
+  `http://` before it.
+- **With an MBSF** (TLS 1.2 and 1.3 are what it opens, MEF 138's
+  Supported list), TLS is opened (bump) with a CA of the instance's
+  own, made once by the agent with `openssl(1)` and kept beside its
+  files, whose certificate the Security tab offers for the clients to
+  trust; but the hosts its `pass-through` names (Arcana's: a bank, a
+  doctor) are never opened. Each request is then decided by host and
+  path, the URLF's entries most specific first, so an Allow of
+  `bad.example/ok` overrules the Block of `bad.example`. The TLS
+  versions its Block names, and those on no list where its No-match
+  blocks, are refused both ways (`tls-min-version`,
+  `tls_outgoing_options`, the strictest of the service's zones);
+  `invalid-server-certificate` `allow` lets a server whose certificate
+  is not trusted through (`sslproxy_cert_error`); `unencrypted` `block`
+  refuses cleartext HTTP.
+
+A URLF's named lists are files of the instance's, a zone's Allow and
+its Block (with its Quarantine) each, its Allow tried first; its
+No-match last. The Security tab lists each edge's instances, their
 mode and state; the `sdwan` read has them as `proxy`.
 
 ## Identities
@@ -118,7 +205,7 @@ puts the identity in the document (in place of one of the name: issued
 again, with a new key), applies the edges, and shows the WireGuard
 configuration once, the private key kept nowhere: the address, the
 edge's key, its address on a public UCS and the port, the service's
-prefixes, the DNS filter where there is one. **Revoke** takes it out
+prefixes, the service's resolver where there is one. **Revoke** takes it out
 of the document and applies: its peer goes. A remote end point's
 `reauth` (an hour to a year, in seconds) is how long an identity stays
 authorised from its `issued` time; past it the manager's tick applies
@@ -144,13 +231,14 @@ console's own, beside MEF 70.2.
 
 ## Malware
 
-A security policy with **`malware`** (MEF 88) has what comes back to
-the service's hosts scanned: over HTTP, and over TLS where the URL
-filter opens it (mode inspect). The service's Squid, made for it if no
-URL filter made it already, hands each response by ICAP to a c-icap of
-the service's own, which scans it with ClamAV and refuses what is
-infected: the client gets 403 Forbidden, and c-icap's log names what was
-found.
+A zone with an **MD+R** function policy (`detection-type`
+`signature`, `removal` `block-subset`, `no-match` `allow`) has what
+comes back to its hosts scanned: over HTTP, and over TLS where its
+MBSF opens it. The service's Squid hands each response for the zone by
+ICAP to a c-icap of the service's own, which scans it with ClamAV and
+refuses what is infected: the client gets 403 Forbidden, and c-icap's
+log names what was found. ClamAV's signatures decide; lists of hashes
+are not given to it yet.
 
 c-icap listens on the edge's own address in the service, where Squid
 reaches it, at a port of the service's (1344 and ten for each routing
@@ -179,8 +267,8 @@ used: the edge's own address in the service is.
 A security policy with **`ids`** has the service's traffic
 watched by Suricata at each edge, on the service's UNIs there: what
 the end points send and what comes back to them. Intrusion detection
-is Arcana's own criterion: neither MEF 88 nor MEF 138, which replaces
-it, has it among its Security Functions. Its mode is one of:
+is Arcana's own: MEF 138 has no such Security Function. Its mode is
+one of:
 
 - **`detect`**: Suricata reads the UNIs beside the traffic; what a rule
   matches is told, and nothing is stopped.
@@ -230,9 +318,9 @@ says so as a Critical fault (`ids`) until Suricata runs again, and the
 apply starts Suricata before the divert rules come and takes them away
 before it stops it.
 
-With the URL filter or malware scanning on the same service, what
-the end points send to the web goes through Suricata first and then
-to Squid. Squid answers them from the edge itself, and traffic from
+With a zone's URLF, MBSF or MD+R on the same service, or a DPF
+that redirects, what the end points send to the web goes through
+Suricata first and then to Squid. Squid answers them from the edge itself, and traffic from
 the edge isn't diverted, so Suricata sees those flows from the end
 point's side only. For such a service Arcana tells Suricata to take a
 one-sided flow as it is (`stream.async-oneside`, `midstream`) and not

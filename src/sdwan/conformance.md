@@ -12,10 +12,10 @@ apply to how Arcana is built.
 The documents moved on while Arcana was being built. Mplify 117.1
 replaces MEF 117 and takes its Security Functions from MEF 138, which
 replaces MEF 88. MEF 118.1 replaces MEF 118. Arcana's security policies
-were written to MEF 88, and their criteria still carry MEF 88's names:
-`ip-block`, `dns-domain-filter`, `dns-protocol-filter`, `url-filter`,
-`malware`. The MEF 138 table below says what each one is in MEF 138's
-terms, and what MEF 138 has that they lack.
+were first written to MEF 88's criteria; since console 0.317.0 they are
+MEF 138's model: Security Function Policies, each one function's Block,
+Allow and Quarantine lists with its No-match and Duration, put together
+by the security policies that MEF 70.2's AF-SECURITY criteria name.
 
 The connectivity under it, MEF 70.2 and Mplify 119, has a chapter of
 its own ([Mplify 119](mplify.md)).
@@ -36,8 +36,8 @@ its own ([Mplify 119](mplify.md)).
 | 8.10 | List of SASE Supported Cipher Suites | no | WireGuard has one suite (Noise IK, ChaCha20-Poly1305), not a list. |
 | 8.11 | List of SASE Supported IPSEC Security Options | partly | IKEv2 proposals are agreed for tunnels between edges, not for an Actor's access connection. |
 | 8.12 | List of SASE Context Policies | no | No temporal criteria (time, day, duration); location is the zone alone. |
-| 8.13 | List of SASE Security Policies | yes | The service's `security_policies`, by name. Their criteria are MEF 88's, see below. |
-| 8.14 | List of SASE Security Functions | partly | Of the eight [R15] asks for: IPPF, DNF, DPF, URLF and MD+R are there; MBSF only as the URL filter's TLS inspection; PDNS and DLP are not. |
+| 8.13 | List of SASE Security Policies | yes | The service's `security_policies`, by name, each made of MEF 138 Security Function Policies (`security_function_policies`), see below. |
+| 8.14 | List of SASE Security Functions | partly | Of the eight [R15] asks for, seven: MBSF, IPPF, DNF, URLF, MD+R, DPF and PDNS, each as function policies; DLP is not. |
 | 8.15 | List of SASE Session Forwarding Policies | yes | MEF 70.2's policies: ENCRYPTION, PUBLIC-PRIVATE, BILLING-METHOD, BUSINESS-IMPORTANCE, PERFORMANCE, BANDWIDTH. |
 | 8.16 | List of SASE Monitoring Policies | partly | The probes and the TCA of each service, and the re-authorisation interval; not as named Monitoring Policies. |
 | 8.17 | List of SASE Notification Policies, Recipients | partly | The events, Web Push to the console's devices and the workflows; no SAAN or SSEN as 117.1 shapes them (see below). |
@@ -64,34 +64,37 @@ its own ([Mplify 119](mplify.md)).
 | R63 Encrypted connectivity between any two Edges | partly | Where the policy says ENCRYPTION or the tunnel is WireGuard or IPsec; a plain GRE or GENEVE tunnel is not. |
 | R64–R89 Session forwarding criteria | yes | MEF 70.2's, already conformant (see [Mplify 119](mplify.md)). |
 | R90, R91 Re-Evaluate on a change | partly | An identity's re-authorisation and revocation take effect at the next apply; there is no session state. |
-| R92–R95 The eight MEF 138 Security Functions | partly | See the MEF 138 table. |
+| R92–R95 The eight MEF 138 Security Functions | partly | Seven of eight, as function policies; no DLP. See the MEF 138 table. |
 | R107–R110 SAAN on a denied access or a Blocked session | partly | The record (each deny, with its rule, policy and edge) and the audit trail; no SAAN ID or format as Table 11 has it. |
 | R111–R114 SSEN on what a Security Function Blocks | partly | Suricata's alerts and ClamAV's detections are events; no SSEN ID; domains and URLs are not neutralised ([R114]). |
-| R115–R151 SASE Policy as a Composite Policy of six | no | Arcana's policies are MEF 70.2's and MEF 88's, each on its own. |
+| R115–R151 SASE Policy as a Composite Policy of six | no | Arcana's policies are MEF 70.2's, with MEF 138's Security Function Policies put together by a security policy; not Mplify 117.1's composite of six. |
 | CR3–CR18 With SD-WAN under the service | n/a | Arcana's SASE is the SD-WAN service itself, not a SASE service over one. |
 
 ## MEF 138: Security Functions
 
-| Function | Status | In Arcana |
+| Requirements | Status | In Arcana |
 |---|---|---|
-| Security Policy Identifier, Security Function Policy Identifier (R117–R120) | partly | A security policy has a name, unique in its service; its criteria are not policies of their own with identifiers. |
-| Security Action Lists: Block, Allow, Quarantine (§6.1) | partly | Block and Allow (`ip-block`), Block (`dns-domain-filter`, `url-filter`); no Quarantine. |
-| No-match (Allow or Block) | partly | Allow, always: what no list names passes. |
-| Duration (threat database updates) | yes | The lists' feeds, fetched every so many hours (Settings), versioned. |
-| SEN, Security Event Notification (R27–R30) | partly | Events with what was found, where and the action; no SEN ID (UUID), domains not neutralised. |
-| SAN, Security Admin Notification (R31–R33) | partly | The audit trail keeps each change to the document, who made it and when, chained; per document, not per Security Function Policy with its changed values. |
-| MBSF, Middlebox (§7, Table 9) | partly | The URL filter's mode `inspect` opens TLS with a CA of the edge's own. No Supported or Unsupported list, no trusted CAs or invalid-certificate behaviours, no IPsec. |
-| IPPF, IP, Port and Protocol Filtering (Table 10) | partly | `ip-block`: allow and deny lists of prefixes, and lists from feeds; ports and protocols are the flows', not the list entries'. |
-| DNF, Domain Name Filtering (Table 11) | partly | `dns-domain-filter`: domains denied, from lists too, by the service's unbound; no Allow list. |
-| URLF, URL Filtering (Table 12) | partly | `url-filter`: domains denied, by Squid, by name in HTTP and in TLS's SNI; whole URLs only where TLS is opened (`inspect`). |
-| MD+R, Malware Detection and Removal (Table 13) | partly | `malware`: ClamAV through c-icap, signature scan; the removal behaviour is to block the response (403). No behaviour analysis, no Quarantine. |
-| DLP, Data Loss Prevention (Table 14) | no | |
-| DPF, DNS Protocol Filtering (Table 15) | partly | `dns-protocol-filter`: DNS kept to the provider's resolver; no lists. |
-| PDNS, Protective DNS (Table 16) | no | |
+| R117–R120 Security Policy Identifier, Policy ID | yes | A security policy's `name` and a function policy's `id`, each one in its service. |
+| R1–R6 Block List, kept by the provider, added to by the Subscriber | partly | Inline entries and named lists (feeds or pasted). No threat entries of the provider's own that the Subscriber may not remove ([R4]): the feeds are the Subscriber's choice. |
+| R7–R10 Allow and Quarantine Lists | yes | `allow` and `quarantine`, inline and by named lists; Quarantine blocks. |
+| R14 An entry on one list at most | partly | Refused for inline entries; between named lists, the first of Block, Quarantine, Allow wins. |
+| §6.1.6 The more specific entry overrules | partly | IPPF, DPF and URLF order their entries most specific first; DNF and PDNS by unbound's longest match; a named list's prefixes by the table's longest match. Between a function's inline entries and its named lists, the inline ones are tried first; a URLF's named Allow before its named Block. |
+| R11–R19 Supported and Unsupported Lists (MBSF, PDNS) | partly | Kept by Arcana: TLS 1.2 and 1.3 are opened; PDNS takes unencrypted DNS alone. Not lists of the document's. |
+| R20–R23 Notification modifier, Block and Quarantine by default | partly | `notify` per list, Block and Quarantine where it says nothing; the record for IPPF and DPF, unbound's log for DNF and PDNS, Squid's access log for URLF. |
+| R24–R30 SEN | partly | Events (`sdwan-security`, `sdwan-ids`) with what was found, where and the action; no SEN ID (UUID), domains not neutralised ([R28]). |
+| R31–R36 SAN | partly | The audit trail keeps each change to the document, who made it and when, chained; per document, not per function policy with its changed values. |
+| MBSF, Middlebox (§7, Table 9) | partly | Squid's bump with a CA of the edge's own; Block and Allow of TLS versions, No-match, `invalid-server-certificate`, `unencrypted`, `trusted-cas` (the edge's own). TLS alone ([R45]): no IPsec middlebox; Squid asks for no client certificate. |
+| IPPF (§8.1, Table 10) | yes | ipfw on each flow: Table 5's eight criteria, Block, Allow, Quarantine, named lists of prefixes, No-match, Duration. |
+| DNF (§8.2, Table 11) | partly | unbound, a view a zone; a name or `*.` and one, each with the names beneath it. A `*` inside a name ([R71]) is not taken. |
+| URLF (§8.3, Table 12) | yes | Squid by zone: hosts at the TLS name or the request, paths in the request, where TLS is opened (MBSF) or the request is cleartext. |
+| MD+R (§8.4, Table 13) | partly | ClamAV through c-icap: signature scan, the object not passed on (block the subset). No behaviour analysis, no hash lists, No-match Allow alone. |
+| DLP (§8.5, Table 14) | no | FreeBSD has no engine for it. |
+| DPF (§8.6.1, Table 15) | partly | ipfw on the flow's DNS (53, and 853 for DNS over TLS): addresses, Block answered at once (port unreachable, [R100]); `message-type` `any` alone. `redirect` is Arcana's Alter. |
+| PDNS (§8.6.2, Table 16) | partly | unbound's `respip` by zone: A and AAAA answers by their addresses ([R104]: SOA, NS, CNAME, MX, SRV and PTR not limited); unencrypted DNS alone (no DoH or DoT, [D19]–[D22]). |
+| R116 Performance impact stated | partly | The book says where each function runs; no measured figures. |
 
-Arcana has three criteria none of these documents has: `ids` (Suricata,
-detect or prevent), `rate-limit` (dummynet) and `log` (what is denied
-is logged to the record).
+Arcana has two of its own that no Security Function is: `ids`
+(Suricata, detect or prevent) and `rate-limit` (dummynet).
 
 ## MEF 118.1: Zero Trust Framework
 

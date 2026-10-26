@@ -78,13 +78,20 @@ below them:
     `end_points`, or `rooted-multipoint` with `roots` and `leaves`;
     `Swvc`, all to all, is always there;
   - `intervals` (§9.7: `eval`, `arrival`, `ir`, in milliseconds),
-    `rate_limiters`, `security_policies` (§9.10, each a `name` and
-    MEF 88 `criteria`: `ip-block` with `allow` and `deny` lists of
-    prefixes, `dns-domain-filter` with the domains in `deny`,
-    `dns-protocol-filter`, `rate-limit` in bits per second, `log`;
-    a flow's policy names one by `af-security-ingress` or
-    `af-security-egress`), `importance` (`levels`, high to low, and a
-    `default`) and `probe`, how its tunnels are measured;
+    `rate_limiters`, `security_function_policies` (MEF 138 §9, each
+    an `id`, a `function` (`ippf`, `dnf`, `urlf`, `mbsf`, `mdr`,
+    `dpf`, `pdns`), `block`, `allow` and `quarantine` entries as the
+    function takes them, `lists` naming lists for each, `no-match`
+    (`allow` or `block`), `duration` in hours, `notify` (the lists
+    whose matches are told), and the function's own: an MBSF's
+    `invalid-server-certificate`, `unencrypted`, `trusted-cas` and
+    `pass-through`, an MD+R's `detection-type` and `removal`, a DPF's
+    `redirect`), `security_policies` (§9.10, each a `name`, its
+    `function-policies` by ID, one of a function, a `rate-limit` in
+    bits per second and `ids`; a flow's policy names one by
+    `af-security-ingress` or `af-security-egress`), `importance`
+    (`levels`, high to low, and a `default`) and `probe`, how its
+    tunnels are measured;
   - `end_points` (§10): an `id`, the `edge` it is on, its `uni` (§11:
     an `id`, the `interface`, a `vlan` or 0, `max_frame`, `ipv4` and
     `ipv6` addressing, `none`, `static`, `dhcp` or (IPv6) `slaac`, each

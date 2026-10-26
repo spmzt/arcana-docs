@@ -112,18 +112,26 @@ gets `standard`.
 ## A security policy
 
 ```json
+  "security_function_policies": [
+    {"id": "guard-ippf", "function": "ippf",
+     "block": [{"dav4": ["192.0.2.0/24"]}],
+     "no-match": "allow", "duration": 6},
+    {"id": "guard-dnf", "function": "dnf", "block": ["ads.example"],
+     "no-match": "allow", "duration": 6},
+    {"id": "guard-dpf", "function": "dpf", "no-match": "block",
+     "redirect": true, "duration": 6}
+  ],
   "security_policies": [
-    {"name": "guard", "criteria": {
-      "ip-block": {"deny": ["192.0.2.0/24"]},
-      "dns-domain-filter": {"deny": ["ads.example"]},
-      "dns-protocol-filter": true,
-      "log": true}}
+    {"name": "guard", "function-policies":
+     ["guard-ippf", "guard-dnf", "guard-dpf"]}
   ],
 ```
 
-MEF 88's: a prefix denied, a domain that does not resolve, every DNS
-query kept to the edge's own resolver, and what is denied logged. See
-[Security](security.md).
+MEF 138's: three function policies, each one Security Function's, and
+the security policy that puts them together for `standard` to name. A
+prefix blocked, and logged (IPPF); a domain that does not resolve
+(DNF); DNS to any other resolver sent to the edge's own (DPF, with
+`redirect`). See [Security](security.md).
 
 ## End points
 
