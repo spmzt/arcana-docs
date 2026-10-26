@@ -17,7 +17,8 @@ service arcana_console start
 ```
 
 It is two processes. The supervisor, root, listens on the addresses
-and reads the certificate and its key, which may be RSA or EC; it
+and reads the certificate and its key, which may be RSA or EC (browsers
+then get HTTP/2, others HTTP/1.1); it
 starts the worker, which serves as `arcana`, and starts it again if it
 ever dies. The worker serves on the supervisor's sockets, so a restart
 of it refuses no one.

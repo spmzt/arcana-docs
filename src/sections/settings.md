@@ -189,7 +189,7 @@ list marks each **read** or **write**.
 - A **write** token (**Reads and writes**, `Authorization: Bearer
   arcw_…`) also changes things, as a signed-in user does: jobs on the
   hosts, updates of the agents and of the console. It needs none of a
-  session's `X-Arcana` and `Origin` checks, since a browser never sends
+  session's `Origin` and `X-Arcana` checks, since a browser never sends
   a bearer token by itself. What it does is audited under
   `API token <name>`.
 
