@@ -79,7 +79,9 @@ the latest shown under it, and each is an event in the host's log.
 - **Interfaces**: what it watches, by pcap(3).
 - **The networks it guards**: the rules' `HOME_NET`; empty, the private
   ranges (RFC 1918); `any`, alone, every address, and `EXTERNAL_NET`
-  then `any` too.
+  then `any` too. **And the networks of a list** adds the prefixes of
+  one or several of the console's prefix lists (pick several with Ctrl
+  or ⌘).
 - **The ruleset suricata-update keeps**: Emerging Threats Open, fetched
   by **Fetch the ruleset** above the table, which runs
   `suricata-update` on the host (to `/var/lib/suricata/rules`) and then
@@ -254,7 +256,18 @@ packets an ipfw divert rule sends to that port (divert(4)) and drops
 what its rules say to drop. Add the rule on the Firewall tab, for
 instance `divert 8600 ip from any to any via em0`. While it is stopped,
 what is diverted goes nowhere, so the host raises a Critical fault: a
-filter that prevents is only as available as Suricata.
+filter that prevents is only as available as Suricata. Until a rule of
+ipfw's diverts to its port, nothing is held up and the fault is a
+Warning; the host reads ipfw again every ten seconds while the
+instance is down. ipfw's divert sockets come with `ipdivert.ko`: the
+agent loads it (`kldload ipdivert`) before it starts an instance that
+prevents.
+
+A start counts once Suricata's log says its engine started, not when
+its pid file appears: Suricata writes that file first, then loads its
+rules and opens its capture or divert port, and may still stop there.
+If it does, the job fails with the first and the last error it
+logged; the ruleset's rules it left out are not counted as why.
 
 ## By the API
 
