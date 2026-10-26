@@ -140,3 +140,7 @@ The console keeps the workflows in `workflows.json`, the last 30 runs
 in `runs.json` with each run's traces in a file of its own under
 `runs/`; what runs by itself is started by one worker of the console's,
 the one holding `workflows.lock`.
+
+**Clear history**, beside **Runs**, forgets every run that has ended,
+with its traces, after asking; a run going on stays. `DELETE
+/api/runs` does the same, `?workflow=<id>` for one workflow's runs.
