@@ -16,6 +16,8 @@ rest. The console reads the Network tab's interfaces this way, and
 | `routing` | RFC 8349 with the unicast routing modules | the RIBs as netlink(4) dumps them (multipath routes as next-hop lists), rc.conf's `static_routes` as the static protocol, the last change of a route from the route events; the `active-route` action is `route get` |
 | `logical-network-elements` | RFC 8530 | the vnet jails, jail_get(2) |
 | `syslog` | `ietf-syslog` | syslog.conf(5) and newsyslog.conf(5) |
+| `yang-library` | RFC 8525 `ietf-yang-library` | the agent's own tables: every module it implements with its revision, namespace and the features it has on, those it imports only for their identities, the operational datastore, a content-id that changes with the set |
+| `alarms` | RFC 8632 `ietf-alarms`, with `arcana-alarms` | the agent's faults: each one an alarm whose resource is the fault's object and whose type is its kind (a tunnel down, a threshold crossed, a BFD or BGP or OSPF neighbour lost, BIRD not answering, an interface without link, an IDS that prevents not running, IPsec keys not rotated, storage, CPU, memory, a process's crash); its raising and clearing as its history; an inventory of the kinds and a summary by severity |
 | `jails`, `services`, `packages`, `jobs`, `storage`, `sysctl`, `kernel`, `processes`, `logs`, `firewall`, `history`, `events`, `bird`, `wireguard`, `netgraph`, `host`, `agent`, `probes`, `sdwan`, `sshd`, `builder` | Arcana's own (`share/yang`) | each the operation that reads the same: jail(8) and jls, rc.d, pkg(8), the job queue, ZFS and GEOM, sysctl(3), kldstat, the process table, `/var/log`, ipfw(8), the samples, the event log, birdc, wg(8), ngctl(8), the host's facts, the transport and TLS, the probes, the SD-WAN state, sshd, poudriere |
 
 What a plugin's program reads (BIRD, WireGuard, netgraph) is left out
@@ -27,6 +29,8 @@ everything is not lost for one host's lack of BIRD.
 ```
 arcanactl get interfaces
 arcanactl get routing network-instances
+arcanactl get alarms
+arcanactl get yang-library
 arcanactl get            # everything
 ```
 
