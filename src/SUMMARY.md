@@ -80,6 +80,7 @@
 - [The HTTP API](reference/api.md)
 - [arcanactl](reference/arcanactl.md)
 - [cblink in a page](automation/cblink.md)
+- [The models: YANG](automation/yang.md)
 
 # Under the hood
 
