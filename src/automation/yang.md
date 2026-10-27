@@ -87,15 +87,18 @@ filter selects of it:
 ```
 arcanactl subscribe -x '/arcana-events:event/job'
 arcanactl subscribe -p 5 -x "/ietf-interfaces:interfaces/interface[name='em0']/statistics"
+arcanactl subscribe -o 0 -x '/arcana-jobs:jobs/job/title'
 arcanactl get subscriptions
 ```
 
 Each record is a line of RFC 8040's JSON; a push-update carries the
-data under `datastore-contents`. A stop-time (`-s`) ends a subscription,
+data under `datastore-contents`. With `-o` the data comes whole once,
+then only its changes (YANG-Push's on-change), each a YANG Patch (RFC
+8072) whose edits say what was made, changed or gone and where; the
+agent notices them by reading at least every second. A stop-time (`-s`) ends a subscription,
 as does closing it; `subscriptions` lists those running with what each
-has sent. Changes pushed as they happen (on-change), replay of past
-events and subscriptions the agent keeps by configuration are not served
-yet.
+has sent. Replay of past events and subscriptions the agent keeps by
+configuration are not served yet.
 
 ## From the console
 
