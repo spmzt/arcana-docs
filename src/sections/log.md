@@ -12,8 +12,9 @@ trouble in it (error, fail, denied, panic) is marked red, one of doubt
 ![The host's messages](../img/tour-log.png)
 
 - While **Live** is lit, what is written is read every three seconds and
-  added, as `tail -f` would; a file turned over by `newsyslog` is read
-  from its start.
+  added, as `tail -f` would; across a turn of `newsyslog`, what was
+  written to the old file before it (now `name.0`) comes first, then the
+  new file from its start, so no line is lost.
 - **Search** looks for a text in the end of the file on the host, in
   either case; the filter narrows what is on the page. **Older** reads
   further back.

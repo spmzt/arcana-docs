@@ -140,7 +140,37 @@ trim, report-all-tagged) are taken. `/.well-known/host-meta`
 says where the root is; `/restconf/data` holds the fleet's hosts,
 `restconf-state`'s capabilities and the console's `yang-library`. An
 API token that reads may read it; errors are `ietf-restconf:errors`.
-Writes, YANG Patch and event streams over RESTCONF are not served yet.
+
+Each host's events are a stream of RFC 8040's (section 6), listed in
+`restconf-state/streams` by the host's id: `/restconf/streams/<id>/json`
+sends every event its agent tells as Server-Sent Events, a
+`data:` line of RFC 8040's notification JSON each, its `id:` the event's
+time, with a comment line now and then so that proxies keep it open. A
+client that comes back with `Last-Event-ID` (a browser's EventSource
+does by itself) is sent what the agent kept since that time first, the
+last one it had among them again, then `replay-completed`. The
+stream ends, with an `error` event saying why, when the host does.
+
+```
+curl -N -H "Authorization: Bearer $TOKEN" \
+    https://console.example/restconf/streams/1a2b3c4d/json
+```
+
+A subscription of one's own goes as RFC 8650 has it: POST
+`establish-subscription` under a host's entry, of the `NETCONF` stream
+(with an XPath filter, a replay start time) or of the operational
+datastore (periodic, its period in centiseconds, or on-change), and the
+answer's `uri` is its stream, for whoever made it to GET within a
+minute:
+
+```
+curl -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/yang-data+json' \
+    -d '{"ietf-subscribed-notifications:input":{"ietf-yang-push:datastore":"ietf-datastores:operational","ietf-yang-push:datastore-xpath-filter":"/ietf-interfaces:interfaces","ietf-yang-push:periodic":{"period":500}}}' \
+    https://console.example/restconf/data/arcana-fleet:fleet/host=1a2b3c4d/ietf-subscribed-notifications:establish-subscription
+curl -N -H "Authorization: Bearer $TOKEN" https://console.example/restconf/subscriptions/<id>
+```
+
+Writes and YANG Patch are not served yet.
 
 `GET /api/servers/<id>/data?node=interfaces,routing` answers with the
 host's YANG data under `data`, as RFC 7951's JSON, in the console's own
