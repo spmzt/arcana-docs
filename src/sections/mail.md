@@ -27,6 +27,14 @@ try said. **Try now** schedules one (`smtpctl schedule`), **Remove**
 takes it out, never delivered and the sender not told (asked first);
 the same for all of them. The **counters** are `smtpctl show stats`.
 
+The agent looks at smtpd every minute (`--smtpd-watch`), on the host
+and in each jail that has it, and keeps a day of its counters: the
+graph under the counters is the queue as a line and what was delivered
+each minute as bars. **A fault when more than N are queued** sets the
+limit (0, none); a smtpd that is enabled and not running is a fault
+too. Both are `mail` alarms, cleared when it is well again, and reach
+the console's alerts as every fault does.
+
 ## Configuration
 
 **Configuration** opens the form `smtpd.conf(5)` is made of. The form
@@ -38,7 +46,8 @@ host beside the file, so the tab fills it from there.
 - **Listeners**, one a line: where it listens (an interface, `localhost`,
   `all` or an address), then `port N`; `tls`, `tls-require` or `smtps`
   with `pki arcana` (this host's own certificate, the one Arcana's CA
-  gave the agent) or a `pki` of the own lines; `auth` (the credentials
+  gave the agent: its dates are shown, and smtpd is started again when
+  the console renews it) or a `pki` of the own lines; `auth` (the credentials
   table); `hostname NAME`; `filter A,B`.
 - **Local mail**: the domains delivered here; `maildir`, `mbox` or
   `lmtp` with its path; the aliases and virtual users tables.
@@ -83,8 +92,11 @@ the first colon. A user given a password gets it hashed by OpenSMTPD's
 kept), the rest of their line (uid, gid, home, shell) untouched; a new
 user gets the fields every other line has alike, or empty ones. Tables
 a listener signs users in by, and a relay's sign-in, show names alone.
-`db:` tables are made the admin's way (`makemap`) and are not written
-here.
+A `db:` table is edited as its text beside it (its path without
+`.db`; when there is none yet, what `makemap -U` dumps of the
+database), and the database is made again from it by OpenSMTPD's
+`makemap(8)`: `-t aliases` for an action's alias table, `-t set` for
+one matched against (`domain`, `mail-from`, `rcpt-to`, `src`).
 
 
 every other entry is kept). **Add or change** puts lines in by their

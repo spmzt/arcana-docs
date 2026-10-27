@@ -89,7 +89,9 @@ the latest shown under it, and each is an event in the host's log.
   it and those reading it read their rules again (`SIGUSR2`). The line
   under the buttons says when it was fetched. Until it is, an instance
   that adds it runs on its own rules, and its job says so.
-  `arcanactl suricata update` does the same.
+  `arcanactl suricata update` does the same. An instance whose own
+  rules or thresholds alone changed reads them again the same way,
+  live, with no restart; a change of its settings starts it again.
 
 An instance's form has Suricata's settings, folded, each Suricata's
 default unless given:
@@ -107,7 +109,10 @@ default unless given:
   interfaces (`em0:em1`) is a bump in the wire, what one receives
   passed to the other by Suricata, dropping what its rules say
   (`copy-mode: ips`, the `workers` runmode); `em0:em0^` puts it between
-  em0 and its host stack. Divert, below, is the L3 way, behind `ipfw(8)`.
+  em0 and its host stack. An interface that is a bridge's member is no
+  pair's (the bridge would carry its packets around the pair): take it
+  out of the bridge, or pair the bridge itself. Divert, below, is the
+  L3 way, behind `ipfw(8)`.
   **Its interfaces' offloading off** turns checksum, TSO and LRO
   offloading off by `ifconfig(8)` as it starts, so Suricata sees
   packets as they are on the wire; while it is on, the instance's row
@@ -116,9 +121,13 @@ default unless given:
   large: the runmode, detect profile, memcaps and packets pending the
   fields below do not say), the host's CPUs and memory domains
   (`hw.ncpu`, `vm.ndomains`), the runmode (`workers`: one thread does all of a
-  packet), the pattern matcher (Hyperscan where it is built in), the
+  packet; `autofp`: its packets handed to the workers by its
+  `autofp-scheduler`, `hash` unless said, which keeps a flow on one), the pattern matcher (Hyperscan where it is built in), the
   detect profile, the CPUs of its management and worker threads
   (`cpu-affinity`, as `cpuset(1)` numbers them) and the packets pending.
+  Beside them, the CPUs each of its interfaces' queue interrupts runs
+  on (`hw.intrnames`, `cpuset -g -x`): a worker is best on the CPU of
+  its queue's interrupt, which `cpuset -l CPU -x IRQ` moves.
 - **Memory**: the memcaps of flows, the stream, reassembly, fragments,
   hosts and HTTP (`64mb`, `512kb`, `1gb`).
 - **Stream and HTTP**: the stream inspected before it passes where it
@@ -237,6 +246,17 @@ and the instances read it. suricata-update's own `enable.conf`,
 `disable.conf` and `drop.conf` in `/usr/local/etc/suricata` are not
 read. `arcanactl suricata rules q=... only=...` and
 `arcanactl suricata rule on=sid,...` do the same.
+
+**By class**, under the rules, is each class the ruleset's rules name,
+with how many there are and how many are on; a class is set whole the
+same way (suricata-update's `re:classtype:` matcher), and so is a
+source's file by its name (`group:emerging-games.rules`). A rule's own
+choice and its class's are both given; suricata-update applies them in
+its own order. **modify.conf** is suricata-update's: a shipped rule's
+text changed by a pattern, kept across updates, a line a change
+(`2019401 "seconds \d+" "seconds 3600"`).
+`arcanactl suricata rule off=classtype:policy-violation` and
+`arcanactl suricata rule modify file` do the same.
 
 Each configuration is checked by `suricata -T` before it is run, and
 what Suricata refuses is said with its own reason. One exception: the

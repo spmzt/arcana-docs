@@ -40,24 +40,31 @@ module changes, 64-bit numbers and decimals are strings, an identity is
 
 ## Actions and jobs
 
-Some of the modules' actions are served, each done as the agent's own
-operation does it, what changes the host one change at a time:
-
-| Action | On | Done as |
-|---|---|---|
-| `start`, `stop`, `restart`, `kill` | `jails/jail` *name* | jail(8), as the Start and Stop buttons |
-| `start`, `stop`, `restart`, `reload` | `services/service` *name* | service(8) |
-| `signal`, `renice` | `processes/process` *pid* | kill(2), setpriority(2), the process's start time checked |
-| `cancel`, `confirm` | `jobs/job` *id* | the job queue's own |
-| `refresh` | `packages` | `pkg update` |
-| `read` | `logs` | the end of a log, as the Log tab reads it |
-| `routes` | `bird` | `birdc show route` |
+The modules' actions and rpcs are served, each done as the agent's own
+operation does it, what changes the host one change at a time: a
+jail's `start` and `stop`, a service's, a process's `signal`, a job's
+`cancel` and `confirm`, the packages' `refresh` and `upgrade`, a log's
+`read`, BIRD's `routes`, the firewall's `trace`, the troubleshooting
+`path-check`, `traceroute` and `capture`, a dataset's `load-key`,
+`unload-key` and `change-key`, `fstab`'s `replace`, the events',
+history's and probes' `read`, the agent's own (`update`, `build`,
+`console-update`, `config-export`, `config-apply`, the TLS `csr` and
+`install`, the transport's `retry`), the kernel's `load` and a file's
+`unload`, `notify`, and RFC 8632's `purge-alarms` and
+`compress-alarms`. A snapshot's `send` and the storage's `receive`
+carry a stream and are not served yet. An rpc is called by its name
+alone:
 
 ```
 arcanactl action jails/jail web restart
 arcanactl action processes/process 4242 signal signal=HUP
 arcanactl action logs read name=messages lines=20
+arcanactl action alarms/alarm-list purge-alarms alarm-clearance-status=cleared
+arcanactl action load name=if_wg
 ```
+
+The agent's `update` over the network takes a program signed with the
+console's CA key (its `signature`), as the console's own update does.
 
 `arcana-jobs`' `submit` rpc takes changes as the jobs of
 [Jobs and the queue](jobs.md), each checked as the agent checks a
@@ -95,16 +102,49 @@ Each record is a line of RFC 8040's JSON; a push-update carries the
 data under `datastore-contents`. With `-o` the data comes whole once,
 then only its changes (YANG-Push's on-change), each a YANG Patch (RFC
 8072) whose edits say what was made, changed or gone and where; the
-agent notices them by reading at least every second. A stop-time (`-s`) ends a subscription,
-as does closing it; `subscriptions` lists those running with what each
-has sent. Replay of past events and subscriptions the agent keeps by
-configuration are not served yet.
+agent notices them by reading at least every second, but for the
+events and the alarms, which it reads again only when one is added or
+changes. A stop-time (`-s`) ends a subscription, as does closing it;
+`subscriptions` lists those running with what each has sent. A
+subscription that falls behind (its stream's credit used up) is
+suspended, told so, and resumed with the whole of its data again;
+`modify-subscription` and `resync-subscription` work on one's own.
+`-r` replays the events kept since a time before the live ones:
 
-## From the console
+```
+arcanactl subscribe -r 2026-10-27T00:00:00Z -x '/arcana-events:event/job'
+```
+
+Subscriptions the agent keeps by configuration are not served yet.
+
+## From the console: RESTCONF
+
+The console is a RESTCONF server (RFC 8040) of what it reads, each host
+a mount point (RFC 8528) of the `arcana-fleet` module whose data is its
+agent's models:
+
+```
+curl -H "Authorization: Bearer $TOKEN" \
+    https://console.example/restconf/data/arcana-fleet:fleet
+curl -H "Authorization: Bearer $TOKEN" \
+    "https://console.example/restconf/data/arcana-fleet:fleet/host=1a2b3c4d/ietf-interfaces:interfaces/interface=em0?content=nonconfig"
+```
+
+A path below a host's entry is RFC 8040's api-path, its first node
+named with its module; the console makes it an XPath filter of the
+agent's read and answers with that node alone, as
+`application/yang-data+json`. Of the query parameters, `content`
+(config, nonconfig, all), `depth`, `fields` (`fields=type;statistics(in-octets)`)
+and `with-defaults` (explicit, the agent's data as it is; report-all,
+trim, report-all-tagged) are taken. `/.well-known/host-meta`
+says where the root is; `/restconf/data` holds the fleet's hosts,
+`restconf-state`'s capabilities and the console's `yang-library`. An
+API token that reads may read it; errors are `ietf-restconf:errors`.
+Writes, YANG Patch and event streams over RESTCONF are not served yet.
 
 `GET /api/servers/<id>/data?node=interfaces,routing` answers with the
-host's YANG data under `data`, as RFC 7951's JSON, for a script or a
-tool that speaks YANG rather than Arcana's own API.
+host's YANG data under `data`, as RFC 7951's JSON, in the console's own
+API.
 
 ## On the wire
 

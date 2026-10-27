@@ -32,6 +32,7 @@
   - [Packages, storage and the log](tour/host-more.md)
   - [Jobs, the queue and a workflow](tour/jobs.md)
   - [On a phone](tour/phone.md)
+  - [With a game controller](tour/controller.md)
 
 # The sections
 
