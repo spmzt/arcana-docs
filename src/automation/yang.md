@@ -151,6 +151,12 @@ does by itself) is sent what the agent kept since that time first, the
 last one it had among them again, then `replay-completed`. The
 stream ends, with an `error` event saying why, when the host does.
 
+The `fleet` stream, `/restconf/streams/fleet/json`, is every host's you
+may read on one connection: each notification sits in its host's entry,
+`{"arcana-fleet:fleet":{"host":[{"id":"1a2b3c4d","arcana-events:event":{…}}]}}`,
+as RFC 8528 nests a mounted module's notification. A host whose stream
+ends is named in an `error` event while the others go on.
+
 ```
 curl -N -H "Authorization: Bearer $TOKEN" \
     https://console.example/restconf/streams/1a2b3c4d/json

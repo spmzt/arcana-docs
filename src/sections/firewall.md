@@ -100,7 +100,15 @@ read, and the sets are not a rule's to name.
 
 The kept rules are a file of ipfw's own commands, one a line (`add 01001
 allow tcp from any to me6 22 in`, and `table`, `nat` and `nat64…`
-lines), which the host loads when it starts.
+lines), which the host loads when it starts, a vnet jail's at its own
+start (`rc.d/ipfw` runs in a jail with its own network). The objects
+come first, in the order they were made, and what they need loaded
+before the rules is said in `rc.conf` as `rc.d/ipfw` reads it:
+`firewall_nat_enable` for `nat`, `firewall_nat64_enable` for the NAT64
+objects, `firewall_nptv6_enable`, `firewall_pmod_enable` for
+`tcp-setmss`, `dummynet_enable` for pipes, queues and schedulers. A rule
+that cannot be kept is not left in the kernel either: the change is
+whole or not at all.
 
 - **Kept rules as text** shows it to be changed as a whole, checked by
   ipfw without being done; for a host that has none, **Start from the

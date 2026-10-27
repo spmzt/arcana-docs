@@ -223,7 +223,13 @@ tunnel** makes one; a tunnel picked has every option to be set:
 identifier, addresses, group and its device, TTL and don't-fragment
 (each also inherited from the packet inside), DSCP inherited, the port
 range, learning and its table's size and timeout, external control.
-**Flush** empties its forwarding table.
+**Flush** empties its forwarding table. A tunnel made is up at once:
+`if_geneve` starts its socket when the interface comes up, and one
+first started by an address given to it can be left not running. Kept
+in rc.conf, its mode goes in `create_args_<name>`, since `geneve(4)`
+takes the mode only when the interface is made; a bridge's member is
+kept up too (`ifconfig_<member>="up"`), since a bridge passes nothing
+to a member that is down.
 
 ## Connections, sockets and neighbours
 
