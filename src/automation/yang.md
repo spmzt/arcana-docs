@@ -76,6 +76,27 @@ arcanactl notifications
 {"ietf-restconf:notification":{"eventTime":"2026-10-27T01:20:05Z","arcana-events:event":{...}}}
 ```
 
+## Subscriptions
+
+A program that wants to be told rather than ask subscribes, as RFC 8639
+has it, each subscription a stream of its own on the same connection.
+The `NETCONF` stream is every event the agent tells; the operational
+datastore is pushed on a period (RFC 8641's YANG-Push), what an XPath
+filter selects of it:
+
+```
+arcanactl subscribe -x '/arcana-events:event/job'
+arcanactl subscribe -p 5 -x "/ietf-interfaces:interfaces/interface[name='em0']/statistics"
+arcanactl get subscriptions
+```
+
+Each record is a line of RFC 8040's JSON; a push-update carries the
+data under `datastore-contents`. A stop-time (`-s`) ends a subscription,
+as does closing it; `subscriptions` lists those running with what each
+has sent. Changes pushed as they happen (on-change), replay of past
+events and subscriptions the agent keeps by configuration are not served
+yet.
+
 ## From the console
 
 `GET /api/servers/<id>/data?node=interfaces,routing` answers with the
