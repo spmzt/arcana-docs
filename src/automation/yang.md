@@ -199,7 +199,15 @@ suspended, told so, and resumed with the whole of its data again;
 arcanactl subscribe -r 2026-10-27T00:00:00Z -x '/arcana-events:event/job'
 ```
 
-Subscriptions the agent keeps by configuration are not served yet.
+A subscription the agent keeps by configuration (RFC 8639 section 2.5)
+has the console as its receiver over HTTPS-notif
+(draft-ietf-netconf-https-notif): `GET /api/servers/<id>/subscription`
+gives the document to put into the host's candidate and commit, after
+which the agent calls the console's `/api/notif/<host>/relay-notification`
+with its own certificate for every record, replays what the console
+missed while it was away (from the last record it kept), and the
+console keeps them (`GET /api/servers/<id>/notifications`) across its
+own restarts.
 
 ## From the console: RESTCONF
 
