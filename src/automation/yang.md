@@ -94,9 +94,13 @@ A commit is checked first against the model (types, keys, mandatory
 nodes, `when` and `must`) and the host's access rules, then made all or
 nothing. So far it changes the static routes of each FIB; interfaces
 made and destroyed, and an interface's description, state, MTU,
-addresses, FIB and router advertisements (rtadvd.conf(5)); the network
+addresses, FIB, router advertisements (rtadvd.conf(5)) and the vnet
+jail it is moved into (`bind-lne-name`, RFC 8530); the network
 instances, a FIB each (`net.fibs` raised for the next boot when one
-more is asked for); and the access rules themselves. Anything else is
+more is asked for); syslog.conf(5) and newsyslog.conf(5) from
+ietf-syslog; and the access rules themselves. A vnet jail's own
+network is read through its logical network element's `root`, served
+by a helper of the agent's attached to the jail. Anything else is
 refused as not supported yet, and jobs do the rest.
 
 A read says how defaults are reported with `-w` (RFC 6243: `explicit`,
