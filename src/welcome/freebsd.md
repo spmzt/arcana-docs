@@ -34,3 +34,6 @@ WireGuard interface back after a boot (`wg(8)` itself is the base
 system's), dnsmasq (`dnsmasq`) for DHCP at
 an SD-WAN UNI, Squid (`squid`) for URL filtering. Arcana installs none
 of them by itself.
+
+The standards each feature follows, section by section, are mapped in
+[Built on standards](standards.md).

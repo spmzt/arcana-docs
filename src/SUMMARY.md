@@ -6,6 +6,7 @@
 
 - [What Arcana is](welcome/what.md)
 - [FreeBSD underneath](welcome/freebsd.md)
+- [Built on standards](welcome/standards.md)
 - [The programs](welcome/programs.md)
 
 # Install
