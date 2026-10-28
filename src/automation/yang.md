@@ -98,7 +98,10 @@ addresses, FIB, router advertisements (rtadvd.conf(5)) and the vnet
 jail it is moved into (`bind-lne-name`, RFC 8530); the network
 instances, a FIB each (`net.fibs` raised for the next boot when one
 more is asked for); syslog.conf(5) and newsyslog.conf(5) from
-ietf-syslog; and the access rules themselves. A vnet jail's own
+ietf-syslog; sysctl.conf(5) (`arcana-sysctl`, each value set in the
+kernel too, a tunable refused with loader.conf(5) named); `kld_list`
+(`arcana-kernel`); each service's `<name>_enable` and its own rc.conf
+variables (`arcana-services`); and the access rules themselves. A vnet jail's own
 network is read through its logical network element's `root`, served
 by a helper of the agent's attached to the jail. Anything else is
 refused as not supported yet, and jobs do the rest.
