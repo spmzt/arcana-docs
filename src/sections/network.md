@@ -120,6 +120,21 @@ carries what the models do not have yet (CARP, the interface flags).
   ends, an ipsec interface's reqid, a VXLAN's identifier, a VLAN's tag
   and parent, a bridge's first member, an address and a peer's, MTU and
   description. The cross on a cloned interface destroys it.
+- **RA** opens the interface's router advertisements: what rtadvd(8)
+  sends on it, as RFC 8349's `ipv6-router-advertisements` has it
+  (whether it sends, the interval, the managed and other flags, link
+  MTU, lifetimes, hop limit, the prefixes with their lifetimes and
+  flags) with what RFC 8349 lacks and rtadvd.conf(5) has: the router
+  preference and routes of RFC 4191, the RDNSS and DNSSL of RFC 8106,
+  the PREF64 of RFC 8781, and any capability of the file the form has
+  no field for, kept verbatim. Beside the form, **As rtadvd(8) sends
+  it**: what `rtadvctl show` reports, prefixes and their expiries
+  included. **Save** is a confirmed commit through the datastores: the
+  interface's record in `rtadvd.conf` is written whole, the interface
+  put on `rtadvd_interfaces`, rtadvd enabled and told with `rtadvctl
+  reload` when it runs, restarted when it has to; a warning the commit
+  waits for (your rc.conf names, say) is shown with a button that
+  accepts it and commits again.
 
 A change is made live, and with **Keep it in rc.conf** also written
 there, to be there after a boot: a created interface in

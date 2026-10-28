@@ -94,7 +94,8 @@ A commit is checked first against the model (types, keys, mandatory
 nodes, `when` and `must`) and the host's access rules, then made all or
 nothing. So far it changes the static routes of each FIB; interfaces
 made and destroyed, and an interface's description, state, MTU,
-addresses, FIB, router advertisements (rtadvd.conf(5)) and the vnet
+addresses, FIB, router advertisements (every capability of
+rtadvd.conf(5), `arcana-ra` on RFC 8349's) and the vnet
 jail it is moved into (`bind-lne-name`, RFC 8530); the network
 instances, a FIB each (`net.fibs` raised for the next boot when one
 more is asked for); syslog.conf(5) and newsyslog.conf(5) from
