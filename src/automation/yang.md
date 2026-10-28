@@ -136,11 +136,32 @@ What a commit keeps of rc.conf(5) goes into a file of Arcana's own,
 `/etc/rc.conf` names so that rc(8) reads it after yours. Your files are
 left as they are but for what you accept with `-a`: naming the file in
 `rc_conf_files`, once (`rc-conf-files`), and a variable Arcana writes
-that your files set too, taken out of yours (`rc-conf-conflict`). A
-refusal says which it waits for:
+that your files set too, commented out in yours (`rc-conf-conflict`):
+the line stays where it was, under a `#`, with `# taken by Arcana`
+after it, so you can see what was yours and put it back. Nothing of
+yours is deleted. A refusal says which it waits for:
 
 ```
-arcanactl: commit: your files set what Arcana would write: static_routes (/etc/rc.conf line 2); accept rc-conf-conflict to keep them in Arcana's file, taken out of yours (go on with -a rc-conf-conflict)
+arcanactl: commit: your files set what Arcana would write: static_routes (/etc/rc.conf line 2); accept rc-conf-conflict to keep them in Arcana's file, commented out in yours (go on with -a rc-conf-conflict)
+```
+
+A host that was configured by hand can be moved under Arcana in one
+go, service by service, with arcana-services' `convert` action: each
+named service's `<name>_enable` and `<name>_*` variables, as rc(8)
+reads them from your files, are written to Arcana's file and commented
+out in yours; no name, every rc script the host has. `-n` says what
+would be taken, writing nothing; a variable whose value is an
+expansion, or on a line sh(1) may or may not run, is left where it is
+and the row says why. It is a change like a commit's: the same warnings
+apply, and failing, every file is put back.
+
+```
+arcanactl services convert -n sshd ntpd
+SERVICE  VARIABLE       VALUE  WHERE
+sshd     sshd_enable    YES    /etc/rc.conf:4
+ntpd     ntpd_enable    YES    /etc/rc.conf:7
+ntpd     ntpd_sync_on_start  YES  /etc/rc.conf.d/ntpd:1
+arcanactl services convert -a rc-conf-conflict sshd ntpd
 ```
 
 Where the kernel refuses a change, the files are put back and the
