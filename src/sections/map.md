@@ -111,6 +111,27 @@ While a line is drawn, points stream along it toward the pointer and
 every host it can be dropped on breathes a dotted outline round its
 box (WebGL; the dashed line and lit boxes alone without it).
 
+**Draw mode** (kept in that browser) makes a line a plan before it is
+a change. What it makes is picked with **T** (tunnel), **B** (BGP),
+**O** (OSPF) or **F** (BFD), or on the ring of four on the picked
+host's port. While it is drawn, the hosts that cannot take it are
+dimmed with a dotted outline and say why under their box: no address
+family in common, no BIRD, no tunnel or network between them yet, a
+session already there. Dropped, the line is a **ghost**, and the
+dialog shows beside its fields exactly what each host is to run: the
+`ifconfig` lines of a tunnel, or the protocol each BIRD is to be given
+and `birdc configure timeout`. Applied (in safe mode, as always), the
+line goes **planned** (sent), **pending** (a safe change waiting on an
+end, with the agent's countdown ring round its middle), then **live**
+once both ends report it: the tunnel up, BGP Established, OSPF Full.
+If an end fails or its timer lapses, it is a ghost again, with the
+reason. Each state is its own dash (dotted, dashed, dash-dot, solid)
+and its name is written on it, the kind its letter. From the
+keyboard: focus a host, **C**, the arrows through the hosts that can
+take the line, **Enter**; Escape gives it up. In Draw mode **Shift+F**
+is full screen. A list of the hosts, the links and what is being drawn
+is in the page for screen readers.
+
 ## Drawing a routing session
 
 The same line makes a routing session instead: the dialog's top asks
