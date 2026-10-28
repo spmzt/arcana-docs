@@ -15,12 +15,14 @@ jail.
 
 <div class="freebsd">
 
-**FreeBSD:** the port's rc script runs `speederv2` under
-[daemon(8)](https://man.freebsd.org/daemon/8). daemon(8) restarts it
-when it exits and sends its lines to
+**FreeBSD:** Arcana's own rc script, `arcana_relay`, runs the port's
+`speederv2` under [daemon(8)](https://man.freebsd.org/daemon/8).
+daemon(8) restarts it when it exits and sends its lines to
 [syslogd(8)](https://man.freebsd.org/syslogd/8) (`daemon.notice`, so
-`/var/log/messages`). Its words are `rc.conf`'s `speederv2_flags`, and
-`speederv2_enable` starts it at boot.
+`/var/log/messages`). Its words are `rc.conf`'s `arcana_relay_flags`,
+and `arcana_relay_enable` starts it at boot. A relay you run yourself
+under the port's own script, `speederv2`, is left alone: the tab shows
+it, **speederv2, the admin's**, as it is, with no form and no buttons.
 
 </div>
 
@@ -42,7 +44,7 @@ when it exits and sends its lines to
 - more of speederv2's own options, such as `--jitter`, `--interval`,
   `--queue-len`, `--sock-buf`, `--out-addr` or `--log-level`.
 
-**Write the flags** keeps them in `speederv2_flags`, and the relay is
+**Write the flags** keeps them in `arcana_relay_flags`, and the relay is
 restarted when it runs. Each word is checked on its own, because
 rc.subr hands the flags to a shell: addresses and ports, numbers in
 their ranges, ratios as the relay reads them, options from that list,
@@ -57,30 +59,35 @@ end: open the far host's tab for the other.
 ## Several relays
 
 A host that carries several tunnels over FEC, toward different far
-ends, runs a relay for each. Where the port's rc script runs several
-(it has `speederv2_profiles`), the tab shows a row of relays above the
-rest: **the plain one**, `speederv2_flags`, and one per profile, each
-with a dot that says whether it runs. **+ Another relay** opens the
-same form with a **Name**, letters, digits and `_`. Everything the tab
-does after that is for the relay picked: its flags, its ratios, its
+ends, runs a relay for each. The tab shows a row of relays above the
+rest: **the plain one**, `arcana_relay_flags`, one per profile, each
+with a dot that says whether it runs, and the admin's own under the
+port's script when there is one. **+ Another relay** opens the same
+form with a **Name**, letters, digits and `_`. Everything the tab does
+after that is for the relay picked: its flags, its ratios, its
 reports, its history and its log lines.
 
 <div class="freebsd">
 
-**FreeBSD:** each relay is a profile of the rc script, as many base
-services have them: `speederv2_profiles="lte fiber"` lists them, and
-each one's words are `speederv2_<name>_flags` (and
-`speederv2_<name>_user` when it is not `speederv2_user`). `service
-speederv2 start` starts them all and `service speederv2 start lte`
-one. Each runs under its own daemon(8), with its pidfile in
-`/var/run/speederv2/<name>.pid` and its syslog tag `speederv2-<name>`,
-which is how the tab finds its reports in the log.
+**FreeBSD:** each relay is a profile of `arcana_relay`, as many base
+services have them: `arcana_relay_profiles="lte fiber"` lists them,
+and each one's words are `arcana_relay_<name>_flags` (and
+`arcana_relay_<name>_user` when it is not `arcana_relay_user`, nobody
+by default). `service arcana_relay start` starts them all and `service
+arcana_relay start lte` one. Each runs under its own daemon(8), with
+its pidfile in `/var/run/arcana_relay/<name>.pid` and its syslog tag
+`arcana_relay_<name>`, which is how the tab finds its reports in the
+log. A profile can run in a service jail of its own, as
+[rc.conf(5)](https://man.freebsd.org/rc.conf/5)'s `_svcj` has it:
+`arcana_relay_lte_svcj="YES"` with `arcana_relay_lte_svcj_options`
+and `arcana_relay_lte_svcj_ipaddrs` for the addresses it may use, and
+rc.subr jails it as `svcj-arcana_relay_lte`.
 
 </div>
 
 While any profile is listed, the rc script runs only those, not the
-relay of `speederv2_flags`: the tab says so when that one is set too.
-**Enable** and **Disable** are the service's, so every relay's.
+relay of `arcana_relay_flags`: the tab says so when that one is set
+too. **Enable** and **Disable** are the service's, so every relay's.
 **Remove** stops a relay, unsets its variables and takes its name out
 of the list, asked first, in safe mode on the host like every other
 change here.
