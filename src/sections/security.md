@@ -194,12 +194,39 @@ take the time) needs Suricata built with `--enable-profiling-rules`; the
 port does not, and the page says how poudriere builds it so. `arcanactl
 suricata rules instance=NAME command=memcap-list` asks the same.
 
+**Packet profiling**, in the form's Logging, turns on the sections of
+Suricata's profiling (packets, rules, keywords, prefilter, rule groups,
+locks) and a sample rate; a section the build cannot do is greyed out,
+by `suricata --build-info`. The agent writes them into the YAML, each
+file in the instance's log directory, and **Statistics** reads them
+back: the ticks per protocol and per stage of `packet_stats.log`'s last
+dump, the rules that took the time, the rest as text, each a table that
+sorts and filters, of the running instance and of its last replay.
+Profiling needs Suricata built with `--enable-profiling`, which the
+port has no option for; where it lacks it, the page says so and gives
+the `make.conf` lines that build it so through poudriere. `arcanactl
+suricata rules instance=NAME profiling=1` reads the same.
+
 **Replay a capture**, under its statistics, runs a capture the host has
 (a `.pcap`, `.pcapng` or `.cap` by its whole path, a link not followed)
 through the instance's configuration and rules, offline (`suricata
 -r`, in a directory of its own, its running self untouched): a task,
 whose alerts the page then shows. `arcanactl suricata pcap
-instance=NAME file=PATH` does the same.
+instance=NAME file=PATH` does the same. **Replay a capture from this
+computer** sends one from the browser first, in parts of 4 MB (the
+console's request limit is 8 MB unless set), streamed to the host into
+the replay directory's `captures/`, a part refused unless it begins
+where the one before ended; eight are kept, of 1 GiB each at most, each
+listed with a button that replays it. `arcanactl suricata pcap-put
+instance=NAME file=NAME < capture.pcap` does the same.
+
+An alert's row has a **pcap** link when the instance keeps its alerts'
+packets (`pcap-log`): the file of the ring whose time holds the alert's,
+streamed from the host as it is read, the host slowed rather than the
+console's memory filled when the browser is slow. The ring's list under
+**Statistics** links each file the same way; `arcanactl suricata
+pcap-get instance=NAME file=NAME > log.pcap` fetches one. Both, as a
+capture of packets, need the right to change the host.
 
 ### Rules of its own, thresholds and suppression
 
