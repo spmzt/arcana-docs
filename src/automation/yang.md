@@ -117,6 +117,13 @@ temporary address gave or a neighbour the host found, `system` what the
 kernel made, `default` a default in use, and `unknown` what was set by
 hand since; a node says it only where it is not its parent's.
 
+The console turns the two reads into a host's **Configuration drift**,
+on its Summary: running against the configuration part of the
+operational state (RFC 8342's intended against operational), a row a
+node with its api-path: configured but not in effect, differing, or
+beyond running with where it came from (set by hand, learned, the
+kernel's own). `GET /api/servers/<id>/drift` gives the rows.
+
 What a commit keeps of rc.conf(5) goes into a file of Arcana's own,
 `/usr/local/etc/rc.conf.d/arcana`, which `rc_conf_files` in
 `/etc/rc.conf` names so that rc(8) reads it after yours. Your files are
