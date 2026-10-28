@@ -69,9 +69,59 @@ console's CA key (its `signature`), as the console's own update does.
 `arcana-jobs`' `submit` rpc takes changes as the jobs of
 [Jobs and the queue](jobs.md), each checked as the agent checks a
 submitted job (and refused where it would cut the console off), and
-answers with their ids. Editing the configuration as YANG data (an
-EDIT of `running`) is the next part of the work
-(`docs/PLAN-SDN-YANG.md`): until then, changes go by jobs.
+answers with their ids.
+
+## Configuration: running and the candidate
+
+The models are also configuration, in RFC 8342's datastores:
+`running`, what is in use (read from the kernel and from what rc(8)
+reads, without what DHCP, SLAAC or the kernel made), and `candidate`,
+the configuration being made, one for every session. Running changes
+by a confirmed commit of the candidate alone (RFC 6241 section 8.4):
+the host undoes it at its timeout unless a second commit confirms it.
+
+```
+arcanactl get -d running routing > routing.json
+# ... routing.json edited: a static route added ...
+arcanactl edit routing @routing.json
+arcanactl get -d candidate routing
+arcanactl commit -c 120
+confirm within 120 seconds: arcanactl commit -i 3f9a0c2e8b71d465
+arcanactl commit -i 3f9a0c2e8b71d465
+```
+
+A commit is checked first against the model (types, keys, mandatory
+nodes, `when` and `must`) and the host's access rules, then made all or
+nothing. So far it changes FIB 0's static routes, an interface's
+description, state, IPv4 MTU and static addresses, and the access rules
+themselves; anything else is refused as not supported yet, and jobs do
+the rest.
+
+What a commit keeps of rc.conf(5) goes into a file of Arcana's own,
+`/usr/local/etc/rc.conf.d/arcana`, which `rc_conf_files` in
+`/etc/rc.conf` names so that rc(8) reads it after yours. Your files are
+left as they are but for what you accept with `-a`: naming the file in
+`rc_conf_files`, once (`rc-conf-files`), and a variable Arcana writes
+that your files set too, taken out of yours (`rc-conf-conflict`). A
+refusal says which it waits for:
+
+```
+arcanactl: commit: your files set what Arcana would write: static_routes (/etc/rc.conf line 2); accept rc-conf-conflict to keep them in Arcana's file, taken out of yours (go on with -a rc-conf-conflict)
+```
+
+Where the kernel refuses a change, the files are put back and the
+commit fails. An undo the host cannot do (a commit not confirmed in
+time) stops there and leaves the rest as committed: a Critical alarm,
+an alert by mail or Telegram, and on the host's Log (its events) a
+report of the failure alone, not of your configuration, with a link
+that opens an issue of Arcana's with it for you to file if you choose.
+Arcana files nothing.
+
+The console does the same over RESTCONF (RFC 8527's datastores): a
+node put in `/restconf/ds/ietf-datastores:candidate/arcana-fleet:fleet/host=<id>/...`,
+then `ietf-netconf:commit` POSTed under the host's entry with `persist`
+(the console's connection to a host is every user's). The access rules
+are edited on a host's Security tab in just that way.
 
 ## Notifications
 

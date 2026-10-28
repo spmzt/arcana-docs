@@ -55,7 +55,7 @@ console off.
 | Confirmed commit | RFC 6241 | §8.4 `:confirmed-commit`: `confirm-timeout` (600 s by default), `persist`, `persist-id`, cancel-commit | Undone at its timeout, by `cancel-commit`, or when its session goes without `persist`; confirmed by a second commit of its session or one that gives the persist-id (`arcanactl commit -c 120`, `-i <persist-id>`) | full |
 | All or nothing | RFC 6241 | §7.2 `rollback-on-error` | An EDIT and a commit each: if one node fails, those already changed are undone; the files put back as they were | full |
 | Writing rc.conf | [rc.conf(5)](https://man.freebsd.org/cgi/man.cgi?query=rc.conf&sektion=5) | `rc_conf_files` | One file of Arcana's, `/usr/local/etc/rc.conf.d/arcana`, named once in `rc_conf_files` so every rc script reads it; a variable the admin's files set too is a warning to accept first | own |
-| What EDIT changes so far | [RFC 8349](https://www.rfc-editor.org/rfc/rfc8349) | the `static` control-plane protocol | FIB 0's static routes: written as rc.d/routing reads them (`static_routes`, `route_<name>`, `defaultrouter`, the IPv6 ones), then made the kernel's by netlink(4), tried again once, the files put back if it still fails | partial: rc.conf's static routes in FIB 0 alone (and NACM's own rules); every other node refuses an EDIT for now |
+| What EDIT changes so far | [RFC 8349](https://www.rfc-editor.org/rfc/rfc8349) | the `static` control-plane protocol | FIB 0's static routes: written as rc.d/routing reads them (`static_routes`, `route_<name>`, `defaultrouter`, the IPv6 ones), then made the kernel's by netlink(4), tried again once, the files put back if it still fails | partial: FIB 0's static routes, an interface's description, state, IPv4 MTU and static addresses, and NACM's own rules; every other node refuses a commit for now |
 | An undo that fails | — | beyond RFC 6241 | The undo stops there, a Critical alarm `undo` and an `undo-failed` event carry a report of the failure (never the host's configuration) for the admin to file if they choose | own |
 | Safe mode for jobs | — | before the datastores | A job made in safe mode is undone unless confirmed within the rollback timer: the confirmed commit's forerunner, still how jobs change the host | own |
 
@@ -63,7 +63,7 @@ console off.
 
 | Arcana function | Standard | Section / rule | How Arcana does it | Status |
 |---|---|---|---|---|
-| Who may do what | [RFC 8341](https://www.rfc-editor.org/rfc/rfc8341) NACM | groups, rule-lists in order, the first matching rule decides | The agent serves `ietf-netconf-acm:nacm` and cblink checks every request against it; the rules are kept in their own file (`--nacm`), written by an EDIT | full |
+| Who may do what | [RFC 8341](https://www.rfc-editor.org/rfc/rfc8341) NACM | groups, rule-lists in order, the first matching rule decides | The agent serves `ietf-netconf-acm:nacm` and cblink checks every request against it; the rules are kept in their own file (`--nacm`), changed by a commit; edited on a host's Security tab, saved by a confirmed commit the page confirms as you, so that rules that would refuse you are undone by the host | full |
 | Defaults | RFC 8341 | §3.3.4 `enable-nacm`, `read-default` permit, `write-default` deny, `exec-default` permit | As written; with no rules file, group `admin` (users `admin` and `console`) has one rule-list permitting everything, anyone else RFC 8341's defaults | full |
 | Sensitive nodes | RFC 8341 | `nacm:default-deny-all`, `nacm:default-deny-write` | The tables' flags; the `nacm` container itself is deny-all, so only a rule lets anyone change the rules; every command of the agent's own family that changes the host, or gives out a capture, a dataset or its configuration, is deny-all too | full |
 | Enforcement points | RFC 8341 | §3.4.4 rpcs, §3.4.5 data nodes, §3.4.6 notifications | An rpc's or action's exec; a read (what is denied left out); an EDIT and a commit (each node created, changed or deleted, all or nothing); each notification, and each record of a subscription | full |
@@ -85,19 +85,23 @@ console off.
 | Arcana function | Standard | Section / rule | How Arcana does it | Status |
 |---|---|---|---|---|
 | Discovery | RFC 8040, [RFC 6415](https://www.rfc-editor.org/rfc/rfc6415) | §3.1 `/.well-known/host-meta` | An XRD naming `/restconf` | full |
-| Reads | RFC 8040 | §3.3 the root, §3.5.3 api-path, §4.8.1 `content`, §4.8.2 `depth`, §4.8.3 `fields`, §9.1 `restconf-state` | A path under a host made an XPath filter of its agent's GET, answered as `application/yang-data+json` | partial: no PUT, POST of data, PATCH, DELETE or YANG Patch yet; no ETag |
+| Reads | RFC 8040 | §3.3 the root, §3.5.3 api-path, §4.8.1 `content`, §4.8.2 `depth`, §4.8.3 `fields`, §9.1 `restconf-state` | A path under a host made an XPath filter of its agent's GET, answered as `application/yang-data+json` | full; no ETag |
+| Datastores | [RFC 8527](https://www.rfc-editor.org/rfc/rfc8527) | §3.1 `{+restconf}/ds/<datastore>` | `/restconf/ds/ietf-datastores:running`, `candidate` and `operational`, each host's below its entry | full for those three |
+| Changes | RFC 8040 | §4.5 PUT, §4.7 DELETE | A host's top-level node put or deleted in its candidate; a PUT or DELETE under `/restconf/data` (running) is refused with how to make the change | partial: a top-level node whole; no POST of data, PATCH or YANG Patch |
+| Commit | RFC 6241 §8.3, §8.4; RFC 8528 §3.3 | `commit`, `cancel-commit`, `discard-changes` as the mount's actions | POSTed under a host's entry; a confirmed commit through the console names `persist` (its connection is every user's), and the commit that confirms runs over a connection of its own, the proof that a new one reaches the host | Arcana's own: the `arcana-accept` query parameter carries the warnings a change goes on despite |
 | Defaults | [RFC 6243](https://www.rfc-editor.org/rfc/rfc6243) | report-all, trim, explicit, report-all-tagged | RESTCONF's `with-defaults` (§4.8.9), tagged ones by RFC 7952's `@` member | full |
 | The fleet | [RFC 8528](https://www.rfc-editor.org/rfc/rfc8528) schema mount | inline mount points | `arcana-fleet:fleet/host`, each host a mount of the models its agent serves; a mounted host's notification nested in its entry | partial: mounts inside an agent (a FIB's `vrf-root`, a vnet jail's `root`) not yet |
 | What it implements | [RFC 8525](https://www.rfc-editor.org/rfc/rfc8525) YANG library | module sets, features, `content-id` | The console's own library, and each agent's: every module with its revision and the features on, those imported only, the operational datastore | full |
 
 ## Data models: interfaces and layer 2
 
-All read by the agent from the kernel; changed, for now, by jobs.
+All read by the agent from the kernel; changed by jobs, and some of
+it by a confirmed commit (the table above says what).
 
 | Arcana function | Standard | Section / rule | How Arcana does it | Status |
 |---|---|---|---|---|
-| Interfaces | [RFC 8343](https://www.rfc-editor.org/rfc/rfc8343) | `ietf-interfaces`, IANA's `iana-if-type` | getifaddrs(3) and `struct if_data`, the ioctls ifconfig(8) uses; layers as lower- and higher-layer-if | partial: broadcast counters left out (FreeBSD counts them with multicast); read only |
-| Addresses, neighbours | [RFC 8344](https://www.rfc-editor.org/rfc/rfc8344) | `ietf-ip` | Each address with its origin and IPv6 status (SIOCGIFAFLAG_IN6), ARP and NDP by netlink(4) | partial: a deviation (`arcana-ip-deviations`): forwarding, DAD and temporary addresses are the host's sysctls, one MTU for both families, IPv4 cannot be turned off on one interface |
+| Interfaces | [RFC 8343](https://www.rfc-editor.org/rfc/rfc8343) | `ietf-interfaces`, IANA's `iana-if-type` | getifaddrs(3) and `struct if_data`, the ioctls ifconfig(8) uses; layers as lower- and higher-layer-if | partial: broadcast counters left out (FreeBSD counts them with multicast); a commit changes an interface's description and `enabled`, kept in `ifconfig_<if>` |
+| Addresses, neighbours | [RFC 8344](https://www.rfc-editor.org/rfc/rfc8344) | `ietf-ip` | Each address with its origin and IPv6 status (SIOCGIFAFLAG_IN6), ARP and NDP by netlink(4) | partial: a deviation (`arcana-ip-deviations`): forwarding, DAD and temporary addresses are the host's sysctls, one MTU for both families, IPv4 cannot be turned off on one interface; a commit changes the static addresses (`ifconfig_<if>_alias<n>`) and the IPv4 MTU |
 | Interface extensions | [draft-ietf-netmod-intf-ext-yang](https://datatracker.ietf.org/doc/draft-ietf-netmod-intf-ext-yang/), [draft-ietf-netmod-sub-intf-vlan-model](https://datatracker.ietf.org/doc/draft-ietf-netmod-sub-intf-vlan-model/) | max-frame-size, parent- and peer-interface, Ethernet addresses, a VLAN's outer tag | A vlan(4)'s parent and tag (SIOCGETVLAN), an epair(4) end's other | partial: working-group drafts, at the revisions taken |
 | Ethernet | [IEEE 802.3](https://www.ieee802.org/3/) | `ieee802-ethernet-interface` | Auto-negotiation, duplex and the PMD type from the media (SIOCGIFXMEDIA) | partial: read only |
 | Link aggregation | [IEEE 802.1AX](https://1.ieee802.org/tsn/802-1ax-rev/) | `ieee802-dot1ax-linkagg`: aggregators, LACP state | lagg(4) by SIOCGLAGG | partial: a deviation (`arcana-ieee802-deviations`): FreeBSD's LACP keeps no administrative key, so `actor-admin-key` is not mandatory |
@@ -198,8 +202,8 @@ SASE](../sdwan/conformance.md).
 ## What comes next
 
 The plan in Arcana's tree, `docs/PLAN-SDN-YANG.md`, takes the
-standards further: EDIT for interfaces, addresses, FIBs and the
-Arcana modules; RESTCONF's writes and YANG Patch; ACLs as RFC 8519
+standards further: commits of FIBs, interfaces made and taken away,
+and the Arcana modules; RESTCONF's PATCH and YANG Patch; ACLs as RFC 8519
 compiled to ipfw(8); IPsec as RFC 9061; L3NM (RFC 9182) as the stored
 form of a service; STAMP (RFC 8762) in place of ICMP probes. None of
 it is claimed above until it is done.
