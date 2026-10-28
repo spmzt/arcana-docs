@@ -92,10 +92,30 @@ arcanactl commit -i 3f9a0c2e8b71d465
 
 A commit is checked first against the model (types, keys, mandatory
 nodes, `when` and `must`) and the host's access rules, then made all or
-nothing. So far it changes FIB 0's static routes, an interface's
-description, state, IPv4 MTU and static addresses, and the access rules
-themselves; anything else is refused as not supported yet, and jobs do
-the rest.
+nothing. So far it changes the static routes of each FIB; interfaces
+made and destroyed, and an interface's description, state, MTU,
+addresses, FIB and router advertisements (rtadvd.conf(5)); the network
+instances, a FIB each (`net.fibs` raised for the next boot when one
+more is asked for); and the access rules themselves. Anything else is
+refused as not supported yet, and jobs do the rest.
+
+A read says how defaults are reported with `-w` (RFC 6243: `explicit`,
+`report-all`, `trim`, `report-all-tagged`), and with `-o` where each
+configuration node of the operational state came from (RFC 8342's
+origin), as RFC 7952 annotations in the JSON:
+
+```
+arcanactl get -o interfaces
+{"ietf-interfaces:interfaces":{"@":{"ietf-origin:origin":"ietf-origin:intended"},
+ "interface":[{"name":"em0", ... "ietf-ip:ipv6":{"address":[
+  {"@":{"ietf-origin:origin":"ietf-origin:learned"},"ip":"2001:db8:1::5c","origin":"link-layer", ...},
+  {"@":{"ietf-origin:origin":"ietf-origin:system"},"ip":"fe80::5054:ff:fe12:3456","origin":"link-layer", ...}]}}]}}
+```
+
+`intended` is what running has, `learned` what DHCP, SLAAC or a
+temporary address gave or a neighbour the host found, `system` what the
+kernel made, `default` a default in use, and `unknown` what was set by
+hand since; a node says it only where it is not its parent's.
 
 What a commit keeps of rc.conf(5) goes into a file of Arcana's own,
 `/usr/local/etc/rc.conf.d/arcana`, which `rc_conf_files` in
@@ -186,9 +206,13 @@ agent's read and answers with that node alone, as
 `application/yang-data+json`. Of the query parameters, `content`
 (config, nonconfig, all), `depth`, `fields` (`fields=type;statistics(in-octets)`)
 and `with-defaults` (explicit, the agent's data as it is; report-all,
-trim, report-all-tagged) are taken. `/.well-known/host-meta`
-says where the root is; `/restconf/data` holds the fleet's hosts,
-`restconf-state`'s capabilities and the console's `yang-library`. An
+trim, report-all-tagged) are taken, and of the operational datastore
+(`/restconf/ds/ietf-datastores:operational/...`) `with-origin`.
+`/.well-known/host-meta` says where the root is; `/restconf/data`
+holds the fleet's hosts, `restconf-state`'s capabilities, the console's
+`yang-library` and `schema-mounts` (each host's entry an inline mount;
+inside an agent, each network instance's `vrf-root` a shared-schema
+mount of its FIB's routing, with its own YANG library). An
 API token that reads may read it; errors are `ietf-restconf:errors`.
 
 Each host's events are a stream of RFC 8040's (section 6), listed in
