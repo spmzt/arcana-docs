@@ -156,7 +156,7 @@ packets meet.
 On the host every change is sent in safe mode. A relay often carries
 the very tunnel the console reaches the host by, so a change that cuts
 it is undone when the console cannot confirm it. Undoing puts back
-`speederv2_flags` and `speederv2_enable` as they were, and the relay
+`arcana_relay_flags` and `arcana_relay_enable` as they were, and the relay
 running or stopped as it was. A jail's relay is changed without safe
 mode.
 

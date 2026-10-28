@@ -69,6 +69,19 @@ back on a circle and straightens every line. Once the map was moved or
 zoomed it is not fitted again unasked, so nothing shifts under the
 hand. A line is dragged to bend it away from the lines beside it.
 
+**Full screen** gives the map the whole screen (the browser's
+Fullscreen API), its buttons and legend still over it; **F** with the
+map in focus does the same, and Escape gives the screen back. The map
+is fitted to the room it has each way.
+
+While a host is dragged, or a line bent, the lines that move with the
+hand are drawn on the canvas under the map (WebGPU where the browser
+has it, else WebGL 2) and the map's own drawing is left alone until
+the hand lets go, so a move costs the page nothing at a thousand
+links; a pan or a turn of the wheel moves the whole drawing as one and
+draws it anew once the hand rests. Without either, the map is drawn as
+before, on every move.
+
 **Labels** has the switches of what is written: **Names** and **Rates**
 apart, and one for each kind of line. Until a kind is switched, a kind
 with more than six lines has its labels left out, and a line shows its
