@@ -44,6 +44,12 @@ Hosts that differ from the console's machine (another architecture or
 FreeBSD version) are updated with `pkg upgrade arcana` instead, which
 their Packages tab can do.
 
+The program travels compressed (gzip) to an agent of 0.235.0 or later,
+whose hello says `gzip-update`, and is inflated there before the checks
+above; an older agent is sent it as it is, which it takes up to 6 MiB.
+So a host whose agent is older than 0.235.0 is updated to a release
+small enough for that first; the console says so when one is too big.
+
 If an update goes wrong on a host, put `arcana-agent.old` back and
 restart the service.
 
@@ -60,3 +66,4 @@ agent's refusal, nothing else changed. So far:
 | Console | Needs agents | For |
 |---|---|---|
 | 0.317.0 | 0.211.0 | SD-WAN: a zone's URL filtering, middlebox or malware scanning (the proxy's lists, a file each) |
+| 0.330.0 | 0.232.0 | jobs, storage, services, jails and packages through YANG: an older agent answers hello and takes agent-update, the rest waits for its update |
