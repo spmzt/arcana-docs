@@ -29,6 +29,9 @@ def main():
     sets = {s['name']: s for s in doc.get('attribute-sets') or []}
     out += ['## Operations', '']
     for op in doc.get('operations') or []:
+        # A retired one keeps its command number, nothing more.
+        if op.get('retired'):
+            continue
         out += ['#### %s' % op['name'], '']
         if op.get('doc'):
             out += [esc(op['doc'].strip()), '']
