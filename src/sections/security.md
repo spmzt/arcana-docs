@@ -318,11 +318,11 @@ logged; the ruleset's rules it left out are not counted as why.
 
 ## By the API
 
-`POST /api/servers/<id>/security` with `{"what": "proxy" or "ids",
-"instances": [...]}`, the whole list of the kind, each instance as the
-form has it; `[]` stops them all. What runs, and the forms as saved,
-are in `GET /api/servers/<id>/sdwan` (`proxy`, `ids`, `security_proxy`,
-`security_ids`, `clamav`).
+The instances are the host's `arcana-sdwan:sdwan` configuration, the
+whole list of a kind edited in its candidate and committed, then
+`sdwan/apply` (see [The API: RESTCONF](../automation/restconf.md));
+an empty list stops them all. What runs is `sdwan/state`, below
+`/restconf/data/arcana-fleet:fleet/host=<id>/arcana-sdwan:sdwan`.
 
 ## Sandboxed programs
 

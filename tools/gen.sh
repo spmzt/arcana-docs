@@ -1,8 +1,10 @@
 #!/bin/sh
 #
 # The chapters made from Arcana's own tree, at every build of the book,
-# never committed: the HTTP API from docs/openapi.yaml, the programs'
-# manual pages, and the agent's protocol from share/arcana/arcana.yaml.
+# never committed: the RESTCONF paths from share/yang (Arcana's
+# docs/restconf-modules.py), the deprecated /api from docs/openapi.yaml,
+# the programs' manual pages, and the agent's protocol from
+# share/arcana/arcana.yaml.
 # Arcana is ./arcana: the workflow's checkout, or a link to one.
 #
 #	tools/gen.sh && mdbook build
@@ -17,6 +19,15 @@ mkdir -p "$out"
 
 awk -f "$a/www/arcana-ui/tools/openapi.awk" "$a/docs/openapi.yaml" |
     python3 "$top/tools/openapi2md.py" > "$out/api.md"
+# RESTCONF's modules and paths, by Arcana's own script (an Arcana before
+# it has none: the page says so).
+if [ -f "$a/docs/restconf-modules.py" ]; then
+	python3 -I "$a/docs/restconf-modules.py" "$a" > "$out/restconf-paths.md"
+else
+	printf '# RESTCONF paths, by module\n\n%s\n' \
+	    'This build of the book read an Arcana without docs/restconf-modules.py; see [The API: RESTCONF](../automation/restconf.md).' \
+	    > "$out/restconf-paths.md"
+fi
 PYTHONPATH="$top/tools" python3 "$top/tools/schema2md.py" \
     "$a/share/arcana/arcana.yaml" > "$out/schema.md"
 

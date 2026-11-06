@@ -31,7 +31,7 @@ bookmark, a reload or the browser's back and forward land there:
 | `#/network`, `#/usage`, `#/workflows`, `#/sdwan`, `#/api` | the fleet's own pages |
 | `#/settings/<tab>` | a tab of Settings |
 
-`<id>` is the host's id in `/api/servers`. Opened at one before signing
+`<id>` is the host's id, its key in `arcana-console:hosts`. Opened at one before signing
 in, the console goes there after. A host that is no longer there gives
 the fleet. Each change is a new entry in the browser's history.
 
@@ -91,9 +91,10 @@ graph opens in a box over the page.
 
 Three lights say whether the network, the console and the host picked
 answer. The console's light opens the console's own **API**, as
-`docs/openapi.yaml` documents it: every route with what it is for, what
-it takes and what it answers, by group and searched, and the document
-itself one press away for a client generator. **Notify** has this
+`docs/openapi.yaml` documents it: the deprecated `/api`, every route
+with what it is for, by group and searched. The console's API is
+RESTCONF now ([The API: RESTCONF](../automation/restconf.md)), its
+description the YANG modules its library lists. **Notify** has this
 device told of what ends (below), and **Log out** ends the session.
 **?** opens the page shown in this book, at its part: the tab of a
 host, the kind of its network, a section of the side bar.
@@ -149,7 +150,7 @@ in view while the graph scrolls.
   by stage, and a change that cuts the console off still completes.
 - A task still waiting says what it asked and where it is. The graph
   starts with the request (its method and address, such as `POST
-  /api/servers/<id>/jobs`, and what the job asks: its kind, and the
+  …/host=<id>/arcana-jobs:submit`, and what the job asks: its kind, and the
   jail or name), then **the console asks** the host (waiting for the
   answer, or the job's number once the host accepted it), then, for a
   job, the host's stage: waiting to begin, the state the host last

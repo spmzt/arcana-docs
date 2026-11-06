@@ -2,7 +2,7 @@
 
 [arcana-apk](https://github.com/spmzt/arcana-apk) is a native Android
 client of the console. It is no second console: it reads and asks
-through the console's HTTP API, as the page does, and shows the same
+through the console's API, as the page does, and shows the same
 traces.
 
 It signs in with an API token. Make one in **Settings**, **API tokens**

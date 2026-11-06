@@ -81,6 +81,6 @@ console's manager reads every edge's probes every five seconds and
 orders the tunnels by it (R69, R70): those that meet every threshold
 first, by the primary metric, and the one in use stays first while it
 meets them and is under the ceiling (R73); an order that changed is
-sent to the edge. `GET /api/sdwan/steer` says what was sent last;
+sent to the edge. `/restconf/data/arcana-console:sdwan/steering` says what was sent last;
 Paths shows each edge's prefixes, by which tunnel each goes now and
 the others' states.

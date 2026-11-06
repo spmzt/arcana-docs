@@ -26,8 +26,9 @@ a program the kernel saw die of a signal (crash, Major, of
 each crash and cleared after an hour without one; a daemon that set
 its group, as `bird -g` does, dumps no core while
 `kern.sugid_coredump` is 0). One of a type and object is open at a time; set and cleared
-are events (`sdwan-fault`) within the second (R71), and `GET
-/api/servers/<id>/sdwan` lists the day's; Paths lists them, open
+are events (`sdwan-fault`) within the second (R71), and the edge's
+`arcana-sdwan:sdwan/state` (below its entry of the fleet mount) lists
+the day's; Paths lists them, open
 first, and the dashboard counts the open ones. A service's `tca`
 (thresholds for `delay` and `ipdv` in ms and `loss` as a fraction,
 and `damping`, intervals in a row, 1 by default) gives the probes the

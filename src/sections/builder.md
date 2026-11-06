@@ -171,5 +171,6 @@ arcanactl poudriere show-options jail=150amd64 set=debug origin=net/bird3
 arcanactl poudriere options jail=150amd64 set=debug origin=net/bird3 on=BMP off=RIP
 ```
 
-The API is `GET /api/servers/<id>/builder` and jobs of kind
-`poudriere`.
+Over RESTCONF it is the host's `arcana-builder:builder` (its
+`port-options` action for a port's options) and jobs of kind
+`poudriere` (`arcana-jobs:submit`).

@@ -118,7 +118,7 @@ Who and what may use the console, in sub-tabs: **Users**, **Roles**,
 Who signs in. A user has **roles**, and is in **groups** (below), one
 of either at least, and may what any of them allows; and may belong to a **tenant**, a fleet of its own: it then
 sees the hosts of that tenant alone, the tenant being a name on each
-host (`POST /api/servers/<id> {"tenant"}`), so several customers'
+host (its `tenant` in `arcana-console:hosts`), so several customers'
 fleets are kept apart under one console, each with its own people.
 The keys from before there were users belong to the built-in `admin`,
 with the owner role. **Add a user** names one with its roles and
@@ -128,9 +128,9 @@ in; the owner may also register a key for a user from Sign-in keys.
 Taking a user away takes their keys, invitations and sessions too. The
 last owner stays one. A directory's user (below) with a user of the
 same name here has that user's roles; one without is limited as an API
-token's session is, on every host. `GET`, `POST /api/users`, `PUT` and
-`DELETE /api/users/<name>` and `POST /api/users/<name>/invite` do the
-same; the status reply says who is signed in and their console role,
+token's session is, on every host. `/restconf/data/arcana-console:users`
+(GET, POST, PUT, PATCH, DELETE of `user=<name>`) and its
+`user=<name>/invite` action do the same; the status reply says who is signed in and their console role,
 and the host list each host's role.
 
 ### Roles
@@ -147,9 +147,8 @@ and the console from it, builds, moves and removes it. A host no role
 of the user's names is not shown and not reached, by the page, the API
 or the live stream. Three roles come built in, `owner`, `operator` and
 `viewer`, and may be changed like any; a role no user has may be taken
-away, and one a group gives stays while the group gives it. `POST
-/api/roles`, `PUT` and `DELETE /api/roles/<name>`; the roles come with
-`GET /api/users`.
+away, and one a group gives stays while the group gives it. Over
+RESTCONF, `arcana-console:roles`.
 
 A role may name a **directory group**, an LDAP group's DN: its members
 get the role as they sign in by the directory. The console then keeps a
@@ -171,9 +170,8 @@ out of it, or the group taken away, has their own roles and their other
 groups' again. A change that would leave the console without an owner
 is refused. The user form ticks a user's groups, the group form its
 members; the users' list shows each user's groups beside their roles.
-`POST /api/groups` (`{"name", "roles", "members", "description"}`),
-`PUT` and `DELETE /api/groups/<name>`; the groups, with their members,
-come with `GET /api/users`.
+Over RESTCONF, `arcana-console:groups`, each `group=<name>` with its
+roles, members and description.
 
 ### API tokens
 
@@ -197,8 +195,10 @@ Neither kind reads or changes the console's settings, sign-in, push or
 enrolment, and a write token may not change the tokens or the CA
 (`403`, "an API token may not change this"): a token cannot make
 another, add a passkey, or change the repository that is built as
-root. `POST /api/tokens` takes `{"name", "kind": "read"|"write"}`, a
-read token unless said; `GET /api/tokens` lists each with its `kind`.
+root. The action
+`/restconf/data/arcana-console:tokens/create` takes a `name` and a
+`kind` (`read` or `write`, read unless said) and says the value once;
+`GET` of `arcana-console:tokens` lists each with its `kind`.
 Deleted, a token opens nothing at once.
 
 ![A write token, made](../img/set-token-write.png)
@@ -236,7 +236,8 @@ the hosts, but the console's settings, sign-in keys, users, API tokens
 and CA stay with a key. Five failed sign-ins in a minute, by either
 password, put every sign-in by password on hold for the rest of it.
 `POST /api/auth/password` (`{"user", "password"}`) sets one, and
-`POST /api/auth/login/password` signs in.
+`POST /api/auth/login/password` signs in: sign-in stays beside
+RESTCONF ([Beside RESTCONF](../automation/restconf.md#beside-restconf)).
 
 <div class="freebsd">
 
@@ -397,5 +398,5 @@ now, so a repository moved to another server is read from there) and kept five m
 the repository's tags carry messages, else the commit messages, newest
 first. Above the version running is what an update brings, the
 version's own commit marked; below it, what this console has. The
-update boxes show the same. `GET /api/update/notes?component=console|
+update boxes show the same. `GET /restconf/data/arcana-console:update-notes?component=console|
 agent&from=VERSION[&to=VERSION]` gives it as JSON.

@@ -36,17 +36,20 @@ panel](../sections/panel.md#the-activity-bar).
 ## From the API
 
 ```sh
-curl -s -b cookie -H 'Content-Type: application/json' \
-    -d '{"jobs":[{"kind":"if-address","interface":"lo0",
-         "address":"10.9.0.6/24","safe":true}]}' \
-    https://console.example/api/servers/<id>/jobs
+curl -s -H "Authorization: Bearer $TOKEN" \
+    -H 'Content-Type: application/yang-data+json' \
+    -d '{"arcana-jobs:input":{"change":[{"if-address":{"interface":"lo0",
+         "address":"192.0.2.6/24"},"safe":true}]}}' \
+    https://console.example/restconf/data/arcana-fleet:fleet/host=<id>/arcana-jobs:submit
 ```
 
-answers with each job's id; `GET /api/servers/<id>/jobs/<n>` is its
-state and trace, and reading it is what confirms a safe change. Changes
-need a signed-in session or a write **API token** (Settings → API
-tokens, `Authorization: Bearer arcw_…`, audited by its name); a read
-token (`arcr_…`) reads everything the API tells and changes nothing. See [The HTTP API](../reference/api.md).
+answers with each job's id (`{"arcana-jobs:output":{"id":["17"]}}`);
+`POST …/arcana-jobs:jobs/job=<n>/read` is its state and trace, and
+reading it is what confirms a safe change. Changes need a signed-in
+session or a write **API token** (Settings → API tokens,
+`Authorization: Bearer arcw_…`, audited by its name); a read token
+(`arcr_…`) reads everything the API tells and changes nothing. See
+[The API: RESTCONF](restconf.md).
 
 ## From a shell
 

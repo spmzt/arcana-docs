@@ -142,11 +142,11 @@ function policy and the list) into a record it keeps for a day beside its files,
 event `sdwan-security` as it comes, twenty a second at most. The
 `sdwan` read carries the day's count and the latest 500; Security
 shows them from every edge, newest first, with a filter, and **CSV**
-downloads the day's from every edge (`GET /api/sdwan/record.csv`;
-`/api/sdwan/record` as JSON, `?swvc=`, `&policy=` (a function
-policy's ID), `&edge=`, `&since=` to pick). `GET` and `PUT /api/sdwan/lists` carry the
-feeds and the interval, `POST /api/sdwan/lists/fetch` fetches now
-(`{"name"}` for one); **Fetch now** on the tab does the same. A list
+downloads the day's from every edge (`GET /restconf/data/arcana-console:sdwan/record` with
+`Accept: text/csv`; as JSON otherwise, `?swvc=`, `&policy=` (a
+function policy's ID), `&edge=`, `&since=` to pick). `GET` and `PUT`
+of `/restconf/data/arcana-console:sdwan/lists` carry the feeds and the interval, the action
+`/restconf/data/arcana-console:sdwan/fetch-lists` fetches now (a `name` for one); **Fetch now** on the tab does the same. A list
 may be large: the agent writes a table's entries 64 to a line as
 `table … atomic add`, one call each, all or nothing, and raises
 `net.inet.ip.fw.tables_max` when the tables would not fit; and when
@@ -209,8 +209,9 @@ prefixes, the service's resolver where there is one. **Revoke** takes it out
 of the document and applies: its peer goes. A remote end point's
 `reauth` (an hour to a year, in seconds) is how long an identity stays
 authorised from its `issued` time; past it the manager's tick applies
-and the peer is removed until the identity is issued again. `GET`,
-`POST` and `DELETE /api/sdwan/identities` do the same. Each identity's
+and the peer is removed until the identity is issued again. Over
+RESTCONF, `/restconf/data/arcana-console:sdwan/identities` and the actions `issue-identity` and
+`revoke-identity` do the same. Each identity's
 **session** is its peer as the edge's `wg(8)` tells it, read from the
 edge with the list: the last handshake, the bytes each way and where
 it came from; none when the edge has no peer for it yet.
@@ -389,6 +390,6 @@ Each line carries an HMAC-SHA256, under a key of the console's own
 that no reader is given, of the line before's and its own, so a line
 changed, taken away or put in breaks the chain from there. The tab
 says whether the chain is intact and where it broke, and offers it
-as CSV (`/api/sdwan/audit.csv`). What the edges deny is in the record
+as CSV (`/restconf/data/arcana-console:sdwan/audit` with `Accept: text/csv`). What the edges deny is in the record
 beside it.
 

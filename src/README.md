@@ -26,7 +26,7 @@ call and program it used.
 
 [**SD-WAN** MEF 70.2 services on FreeBSD hosts, from an example to an applied service.](sdwan/index.md)
 
-[**Automation** Jobs, the queue, the HTTP API, arcanactl.](automation/jobs.md)
+[**Automation** Jobs, the queue, the RESTCONF API, arcanactl.](automation/jobs.md)
 
 [**Under the hood** The architecture, the seven Archives, the agent's protocol.](hood/architecture.md)
 

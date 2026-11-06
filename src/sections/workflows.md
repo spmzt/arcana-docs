@@ -142,5 +142,6 @@ in `runs.json` with each run's traces in a file of its own under
 the one holding `workflows.lock`.
 
 **Clear history**, beside **Runs**, forgets every run that has ended,
-with its traces, after asking; a run going on stays. `DELETE
-/api/runs` does the same, `?workflow=<id>` for one workflow's runs.
+with its traces, after asking; a run going on stays. The
+action `/restconf/data/arcana-console:runs/clear` does the same, a
+`workflow` in its input for one workflow's runs.

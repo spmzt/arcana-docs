@@ -65,6 +65,7 @@
 
 - [MEF 70.2 in a page](sdwan/index.md)
 - [A service with two edges](sdwan/example.md)
+- [The service as L3NM, SAP and VN](sdwan/models.md)
 - [The document](sdwan/document.md)
 - [Check, plan and apply](sdwan/apply.md)
 - [Probes, rules and steering](sdwan/steering.md)
@@ -79,7 +80,9 @@
 # Automation
 
 - [Jobs and the queue](automation/jobs.md)
-- [The HTTP API](reference/api.md)
+- [The API: RESTCONF](automation/restconf.md)
+  - [RESTCONF paths, by module](reference/restconf-paths.md)
+  - [/api (deprecated)](reference/api.md)
 - [arcanactl](reference/arcanactl.md)
 - [cblink in a page](automation/cblink.md)
 - [The models: YANG](automation/yang.md)

@@ -154,9 +154,82 @@ step:
 | 13 Enable SD-WAN UNI | the UNIs come up last (R169) |
 
 What was made is
-kept in `sdwan-state.json` with the jobs that take it away again, and
-the tunnels' units and addresses, so that one added moves none of the
-others. **Make all again** takes everything made away first.
+kept in `sdwan-state.json` with what takes it away again, and the
+planner's ledger (the tables, RDs, the tunnels' units, VNIs and
+addresses: [The planner's ledger](models.md#the-planners-ledger)), so
+that one added moves none of the others. **Make all again** takes
+everything made away first.
+
+## How an edge is changed
+
+A step is made on its edge in one of two ways.
+
+**A device edit**, where the agents' models say it: a PATCH (merge) or
+DELETE of a node in the host's candidate, through the console's own
+RESTCONF (the fleet mount), then a **confirmed commit** (120 seconds,
+with a persist id), confirmed over a connection dialled for it. A
+commit that cuts the host off from the console is undone by the host
+itself at the timeout. Made so:
+
+- `net.fibs` and forwarding, as `arcana-sysctl`'s kept values;
+- the `gre(4)` and `gif(4)` tunnels: `ietf-interfaces`' entry with its
+  type, `arcana-interfaces`' tunnel ends, its description and MTU, RFC
+  8529's `bind-ni-name` for its table, the inner /31 and /127;
+- the services' loopbacks;
+- the UNIs: an interface's binding and the provider's addresses, or a
+  `vlan(4)` made with its parent and tag; SLAAC's advertisements in the
+  same entry (RFC 8349's prefix, `arcana-ra`'s RDNSS);
+- a FIB's static routes of one gateway, as `ietf-routing`'s static
+  protocol in the FIB's network instance.
+
+**A job**, for the rest: everything on a vnet jail's edge; a tunnel
+with an outer table of its own (`tunnelfib`), `wg(4)`'s interfaces and
+peers, `geneve(4)`, the `uswe` tunnels' `ipsec(4)` interfaces and their
+SAs, strongSwan; a route of several weighted gateways; a UCS End
+Point's DHCP or SLAAC and its own table; a remote end point's
+WireGuard; kernel modules, NTP, the FEC relay. The rules, steering and
+probes are the `arcana-sdwan` and `arcana-probe` modules' commits.
+
+A refused edit discards the candidate's changes, fails its step with
+the host's reason and its tag, and the apply is rolled back: each step
+made taken away, the last first, as for a failed job.
+
+<div class="freebsd">
+
+**FreeBSD:** a commit is the agent's: it writes what rc(8) reads into
+its own file, `/usr/local/etc/rc.conf.d/arcana` (`cloned_interfaces`,
+`ifconfig_<if>`, `static_routes`), `sysctl.conf(5)` for `net.fibs`
+and forwarding, `rtadvd.conf(5)`, and makes the same now with
+`ifconfig(8)`, `sysctl(8)` and `route(8)`. Taken away, each goes from
+the file and from the kernel.
+
+</div>
+
+## Warnings to accept
+
+Some of an edge's commits change what is yours, and the agent makes
+them only with your consent: naming Arcana's file in `rc_conf_files`,
+once (`rc-conf-files`), and a variable your own files set that Arcana's
+writes (`rc-conf-conflict`, yours then commented out, never deleted).
+The plan lists each such warning a step's commit may ask under **To
+accept** (the edge, the step, what it says), and the **Deploy** and
+**Make all again** dialogs list them again: their button accepts them
+for that apply alone. An apply that accepts other than the plan lists
+is refused before anything is made. Accepted, the warnings go with
+that step's edits and both commits as RESTCONF's `arcana-accept`;
+never silently: one not accepted is the agent's refusal, the step
+fails ("not accepted: the plan lists it, the apply accepts it for this
+step") and the apply is rolled back. An apply the console starts
+itself (an identity's) accepts none.
+
+## Refused as infeasible
+
+A plan that cannot be carried is no plan: an edge whose policies
+commit more bandwidth (each rate limiter's or policy's commit) than its
+uplinks carry (its UCS End Points' bandwidth, where each says one) is
+refused (409), with the two sums and the nearest that fits: the
+largest commit lowered by the excess, or the excess more in uplinks.
+The apply is refused the same.
 
 A wg tunnel's FIB is set, but not kept across a reboot: wg-quick(8),
 which brings wg up at boot, gives its addresses before any table can

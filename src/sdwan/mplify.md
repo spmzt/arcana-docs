@@ -56,7 +56,7 @@ fails is kept with its step and why, tried again after two minutes,
 and the end it failed on raises a `key-rotation` fault until one is
 done. The Paths tab's Keys table shows each end's half, when it was
 keyed and when it turns, and **turn the keys** does it now
-(`POST /api/sdwan/rekey`); an apply waits for a rotation and a
+(the action `arcana-console:sdwan/rekey`); an apply waits for a rotation and a
 rotation for an apply.
 
 ## Manually keyed security associations
@@ -137,7 +137,7 @@ jobs.
 | R157 irduration | `swvcs[].intervals.ir` | the probes |
 | R158 alarm severities Warning to Critical | — | the agents' faults, all severities, in the sdwan read |
 | R159 BFD 100 to 300 ms with its multiplier on every tunnel | `swvcs[].bfd` | BIRD's BFD |
-| R160 faults retrieved | — | `GET /api/servers/<id>/sdwan` |
+| R160 faults retrieved | — | the edge's `arcana-sdwan:sdwan/state`, through the fleet mount |
 
 Not done, as the table says and beyond it: R96's Ethernet UNI
 attributes and R97's auto-negotiation; one address per end point

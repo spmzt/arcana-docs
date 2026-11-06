@@ -68,7 +68,7 @@ the cluster has no majority there.
    name; the nodes take each other by it.
 
 **Settings › Cluster** shows the nodes, who leads and in which term, and
-how far each holds the changes; `GET /api/cluster` says the same.
+how far each holds the changes; `GET /restconf/data/arcana-console:cluster` says the same.
 
 ## Where it is kept
 

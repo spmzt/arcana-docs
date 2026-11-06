@@ -10,10 +10,15 @@ import json
 import sys
 
 d = json.load(sys.stdin)
-out = ['# The HTTP API', '',
-       '*Generated from `docs/openapi.yaml` at every build of the book. '
-       'The document itself is served by the console and is one press '
-       'away on its API page, for a client generator.*', '']
+out = ['# /api (deprecated)', '',
+       '*Generated from `docs/openapi.yaml` at every build of the book.*',
+       '',
+       '> Use [RESTCONF](../automation/restconf.md): '
+       '[each route below has its home there]'
+       '(../automation/restconf.md#from-api-to-restconf). What RESTCONF '
+       'has no place for (health, sign-in, enrolment, the notification '
+       'receiver, the IDS pcap) stays '
+       '[beside it](../automation/restconf.md#beside-restconf).', '']
 if d.get('about'):
     out += [d['about'].strip(), '']
 groups = {}

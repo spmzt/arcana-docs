@@ -8,22 +8,31 @@ of **MEF 70.2**, the open standard for SD-WAN services, and adds what
 **Mplify 119** (the Universal SD-WAN Edge) and **MEF 138** (security
 functions) ask for. It uses no vendor's words and no vendor's model.
 
+The panel and its document speak MEF 70.2. What the console stores is
+the IETF's network model of a layer 3 VPN, **L3NM** (RFC 9182), with
+Arcana's augments carrying the MEF attributes it has no node for, in
+MEF's terms; the document is made of it and kept into it. Beside it,
+the fleet's **SAPs** (RFC 9408) say where a service can attach, and the
+**VN** (RFC 9731) shows the service end to end, its paths' bounds and
+tunnels. All three are RESTCONF: see
+[The service as L3NM, SAP and VN](models.md).
+
 ![The SD-WAN dashboard: two edges, the tunnels between them](../img/sd-overview.png)
 
 ## The words
 
-| MEF 70.2 | Is | In the document | On a FreeBSD edge |
-|---|---|---|---|
-| **UCS**, Underlay Connectivity Service (§12) | a link the provider buys: the Internet, a private network | `ucs` | the interface it arrives on |
-| **SD-WAN Edge** (§7.8) | a site's box | `edges` | a host with `arcana-agent` |
-| **UCS End Point** (§12.3) | where an edge meets an underlay | `edges[].ucs_end_points` | an interface, an address, a gateway |
-| **SWVC**, SD-WAN Virtual Connection (§9) | the service itself | `swvcs` | a routing table of its own (a FIB) on every edge |
-| **TVC**, Tunnel Virtual Connection (§7.10) | a tunnel between two edges over one underlay | worked out, never written | a `gre`, `gif`, `geneve`, `wg` or `uswe` interface, IPsec under it where asked |
-| **SWVC End Point** and its **UNI** (§10, §11) | where the subscriber's hosts meet the service | `end_points[].uni` | an interface or VLAN in the service's table |
-| **Zone** (§9.5) | the hosts a set of rules applies to, by source address | `zones` | an ipfw table |
-| **Application Flow** (§9.14) | a kind of traffic: by address, port, DSCP, application | `flows` | ipfw rules |
-| **Policy** (§9.12) | what a flow gets: encryption, which links, breakout, performance, bandwidth | `policies` | the policy's table, the steering, dummynet |
-| **Policy map** | which flow gets which policy at an end point | `end_points[].policy_map`, `zones[].policies` | the rules' order |
+| MEF 70.2 | Is | In the document | Stored, L3NM (RFC 9182) | On a FreeBSD edge |
+|---|---|---|---|---|
+| **UCS**, Underlay Connectivity Service (§12) | a link the provider buys: the Internet, a private network | `ucs` | `arcana-l3nm:sdwan/ucs` | the interface it arrives on |
+| **SD-WAN Edge** (§7.8) | a site's box | `edges` | a `vpn-node`, its `ne-id` the host | a host with `arcana-agent` |
+| **UCS End Point** (§12.3) | where an edge meets an underlay | `edges[].ucs_end_points` | `arcana-l3nm:sdwan/edge/ucs-end-point` | an interface, an address, a gateway |
+| **SWVC**, SD-WAN Virtual Connection (§9) | the service itself | `swvcs` | a `vpn-service` | a routing table of its own (a FIB) on every edge |
+| **TVC**, Tunnel Virtual Connection (§7.10) | a tunnel between two edges over one underlay | worked out, never written | planned; a VN member's underlay | a `gre`, `gif`, `geneve`, `wg` or `uswe` interface, IPsec under it where asked |
+| **SWVC End Point** and its **UNI** (§10, §11) | where the subscriber's hosts meet the service | `end_points[].uni` | a `vpn-network-access` | an interface or VLAN in the service's table |
+| **Zone** (§9.5) | the hosts a set of rules applies to, by source address | `zones` | the service's `arcana-l3nm:sdwan` | an ipfw table |
+| **Application Flow** (§9.14) | a kind of traffic: by address, port, DSCP, application | `flows` | the service's `arcana-l3nm:sdwan` | ipfw rules |
+| **Policy** (§9.12) | what a flow gets: encryption, which links, breakout, performance, bandwidth | `policies` | the service's `arcana-l3nm:sdwan` | the policy's table, the steering, dummynet |
+| **Policy map** | which flow gets which policy at an end point | `end_points[].policy_map`, `zones[].policies` | the access's `arcana-l3nm:sdwan` | the rules' order |
 
 ## How it works on the edges
 
@@ -108,6 +117,6 @@ or only those the services use there.
 | **Paths** | each tunnel's delay, variation and loss, the steering, BFD, the keys, faults |
 | **Security** | MEF 138 security function policies and the security policies made of them, lists and feeds, the record of what was denied |
 | **Identities** | the people let in at remote end points, each a WireGuard key |
-| **Document** | the whole as JSON, **Check** and **Keep**, and **Start from an example** |
+| **Document** | the whole as a MEF 70.2 document in JSON, made of the stored L3NM; **Check** and **Keep**, and **Start from an example** |
 
 The next chapter builds a service from that example.

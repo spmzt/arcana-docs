@@ -130,7 +130,8 @@ on its Summary: running against the configuration part of the
 operational state (RFC 8342's intended against operational), a row a
 node with its api-path: configured but not in effect, differing, or
 beyond running with where it came from (set by hand, learned, the
-kernel's own). `GET /api/servers/<id>/drift` gives the rows.
+kernel's own). `GET /restconf/data/arcana-console:hosts/host=<id>/drift`
+gives the rows.
 
 What a commit keeps of rc.conf(5) goes into a file of Arcana's own,
 `/usr/local/etc/rc.conf.d/arcana`, which `rc_conf_files` in
@@ -223,82 +224,31 @@ arcanactl subscribe -r 2026-10-27T00:00:00Z -x '/arcana-events:event/job'
 
 A subscription the agent keeps by configuration (RFC 8639 section 2.5)
 has the console as its receiver over HTTPS-notif
-(draft-ietf-netconf-https-notif): `GET /api/servers/<id>/subscription`
-gives the document to put into the host's candidate and commit, after
-which the agent calls the console's `/api/notif/<host>/relay-notification`
-with its own certificate for every record, replays what the console
-missed while it was away (from the last record it kept), and the
-console keeps them (`GET /api/servers/<id>/notifications`) across its
-own restarts.
+(draft-ietf-netconf-https-notif): `GET
+/restconf/data/arcana-console:hosts/host=<id>/subscription` gives the
+document to put into the host's candidate and commit, after which the
+agent calls the console's receiver, `/api/notif/<host>/relay-notification`
+(beside RESTCONF), with its own certificate for every record, replays
+what the console missed while it was away (from the last record it
+kept), and the console keeps them (`GET
+/restconf/data/arcana-console:hosts/host=<id>/notifications`) across
+its own restarts.
 
 ## From the console: RESTCONF
 
-The console is a RESTCONF server (RFC 8040) of what it reads, each host
-a mount point (RFC 8528) of the `arcana-fleet` module whose data is its
-agent's models:
+The console serves all of it again over RESTCONF (RFC 8040), each host
+a mount point (RFC 8528) of the `arcana-fleet` module whose data is
+its agent's models:
 
 ```
-curl -H "Authorization: Bearer $TOKEN" \
-    https://console.example/restconf/data/arcana-fleet:fleet
 curl -H "Authorization: Bearer $TOKEN" \
     "https://console.example/restconf/data/arcana-fleet:fleet/host=1a2b3c4d/ietf-interfaces:interfaces/interface=em0?content=nonconfig"
 ```
 
-A path below a host's entry is RFC 8040's api-path, its first node
-named with its module; the console makes it an XPath filter of the
-agent's read and answers with that node alone, as
-`application/yang-data+json`. Of the query parameters, `content`
-(config, nonconfig, all), `depth`, `fields` (`fields=type;statistics(in-octets)`)
-and `with-defaults` (explicit, the agent's data as it is; report-all,
-trim, report-all-tagged) are taken, and of the operational datastore
-(`/restconf/ds/ietf-datastores:operational/...`) `with-origin`.
-`/.well-known/host-meta` says where the root is; `/restconf/data`
-holds the fleet's hosts, `restconf-state`'s capabilities, the console's
-`yang-library` and `schema-mounts` (each host's entry an inline mount;
-inside an agent, each network instance's `vrf-root` a shared-schema
-mount of its FIB's routing, with its own YANG library). An
-API token that reads may read it; errors are `ietf-restconf:errors`.
-
-Each host's events are a stream of RFC 8040's (section 6), listed in
-`restconf-state/streams` by the host's id: `/restconf/streams/<id>/json`
-sends every event its agent tells as Server-Sent Events, a
-`data:` line of RFC 8040's notification JSON each, its `id:` the event's
-time, with a comment line now and then so that proxies keep it open. A
-client that comes back with `Last-Event-ID` (a browser's EventSource
-does by itself) is sent what the agent kept since that time first, the
-last one it had among them again, then `replay-completed`. The
-stream ends, with an `error` event saying why, when the host does.
-
-The `fleet` stream, `/restconf/streams/fleet/json`, is every host's you
-may read on one connection: each notification sits in its host's entry,
-`{"arcana-fleet:fleet":{"host":[{"id":"1a2b3c4d","arcana-events:event":{…}}]}}`,
-as RFC 8528 nests a mounted module's notification. A host whose stream
-ends is named in an `error` event while the others go on.
-
-```
-curl -N -H "Authorization: Bearer $TOKEN" \
-    https://console.example/restconf/streams/1a2b3c4d/json
-```
-
-A subscription of one's own goes as RFC 8650 has it: POST
-`establish-subscription` under a host's entry, of the `NETCONF` stream
-(with an XPath filter, a replay start time) or of the operational
-datastore (periodic, its period in centiseconds, or on-change), and the
-answer's `uri` is its stream, for whoever made it to GET within a
-minute:
-
-```
-curl -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/yang-data+json' \
-    -d '{"ietf-subscribed-notifications:input":{"ietf-yang-push:datastore":"ietf-datastores:operational","ietf-yang-push:datastore-xpath-filter":"/ietf-interfaces:interfaces","ietf-yang-push:periodic":{"period":500}}}' \
-    https://console.example/restconf/data/arcana-fleet:fleet/host=1a2b3c4d/ietf-subscribed-notifications:establish-subscription
-curl -N -H "Authorization: Bearer $TOKEN" https://console.example/restconf/subscriptions/<id>
-```
-
-Writes and YANG Patch are not served yet.
-
-`GET /api/servers/<id>/data?node=interfaces,routing` answers with the
-host's YANG data under `data`, as RFC 7951's JSON, in the console's own
-API.
+Reads, the candidate and its confirmed commit, YANG Patch, actions,
+the event streams and subscriptions, roles and errors are in
+[The API: RESTCONF](restconf.md); every module's paths in
+[RESTCONF paths, by module](../reference/restconf-paths.md).
 
 ## On the wire
 

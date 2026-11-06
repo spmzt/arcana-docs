@@ -1,14 +1,24 @@
 # The document
 
-The console keeps every SD-WAN service in one JSON document, which the
-**Document** tab shows whole and the other tabs edit a part at a time.
-Its names are MEF 70.2's; this chapter is its reference. For a document
-to read beside it, see [A service with two edges](example.md).
+Every SD-WAN service the console keeps is shown as one JSON document,
+which the **Document** tab shows whole and the other tabs edit a part
+at a time. Its names are MEF 70.2's; this chapter is its reference. For
+a document to read beside it, see [A service with two edges](example.md).
+
+The document is a view: the console stores the services as L3NM (RFC
+9182) with `arcana-l3nm`'s augments, makes the document of them at
+each read and keeps it into them at each **Keep**, checked as MEF 70.2
+says and then as the models do. Its `version` is the L3NM's change
+count, so a change made over RESTCONF makes a page's document stale as
+another page's would. Where each part is stored is in
+[The service as L3NM, SAP and VN](models.md#where-each-mef-term-is-kept);
+over RESTCONF the document is `arcana-console:sdwan/document`, read
+and written whole.
 
 **SD-WAN** in the side bar holds the SD-WAN services the console keeps,
 named as MEF 70.2 (SD-WAN Service Attributes and Service Framework)
-names them. It is one document with three parts, and the named lists
-below them:
+names them. The document has three parts, and the named lists below
+them:
 
 - `ucs`: the underlays (Underlay Connectivity Services, §12). Each has
   an `id`, a `type` (`public`, an Internet Access, or `private`), a
